@@ -1,0 +1,329 @@
+/*
+ * Startseite — Idiome und Abschnitte.
+ *
+ * Wird nur auf der Seitenvorlage „SAPELZA Startseite" geladen, damit der
+ * Shop nicht mit Regeln belastet wird, die er nie braucht.
+ *
+ * Die Vorschau-App nennt ihre Token --bg, --fg, --bordeaux. Hier heißen
+ * dieselben Werte --sz-bg, --sz-ink, --sz-bordeaux. Nicht übersetzen,
+ * sondern durchgehend die --sz-Namen benutzen: nur die kippen unter
+ * html[data-sz="dark"] mit.
+ */
+
+/* ===================================================================
+   Idiome — in der Vorschau global, hier nur für die Startseite
+   =================================================================== */
+
+.sz-start {
+    background: var(--sz-bg);
+    color: var(--sz-ink);
+}
+
+.sz-start .wrap {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1400px;
+    padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .sz-start .wrap { padding-inline: 3rem; }
+}
+
+.sz-start .display { font-family: var(--sz-display); font-weight: 400; }
+.sz-start .mono    { font-family: var(--sz-mono); }
+
+/* Der Kicker: Mono, klein, weit gesperrt, bordeaux. Nicht die
+   Display-Variante der übrigen Seiten — der Rhythmus hängt daran. */
+.sz-start .kicker {
+    font-family: var(--sz-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sz-start .kicker__punkt {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--sz-bordeaux);
+    animation: sz-puls 2.4s ease-in-out infinite;
+}
+
+@keyframes sz-puls {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}
+
+/* Haarlinie — trägt die Kapitelmarken */
+.sz-start .hairline {
+    height: 1px;
+    background: var(--sz-border);
+    border: 0;
+}
+
+/* Die wuchtige Überschrift. Wer hier mit 2,6rem arbeitet, trifft die
+   Seite nicht — sie lebt von der Größe. */
+.sz-start .statement {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 6.6vw, 6.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    max-width: 19ch;
+    margin: 0;
+}
+
+/* Geisterziffer im Hintergrund eines Abschnitts */
+.sz-start .geisterziffer {
+    position: absolute;
+    font-family: var(--sz-display);
+    font-size: clamp(16rem, 40vw, 36rem);
+    line-height: 0.7;
+    color: var(--sz-numeral);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+/* ===================================================================
+   Abschnitt: Hero
+   =================================================================== */
+
+.sz-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    min-height: 70vh;
+    padding-block: clamp(3rem, 7vh, 6rem);
+}
+
+.sz-hero .wrap { position: relative; z-index: 1; }
+
+/* Die drei anfahrbaren Wörter im Satz */
+.sz-hero__wort {
+    font: inherit;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--sz-bordeaux) 40%, transparent);
+    padding: 0;
+    cursor: pointer;
+    color: var(--sz-bordeaux-text);
+    transition: border-color 220ms ease;
+}
+
+.sz-hero__wort:hover,
+.sz-hero__wort:focus-visible { border-bottom-color: var(--sz-bordeaux); }
+
+.sz-hero__suche {
+    margin-top: 2.75rem;
+    display: flex;
+    max-width: 34rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sz-hero__feld { position: relative; min-width: 220px; flex: 1; }
+
+/* Der Selektor ist absichtlich zweiteilig: eine allgemeine
+   input[type="search"]-Regel weiter unten im Stylesheet hat dieselbe
+   Spezifität und gewänne sonst — dann käme das linke Innenmaß nie an
+   und die Lupe läge auf dem Text. */
+.sz-hero__feld input[type="search"] {
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid var(--sz-border-strong);
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    padding: 1rem 1.25rem 1rem 3.4rem;
+    font-size: 0.95rem;
+}
+
+.sz-hero__lupe {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--sz-ink-soft);
+}
+
+.sz-hero__knopf {
+    border-radius: 999px;
+    border: 0;
+    padding: 1rem 1.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+.sz-hero__hinweis {
+    margin-top: 1rem;
+    font-size: 0.82rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-hero__hinweis a { color: var(--sz-bordeaux-text); }
+
+/* ===================================================================
+   Abschnitt: Sortiment
+   =================================================================== */
+
+.sz-sortiment {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(5rem, 10vh, 8rem);
+    background: color-mix(in srgb, var(--sz-muted) 45%, transparent);
+}
+
+.sz-sortiment__kopf {
+    display: grid;
+    gap: 2rem;
+    align-items: end;
+}
+
+@media (min-width: 1024px) {
+    .sz-sortiment__kopf { grid-template-columns: 1.25fr 0.75fr; }
+}
+
+.sz-sortiment__titel {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5.8vw, 5.4rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+
+/* Bereichsumschalter — die Oberkategorien des Katalogs */
+.sz-bereiche {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+}
+
+.sz-bereiche__knopf {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: baseline;
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.2rem;
+    border: 1px solid var(--sz-border-strong);
+    background: transparent;
+    color: var(--sz-ink-soft);
+    cursor: pointer;
+    border-radius: var(--sz-radius);
+    transition: background 220ms ease, color 220ms ease, border-color 220ms ease;
+}
+
+.sz-bereiche__knopf[aria-current] {
+    background: var(--sz-bordeaux);
+    border-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+.sz-bereiche__zahl { opacity: 0.6; margin-left: 0.5rem; }
+
+/* Hairline-Raster: die Linien gehören dem Raster, nicht der Zelle —
+   sonst verdoppeln sie sich an jeder Naht. */
+.sz-abteilungen {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    border-left: 1px solid var(--sz-border);
+    border-top: 1px solid var(--sz-border);
+}
+
+@media (min-width: 640px)  { .sz-abteilungen { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .sz-abteilungen { grid-template-columns: repeat(3, 1fr); } }
+
+.sz-abteilung {
+    position: relative;
+    display: block;
+    padding: 1.75rem 1.5rem 2rem;
+    border-right: 1px solid var(--sz-border);
+    border-bottom: 1px solid var(--sz-border);
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Tiefe entsteht nicht durch 3D, sondern durch Licht: ein Bordeaux-
+   Radialverlauf, der beim Anfahren von unten steigt. */
+.sz-abteilung::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 50% 100%, var(--sz-bordeaux-soft), transparent 70%);
+    opacity: 0;
+    transform: translateY(30%);
+    transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sz-abteilung:hover::before,
+.sz-abteilung:focus-visible::before { opacity: 1; transform: translateY(0); }
+
+.sz-abteilung__index {
+    font-family: var(--sz-mono);
+    font-size: 0.5625rem;
+    letter-spacing: 0.28em;
+    color: var(--sz-ink-soft);
+}
+
+.sz-abteilung__name {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: 1.05rem;
+    line-height: 1.08;
+    margin: 1.5rem 0 0;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+    .sz-abteilung__name { font-size: 1.6rem; line-height: 1.04; margin-top: 2rem; }
+}
+
+.sz-abteilung__zahl {
+    margin-top: 0.6rem;
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-sortiment__leer {
+    margin-top: 3rem;
+    padding: 2rem;
+    border: 1px dashed var(--sz-border-strong);
+    color: var(--sz-ink-soft);
+    font-size: 0.9rem;
+}
+
+/* ===================================================================
+   Rücksicht auf reduzierte Bewegung
+   =================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-start *,
+    .sz-start *::before,
+    .sz-start *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .sz-abteilung::before { opacity: 1; transform: none; }
+}

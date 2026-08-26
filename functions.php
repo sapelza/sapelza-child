@@ -67,7 +67,7 @@ add_filter('woocommerce_dropdown_variation_attribute_options_args', function ($a
  * überleben. Hier bleibt nur der Hell/Dunkel-Umschalter: der ist Rahmenwerk,
  * und ein neues Theme brächte seinen eigenen mit.
  */
-foreach (['hell-dunkel'] as $teil) {
+foreach (['hell-dunkel', 'katalog'] as $teil) {
     $pfad = get_stylesheet_directory() . '/inc/' . $teil . '.php';
     if (file_exists($pfad)) require_once $pfad;
 }
@@ -75,17 +75,43 @@ foreach (['hell-dunkel'] as $teil) {
 /**
  * Zugriff auf den Bereich, ohne sich auf das Plugin zu verlassen.
  *
- * sz_bereich() lebt im Plugin sapelza-shop, weil es eine Geschäfts-
- * entscheidung ist und keinen Theme-Wechsel überleben darf. Ist das Plugin
- * abgeschaltet, soll die Seite trotzdem laden — dann gilt Gastro.
+ * sz_bereich() lebt im Plugin sapelza-shop, weil das Merken einer Wahl eine
+ * Geschäftsentscheidung ist. Welche Bereiche es überhaupt gibt, liest das
+ * Theme selbst aus dem Katalog — ist das Plugin abgeschaltet, zeigt die
+ * Seite eben den größten Bereich, statt fatal zu enden.
  *
  * Theme-Code ruft ausschließlich diese Hülle auf, nie sz_bereich() direkt.
  */
 function sz_theme_bereich(): string
 {
+    $bereiche = function_exists('sz_bereiche') ? sz_bereiche() : [];
+    $erlaubt  = array_map(static fn($b) => $b->slug, $bereiche);
+    if (!$erlaubt) return '';
+
     if (function_exists('sz_bereich')) {
-        $bereich = sz_bereich();
-        if ($bereich === 'handwerk' || $bereich === 'gastro') return $bereich;
+        $wahl = sz_bereich();
+        if (in_array($wahl, $erlaubt, true)) return $wahl;
     }
-    return 'gastro';
+
+    /* Ohne Plugin gibt es kein Merken — dann zeigt die Seite den
+       größten Bereich, statt gar nichts. */
+    return $erlaubt[0];
 }
+
+/**
+ * Die Startseite bringt eigene Stilregeln mit.
+ *
+ * Nur auf ihrer Vorlage geladen: der Shop braucht die Idiome der Startseite
+ * nie, und jedes Kilobyte auf der Kategorieseite zahlt der Kunde mit
+ * Ladezeit. Version aus dem Theme-Kopf, damit der Cache beim Update anspringt.
+ */
+add_action('wp_enqueue_scripts', function () {
+    if (!is_page_template('page-startseite.php')) return;
+
+    wp_enqueue_style(
+        'sapelza-startseite',
+        get_stylesheet_directory_uri() . '/css/startseite.css',
+        ['sapelza-child'],
+        wp_get_theme()->get('Version')
+    );
+}, 30);
