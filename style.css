@@ -1,0 +1,1002 @@
+/*
+Theme Name:   SAPELZA Shop
+Theme URI:    https://sapelzashop.com
+GitHub Theme URI: https://github.com/sapelza/sapelza-child
+Description:  Child-Theme für Astra – übernimmt die Gestaltung der SAPELZA-Homepage. Das Verhalten liegt im Plugin „SAPELZA Shop“.
+Author:       SAPELZA
+Template:     astra
+Version:      1.5.0
+Text Domain:  sapelza-shop
+*/
+
+/* SZ:TOKEN-ANFANG — erzeugt aus sapelza-shop-app/src/index.css durch theme.mjs.
+   Nicht von Hand ändern: der nächste Lauf überschreibt es. Farben werden
+   in der Vorschau entschieden, hier stehen sie nur noch. =============== */
+
+:root {
+    --sz-bg:              #f5f2ec;
+    --sz-ink:             #1a1a1c;
+    --sz-muted:           #ebe6dc;
+    --sz-surface:         #ffffff;
+    --sz-ink-soft:        #5c5850;
+    --sz-numeral:         rgba(26, 26, 28, 0.06);
+    --sz-border:          rgba(26, 26, 28, 0.12);
+    --sz-border-strong:   rgba(26, 26, 28, 0.22);
+    --sz-bordeaux:        #c8383f;
+    --sz-bordeaux-fg:     #f7f3ea;
+    --sz-bordeaux-soft:   rgba(200, 56, 63, 0.1);
+    --sz-bordeaux-text:   #b52f36;
+    --sz-radius:          2px;
+
+    --sz-display: "DM Serif Display", Georgia, serif;
+    --sz-body:    "Fira Sans", system-ui, sans-serif;
+    --sz-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Hell ist der Standard. Dunkel hängt an [data-sz="dark"] auf <html>. */
+html[data-sz="dark"] {
+    --sz-bg:              #0e0e10;
+    --sz-ink:             #ece8df;
+    --sz-muted:           #17171a;
+    --sz-surface:         #131316;
+    --sz-ink-soft:        #a5a09a;
+    --sz-numeral:         rgba(236, 232, 223, 0.045);
+    --sz-border:          rgba(236, 232, 223, 0.08);
+    --sz-border-strong:   rgba(236, 232, 223, 0.16);
+    --sz-bordeaux-soft:   rgba(200, 56, 63, 0.12);
+    --sz-bordeaux-text:   #d95a5f;
+    color-scheme: dark;
+}
+
+/* SZ:TOKEN-ENDE */
+
+
+/* =====================================================================
+   Grundlagen
+   ===================================================================== */
+
+html { font-size: 17px; }
+
+body,
+.woocommerce,
+.ast-container {
+    background-color: var(--sz-bg);
+    color: var(--sz-ink);
+    font-family: var(--sz-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4,
+.entry-title,
+.woocommerce-loop-product__title,
+.product_title {
+    font-family: var(--sz-display) !important;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--sz-ink);
+}
+
+::selection {
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+/* Alles kantig statt abgerundet */
+.button,
+.wp-element-button,
+input, select, textarea,
+.woocommerce-message, .woocommerce-info, .woocommerce-error,
+.wc-block-components-button {
+    border-radius: var(--sz-radius) !important;
+}
+
+/* =====================================================================
+   Kopfbereich
+   ===================================================================== */
+
+.site-header,
+.ast-primary-header-bar {
+    background-color: var(--sz-bg) !important;
+    border-bottom: 1px solid var(--sz-border);
+}
+
+.site-title,
+.site-title a {
+    font-family: var(--sz-display) !important;
+}
+
+.main-navigation a,
+.ast-builder-menu .menu-item > a {
+    font-family: var(--sz-mono) !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sz-ink) !important;
+}
+
+.main-navigation .current-menu-item > a,
+.main-navigation a:hover {
+    color: var(--sz-bordeaux) !important;
+}
+
+/* =====================================================================
+   Buttons
+   ===================================================================== */
+
+.button,
+button.button,
+input[type="submit"],
+.wp-element-button,
+.wc-block-components-button,
+.woocommerce a.button,
+.woocommerce button.button.alt {
+    background-color: var(--sz-bordeaux) !important;
+    color: var(--sz-bordeaux-fg) !important;
+    font-family: var(--sz-mono) !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--sz-bordeaux) !important;
+    padding: 0.7em 1.4em;
+    transition: background-color 160ms ease, color 160ms ease;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+.woocommerce a.button:hover,
+.woocommerce button.button.alt:hover {
+    background-color: transparent !important;
+    color: var(--sz-bordeaux) !important;
+}
+
+/* =====================================================================
+   Produktkacheln
+   ===================================================================== */
+
+.woocommerce ul.products li.product {
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border);
+    border-left: 3px solid var(--sz-bordeaux);
+    padding: 0 0 1.1rem;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+/* Bildbereich mit fester Höhe – gleicht die Kacheln aus */
+.woocommerce ul.products li.product a img {
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: var(--sz-muted);
+    margin-bottom: 0.9rem;
+    padding: 8%;
+}
+
+/* Kategorie über dem Namen */
+.woocommerce ul.products li.product .ast-woo-product-category,
+.woocommerce ul.products li.product .posted_in {
+    font-family: var(--sz-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    padding: 0 1.1rem;
+}
+
+/* Produktname: zwei Zeilen, danach abgeschnitten */
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+    font-size: 1.02rem !important;
+    line-height: 1.3;
+    padding: 0 1.1rem;
+    margin: 0.25rem 0 0.5rem;
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.woocommerce ul.products li.product .price {
+    font-family: var(--sz-mono);
+    font-size: 0.95rem;
+    color: var(--sz-ink);
+    padding: 0 1.1rem;
+    margin-bottom: 0.8rem;
+}
+
+.woocommerce ul.products li.product .price .woocommerce-Price-taxLabel,
+.woocommerce .price small {
+    font-size: 0.68rem;
+    color: var(--sz-ink-soft);
+}
+
+/* Bestellbereich immer unten – gleiche Buttonhöhe über alle Kacheln */
+.woocommerce ul.products li.product form.cart,
+.woocommerce ul.products li.product .sapelza-var-form,
+.woocommerce ul.products li.product .sapelza-loop-cart,
+.woocommerce ul.products li.product .button {
+    margin-top: auto;
+}
+
+.woocommerce ul.products li.product form.cart,
+.woocommerce ul.products li.product .sapelza-var-form,
+.woocommerce ul.products li.product .sapelza-loop-cart {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0 1.1rem;
+}
+
+.sapelza-var-select {
+    flex: 1 1 100%;
+    font-family: var(--sz-mono);
+    font-size: 0.82rem;
+    padding: 0.45em 0.6em;
+    border: 1px solid var(--sz-border);
+    background: var(--sz-bg);
+}
+
+.sapelza-var-qty,
+.woocommerce ul.products li.product .quantity input.qty {
+    width: 3.6rem;
+    text-align: center;
+    font-family: var(--sz-mono);
+    padding: 0.55em 0.3em;
+    border: 1px solid var(--sz-border);
+    background: var(--sz-bg);
+}
+
+.woocommerce ul.products li.product form.cart .button,
+.woocommerce ul.products li.product .sapelza-var-form .button,
+.woocommerce ul.products li.product .sapelza-loop-cart .button {
+    flex: 1;
+}
+
+/* Hinweis statt Preis für nicht angemeldete Besucher */
+.b2bking_hidden_price_text,
+.b2bking_login_to_see_prices {
+    font-family: var(--sz-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+    color: var(--sz-bordeaux);
+    padding: 0 1.1rem;
+    display: block;
+}
+
+/* =====================================================================
+   Produktseite
+   ===================================================================== */
+
+.product_title.entry-title { font-size: 2.1rem !important; }
+
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+    font-family: var(--sz-mono);
+    color: var(--sz-ink);
+    font-size: 1.5rem;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a { color: var(--sz-bordeaux); }
+
+.woocommerce-breadcrumb {
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.woocommerce-breadcrumb a { color: var(--sz-ink-soft); }
+.woocommerce-breadcrumb a:hover { color: var(--sz-bordeaux); }
+
+.sku_wrapper, .posted_in, .tagged_as {
+    font-family: var(--sz-mono);
+    font-size: 0.74rem;
+    color: var(--sz-ink-soft);
+}
+
+/* Variantenauswahl */
+.woocommerce div.product form.cart .variations label {
+    font-family: var(--sz-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* =====================================================================
+   Kategorieseiten
+   ===================================================================== */
+
+.woocommerce-products-header__title,
+.woocommerce-loop-category__title {
+    font-family: var(--sz-display) !important;
+}
+
+.woocommerce .woocommerce-result-count,
+.woocommerce .woocommerce-ordering select {
+    font-family: var(--sz-mono);
+    font-size: 0.76rem;
+    color: var(--sz-ink-soft);
+}
+
+/* =====================================================================
+   Formulare, Warenkorb, Kasse
+   ===================================================================== */
+
+input[type="text"], input[type="email"], input[type="tel"],
+input[type="password"], input[type="number"], select, textarea,
+.wc-block-components-text-input input {
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border) !important;
+    font-family: var(--sz-body);
+    padding: 0.65em 0.8em;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--sz-bordeaux) !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(200, 56, 63, 0.14);
+}
+
+label,
+.wc-block-components-form .wc-block-components-text-input label {
+    font-family: var(--sz-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.woocommerce table.shop_table,
+.wc-block-components-order-summary {
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border);
+}
+
+.woocommerce table.shop_table th {
+    font-family: var(--sz-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.woocommerce-message, .woocommerce-info {
+    background: var(--sz-muted);
+    border-top-color: var(--sz-bordeaux);
+    color: var(--sz-ink);
+}
+
+.woocommerce-error { border-top-color: var(--sz-bordeaux); }
+
+/* =====================================================================
+   Fußbereich
+   ===================================================================== */
+
+.site-footer,
+.ast-small-footer {
+    background: var(--sz-muted);
+    border-top: 1px solid var(--sz-border);
+    font-family: var(--sz-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.04em;
+}
+
+/* =====================================================================
+   Mobil
+   ===================================================================== */
+
+@media (max-width: 768px) {
+    html { font-size: 16px; }
+
+    .woocommerce ul.products li.product .woocommerce-loop-product__title {
+        font-size: 0.95rem !important;
+        min-height: 2.5em;
+    }
+
+    .sapelza-var-qty,
+    .woocommerce ul.products li.product .quantity input.qty {
+        width: 3.2rem;
+    }
+}
+/* ---- Nachtrag: Kacheln und Typografie ---- */
+
+.woocommerce ul.products li.product .price {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Steuerzusatz in der Übersicht weglassen */
+.woocommerce ul.products li.product .price small,
+.woocommerce ul.products li.product .woocommerce-Price-taxLabel {
+    display: none;
+}
+
+/* Button einzeilig halten */
+.woocommerce ul.products li.product .button {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.04em;
+    padding: 0.75em 0.6em;
+    white-space: nowrap;
+}
+
+/* Bestellbereich mit fester Höhe – gleicht variable und einfache Produkte an */
+.woocommerce ul.products li.product form.cart,
+.woocommerce ul.products li.product .sapelza-var-form,
+.woocommerce ul.products li.product .sapelza-loop-cart {
+    min-height: 7.4rem;
+    align-content: flex-end;
+}
+
+/* Einfache Produkte: Platzhalter statt Auswahlfeld */
+.woocommerce ul.products li.product .sapelza-loop-cart::before {
+    content: "";
+    flex: 1 1 100%;
+    height: 2.35rem;
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+    font-size: 0.95rem !important;
+}
+
+.sapelza-var-select { font-size: 0.78rem; }
+
+
+/* =====================================================================
+   SAPELZA Shop — Teil 2: Lücken, die das Design brachen
+   ---------------------------------------------------------------------
+   Ans Ende der bestehenden style.css hängen. Nichts darin wird ersetzt;
+   die Datei schließt die Lücken, die auf sapelzashop.com das Design
+   brechen, und ergänzt die Bereiche, die bisher gar nicht abgedeckt sind:
+   Astras Farbvariablen, Konto, B2BKing, Block-Checkout, Dunkelmodus.
+   ===================================================================== */
+
+
+/* =====================================================================
+   1 · Astras Farbvariablen — die Hauptursache des Bruchs
+   ---------------------------------------------------------------------
+   Astra liefert weiterhin sein Vorgabeblau (#046bd2) aus und rendert
+   damit Links, Preise, Fokusringe und Knöpfe über die Sapelza-Farben
+   hinweg. Diese Variablen wurden bisher nirgends überschrieben.
+
+   Der doppelte Selektor :root:root ist Absicht: Astra schreibt seine
+   Werte inline in den <head>, dieselbe Spezifität wie ein einfaches
+   :root. Wer später steht, gewinnt — und das ist nicht verlässlich.
+   :root:root wiegt schwerer und gewinnt unabhängig von der Reihenfolge.
+   ===================================================================== */
+
+:root:root {
+    --ast-global-color-0: var(--sz-bordeaux);      /* Akzent: Links, Knöpfe */
+    --ast-global-color-1: #a72f35;                 /* Akzent gedrückt/hover */
+    --ast-global-color-2: var(--sz-ink);           /* Überschriften */
+    --ast-global-color-3: var(--sz-ink-soft);      /* Fließtext */
+    --ast-global-color-4: var(--sz-bg);            /* Seitengrund */
+    --ast-global-color-5: var(--sz-surface);       /* Karten */
+    --ast-global-color-6: var(--sz-muted);         /* gedämpfte Flächen */
+    --ast-global-color-7: var(--sz-ink);           /* Kopf/Fuß-Text */
+    --ast-global-color-8: var(--sz-border);        /* Linien */
+}
+
+
+/* =====================================================================
+   4 · Keine Gutscheine
+   ---------------------------------------------------------------------
+   Es gibt keine. Das Feld gehört auch nicht als leeres Versprechen in
+   den Warenkorb. Sichtbar entfernt hier, wirksam entfernt in
+   functions.php — CSS allein lässt das Formular im Quelltext stehen.
+   ===================================================================== */
+
+.woocommerce-cart .coupon,
+.woocommerce-checkout .checkout_coupon,
+.woocommerce-form-coupon-toggle,
+.wc-block-components-totals-coupon,
+.wp-block-woocommerce-checkout-order-summary-coupon-form-block { display: none !important; }
+
+
+/* =====================================================================
+   5 · Konto — bisher gar nicht abgedeckt
+   ---------------------------------------------------------------------
+   Der Bereich, in dem B2B-Kunden tatsächlich arbeiten. Astras Vorgabe
+   sind blaue Links in einer grauen Liste.
+   ===================================================================== */
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--sz-border);
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li {
+    margin: 0;
+    border-bottom: 1px solid var(--sz-border);
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li a {
+    display: block;
+    padding: 0.85rem 0;
+    font-family: var(--sz-body);
+    font-size: 0.82rem;
+    color: var(--sz-ink-soft);
+    text-decoration: none;
+    transition: padding-left 200ms ease, color 200ms ease;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li a:hover,
+.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a {
+    padding-left: 0.4rem;
+    color: var(--sz-bordeaux-text);
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a { font-weight: 600; }
+
+/* Bestellübersicht: Zahlen in Mono, damit Spalten stehen */
+.woocommerce-account .woocommerce-orders-table,
+.woocommerce-account .woocommerce-table--order-details {
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.woocommerce-account .woocommerce-orders-table td,
+.woocommerce-account .woocommerce-orders-table th {
+    border-bottom: 1px solid var(--sz-border);
+    padding: 0.9rem 1.1rem;
+}
+
+.woocommerce-account .woocommerce-orders-table__cell-order-number,
+.woocommerce-account .woocommerce-orders-table__cell-order-total,
+.woocommerce-account .woocommerce-orders-table__cell-order-date {
+    font-family: var(--sz-mono);
+    font-size: 0.76rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Der Zugang, über den bestellt wurde — von B2BKing als Subkonto geliefert */
+.woocommerce-account .sz-besteller {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--sz-mono);
+    font-size: 0.68rem;
+    color: var(--sz-ink-soft);
+}
+
+
+/* =====================================================================
+   6 · B2BKing — die Oberflächen, auf denen der Shop wirklich bedient wird
+   ---------------------------------------------------------------------
+   Schnellerfassung (Bulk Order Form) und die Zugänge im Betrieb kommen
+   sonst im Vorgabestil des Plugins.
+   ===================================================================== */
+
+.b2bking_bulkorder_container,
+.b2bking_account_subaccounts_container,
+.b2bking_offers_container {
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    padding: 1.6rem;
+}
+
+.b2bking_bulkorder_container input[type="text"],
+.b2bking_bulkorder_container input[type="number"] {
+    font-family: var(--sz-mono);
+    font-size: 0.86rem;
+    background: var(--sz-bg);
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    padding: 0.7rem 0.9rem;
+}
+
+.b2bking_bulkorder_container input:focus-visible,
+.woocommerce form .form-row input:focus-visible,
+.woocommerce-account input:focus-visible {
+    outline: 2px solid var(--sz-bordeaux);
+    outline-offset: 2px;
+}
+
+.b2bking_bulkorder_table th {
+    font-family: var(--sz-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    font-weight: 600;
+}
+
+.b2bking_bulkorder_add_row,
+.b2bking_bulkorder_submit {
+    border-radius: 999px;
+    font-family: var(--sz-body);
+    font-weight: 600;
+}
+
+
+/* =====================================================================
+   7 · Block-Warenkorb und Block-Kasse
+   ---------------------------------------------------------------------
+   Falls die Blockfassung im Einsatz bleibt: sie bringt ihre eigenen
+   Variablen mit und ignoriert alles, was für die klassischen Vorlagen
+   gilt. Empfehlung steht in der Übergabe — klassisch ist deutlich
+   billiger zu gestalten. Bis dahin wenigstens die Farben.
+   ===================================================================== */
+
+.wc-block-components-button:not(.is-link) {
+    background-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.wc-block-components-totals-item__value,
+.wc-block-formatted-money-amount {
+    font-family: var(--sz-mono);
+    font-variant-numeric: tabular-nums;
+}
+
+.wc-block-components-product-name { font-family: var(--sz-display); }
+
+.wc-block-components-title,
+.wp-block-woocommerce-checkout .wc-block-components-checkout-step__title {
+    font-family: var(--sz-display);
+    letter-spacing: -0.02em;
+}
+
+
+/* =====================================================================
+   8 · Zustellung statt Versand
+   ---------------------------------------------------------------------
+   Es gibt nur die Zustellung im Hochpustertal: keine Abholung, kein
+   Versand darüber hinaus. Solange nur eine Zone besteht, ist die
+   Auswahl eine Zeile ohne Entscheidung — sie wird zur Angabe.
+   ===================================================================== */
+
+.woocommerce-shipping-totals .woocommerce-shipping-methods li input,
+.woocommerce-shipping-totals .woocommerce-shipping-methods li label::before { display: none; }
+
+.woocommerce-shipping-totals .woocommerce-shipping-destination { color: var(--sz-ink-soft); }
+
+/* Der Wunschtermin sitzt in der Kasse, nicht im Warenkorb */
+.sz-wunschtermin {
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-muted);
+    padding: 1.4rem;
+    margin-block: 1.5rem;
+}
+
+.sz-wunschtermin legend {
+    font-family: var(--sz-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-wunschtermin .sz-tag {
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-bg);
+    padding: 0.6rem 0.9rem;
+    font-family: var(--sz-mono);
+    font-size: 0.74rem;
+    cursor: pointer;
+}
+
+.sz-wunschtermin .sz-tag[aria-pressed="true"] {
+    border-color: var(--sz-bordeaux);
+    background: var(--sz-bordeaux-soft);
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-wunschtermin .sz-tag[disabled] { opacity: 0.35; cursor: not-allowed; }
+
+
+/* =====================================================================
+   9 · Kleinigkeiten, die überall durchschlagen
+   ===================================================================== */
+
+/* Preise überall in Mono mit gleichen Ziffernbreiten */
+.woocommerce .price,
+.woocommerce-Price-amount,
+.b2bking_price_tier_price {
+    font-family: var(--sz-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+/* Fokus sichtbar, in Bordeaux statt Astra-Blau */
+a:focus-visible,
+button:focus-visible,
+.woocommerce a.button:focus-visible {
+    outline: 2px solid var(--sz-bordeaux);
+    outline-offset: 3px;
+}
+
+/* Jetpack setzt eigene Grautöne in Formularen */
+.jetpack-blogging-prompts, .jp-carousel-wrap { color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+
+/* =====================================================================
+   10 · Bausteine des Child-Themes
+   ---------------------------------------------------------------------
+   Was die PHP-Dateien unter inc/ ausgeben: der Hell-Dunkel-Umschalter,
+   die Liste der bezogenen Artikel, der Zustellhinweis.
+   ===================================================================== */
+
+.sz-modus {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--sz-border);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    line-height: 1;
+    font-size: 1rem;
+}
+
+.sz-modus:hover { border-color: var(--sz-bordeaux); color: var(--sz-bordeaux-text); }
+
+/* Es wird immer nur das Zeichen der jeweils anderen Fassung gezeigt. */
+html[data-sz="dark"] .sz-modus-hell,
+html:not([data-sz="dark"]) .sz-modus-dunkel { display: none; }
+
+.sz-zustellhinweis {
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-hinweis {
+    border-left: 2px solid var(--sz-bordeaux);
+    padding-left: 1.1rem;
+    color: var(--sz-ink-soft);
+}
+
+/* --- Meine Artikel ------------------------------------------------- */
+
+.sz-meine-artikel {
+    display: grid;
+    gap: 1px;
+    background: var(--sz-border);
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    overflow: hidden;
+}
+
+.sz-artikelzeile {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) 1fr 1fr auto auto;
+    gap: 1.2rem;
+    align-items: center;
+    padding: 0.9rem 1.2rem;
+    background: var(--sz-bg);
+}
+
+.sz-artikelname {
+    font-size: 0.9rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.sz-artikelname:hover { color: var(--sz-bordeaux-text); }
+
+.sz-artikelnummer,
+.sz-artikelmeta {
+    display: block;
+    font-family: var(--sz-mono);
+    font-size: 0.68rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-artikelpreis {
+    font-family: var(--sz-mono);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.sz-artikelzeile .button {
+    white-space: nowrap;
+    padding-inline: 1.2rem;
+}
+
+@media (max-width: 782px) {
+    .sz-artikelzeile {
+        grid-template-columns: 1fr auto;
+        row-gap: 0.35rem;
+    }
+    .sz-artikelname { grid-column: 1 / -1; }
+}
+
+/* =====================================================================
+   11 · Wunschtermin in der Kasse
+   ---------------------------------------------------------------------
+   Ans Ende der style.css anfügen. Die Grundformen .sz-wunschtermin und
+   .sz-tag stehen weiter oben in Abschnitt 8; hier kommt dazu, was die
+   Tageskacheln brauchen.
+   ===================================================================== */
+
+.sz-wunschtermin {
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-muted);
+    padding: 1.3rem;
+    margin-block: 1.4rem;
+}
+
+.sz-wunschtermin-lead {
+    margin: 0.5rem 0 1rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--sz-ink-soft);
+}
+
+/* Die Tage stehen in einer Reihe, die umbricht statt zu quetschen. */
+.sz-wunschtermin-tage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sz-wunschtermin .sz-tag {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 3.6rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-bg);
+    color: inherit;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
+}
+
+.sz-wunschtermin .sz-tag:hover { border-color: var(--sz-bordeaux); }
+
+/* Der gewählte Tag trägt aria-pressed — das Aussehen hängt daran, nicht
+   an einer zusätzlichen Klasse. So können die beiden nicht auseinander-
+   laufen, und Screenreader melden dasselbe, was das Auge sieht. */
+.sz-wunschtermin .sz-tag[aria-pressed="true"] {
+    border-color: var(--sz-bordeaux);
+    background: var(--sz-bordeaux-soft);
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-tag-wochentag {
+    font-family: var(--sz-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-wunschtermin .sz-tag[aria-pressed="true"] .sz-tag-wochentag { color: inherit; }
+
+.sz-tag-datum {
+    font-family: var(--sz-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.86rem;
+}
+
+@media (max-width: 480px) {
+    .sz-wunschtermin-tage { gap: 0.4rem; }
+    .sz-wunschtermin .sz-tag { min-width: 3.1rem; padding: 0.45rem 0.5rem; }
+}
+
+
+/* =====================================================================
+   12 · Block-Kasse
+   ---------------------------------------------------------------------
+   Weiter oben steht eine nackte label-Regel, die jede Beschriftung der
+   Seite in Versalien und Mono setzt. Für ein Feldetikett über einem
+   Eingabefeld ist das richtig; für den Satz neben einem Kontrollkästchen
+   ist es Geschrei. Hier wird das zurückgenommen — gezielt, statt die
+   ältere Regel umzuschreiben, damit nichts anderes kippt.
+   ===================================================================== */
+
+.wc-block-components-checkbox__label,
+.wc-block-components-radio-control__label,
+.wc-block-components-radio-control__description,
+.wc-block-components-order-summary-item__description,
+.wc-block-components-totals-item__label,
+.wc-block-components-address-card,
+.wc-block-components-address-card *,
+.wc-block-checkout__terms label,
+.wc-block-checkout__add-note label {
+    font-family: var(--sz-body);
+    font-size: 0.9rem;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--sz-ink);
+}
+
+.wc-block-components-radio-control__description,
+.wc-block-components-order-summary-item__description {
+    font-size: 0.82rem;
+    color: var(--sz-ink-soft);
+}
+
+/* Die schwebenden Feldetiketten bleiben klein und ruhig. */
+.wc-block-components-text-input label {
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+/* Abschnittsüberschriften in der Anzeigeschrift, wie auf der Vorlage. */
+.wc-block-components-title,
+.wp-block-woocommerce-checkout .wc-block-components-checkout-step__title {
+    font-family: var(--sz-display);
+    font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+    letter-spacing: -0.02em;
+    color: var(--sz-ink);
+}
+
+/* Versand und Zahlung: Haarlinien-Karten statt Kästen mit Schatten. */
+.wc-block-components-radio-control-accordion-option,
+.wc-block-components-radio-control__option {
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.5rem;
+    transition: border-color 200ms ease, background 200ms ease;
+}
+
+.wc-block-components-radio-control__option:hover {
+    border-color: var(--sz-border-strong);
+}
+
+.wc-block-components-radio-control-accordion-option:has(input:checked),
+.wc-block-components-radio-control__option--checked-option-highlighted,
+.wc-block-components-radio-control__option:has(input:checked) {
+    border-color: var(--sz-bordeaux);
+    background: var(--sz-bordeaux-soft);
+}
+
+/* Eingabefelder in Hausform: eckig, ruhig, mit klarem Rahmen. */
+.wc-block-components-text-input input,
+.wc-block-components-textarea {
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-bg);
+    font-family: var(--sz-body);
+}
+
+/* Bestellübersicht: die Beträge in Mono, damit die Spalte steht. */
+.wc-block-components-order-summary .wc-block-components-product-name {
+    font-family: var(--sz-display);
+    font-size: 1rem;
+}
+
+.wc-block-components-totals-item__value,
+.wc-block-formatted-money-amount,
+.wc-block-components-product-price {
+    font-family: var(--sz-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+    font-size: 1.5rem;
+}
+
+/* Der Werbe-Haken gehört nicht auf eine B2B-Kasse. Er lässt sich auch
+   im Seiteneditor aus dem Block entfernen; bis dahin liegt er hier still.
+   Wird er entfernt, kann diese Regel raus. */
+.wc-block-checkout__marketing { display: none; }
+
+/* Fehlende Artikelbilder sollen nicht als kaputtes Symbol dastehen. */
+.wc-block-components-order-summary-item__image img[src=""],
+.wc-block-components-order-summary-item__image img:not([src]) { visibility: hidden; }
