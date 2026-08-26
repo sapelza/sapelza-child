@@ -82,12 +82,50 @@ function sz_abteilungen_gesamt(): int
  */
 function sz_marken_anzahl(): int
 {
+    $taxonomie = sz_marken_taxonomie();
+    if ($taxonomie === '') return 0;
+
+    $anzahl = wp_count_terms(['taxonomy' => $taxonomie, 'hide_empty' => true]);
+    return is_wp_error($anzahl) ? 0 : (int) $anzahl;
+}
+
+/**
+ * Welche Markentaxonomie dieser Shop führt, oder ''.
+ *
+ * Drei Schreibweisen sind im Umlauf: WooCommerce ab 9.6 bringt
+ * product_brand mit, ältere Installationen nutzen ein Attribut pa_marke,
+ * das Plugin „Perfect Brands“ setzt pwb-brand. Geprüft wird in dieser
+ * Reihenfolge; die erste gefüllte gewinnt.
+ */
+function sz_marken_taxonomie(): string
+{
     foreach (['product_brand', 'pa_marke', 'pwb-brand'] as $taxonomie) {
         if (!taxonomy_exists($taxonomie)) continue;
         $anzahl = wp_count_terms(['taxonomy' => $taxonomie, 'hide_empty' => true]);
-        if (!is_wp_error($anzahl) && (int) $anzahl > 0) return (int) $anzahl;
+        if (!is_wp_error($anzahl) && (int) $anzahl > 0) return $taxonomie;
     }
-    return 0;
+    return '';
+}
+
+/**
+ * Die meistgeführten Marken, höchstens $grenze Stück.
+ *
+ * @return WP_Term[] Leer, wenn dieser Shop keine Marken führt.
+ */
+function sz_marken_liste(int $grenze = 24): array
+{
+    $taxonomie = sz_marken_taxonomie();
+    if ($taxonomie === '') return [];
+
+    $begriffe = get_terms([
+        'taxonomy'   => $taxonomie,
+        'hide_empty' => true,
+        'orderby'    => 'count',
+        'order'      => 'DESC',
+        'number'     => max(1, $grenze),
+    ]);
+
+    return is_wp_error($begriffe) ? [] : $begriffe;
 }
 
 /**

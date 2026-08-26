@@ -17,7 +17,7 @@ get_header();
 ?>
 <main id="primary" class="sz-start" role="main">
     <?php
-    foreach (['hero', 'zugang', 'bestellwege', 'sortiment', 'tour'] as $teil) {
+    foreach (['hero', 'zugang', 'bestellwege', 'sortiment', 'tour', 'partner', 'marken'] as $teil) {
         $pfad = get_stylesheet_directory() . '/teile/' . $teil . '.php';
         if (file_exists($pfad)) include $pfad;
     }

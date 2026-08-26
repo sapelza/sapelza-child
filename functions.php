@@ -108,10 +108,15 @@ function sz_theme_bereich(): string
 add_action('wp_enqueue_scripts', function () {
     if (!is_page_template('page-startseite.php')) return;
 
-    wp_enqueue_style(
-        'sapelza-startseite',
-        get_stylesheet_directory_uri() . '/css/startseite.css',
-        ['sapelza-child'],
-        wp_get_theme()->get('Version')
-    );
+    $fassung = wp_get_theme()->get('Version');
+    $pfad    = get_stylesheet_directory_uri();
+
+    wp_enqueue_style('sapelza-startseite', $pfad . '/css/startseite.css', ['sapelza-child'], $fassung);
+    wp_enqueue_style('sapelza-abschnitte', $pfad . '/css/abschnitte.css', ['sapelza-startseite'], $fassung);
+
+    /*
+     * Im Fuss und ohne Abhaengigkeit: das Skript braucht weder jQuery noch
+     * sonst etwas, und im Kopf wuerde es das Zeichnen der Seite aufhalten.
+     */
+    wp_enqueue_script('sapelza-startseite', $pfad . '/js/startseite.js', [], $fassung, true);
 }, 30);

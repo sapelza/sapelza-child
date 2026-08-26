@@ -1,0 +1,637 @@
+/*
+ * Startseite — die Kapitel 01 bis 06.
+ *
+ * Getrennt von startseite.css, das die Idiome, den Hero und das Sortiment
+ * trägt. Zwei überschaubare Dateien statt einer, die niemand mehr liest.
+ *
+ * Durchgehend var(--sz-*): nur diese Token kippen unter
+ * html[data-sz="dark"] mit.
+ */
+
+/* ===================================================================
+   Kapitel — der gemeinsame Rahmen
+   =================================================================== */
+
+.sz-kapitel {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(5rem, 10vh, 8rem);
+}
+
+/* Die Bordeaux-Haarlinie auf der Kapitelgrenze, zu beiden Rändern
+   auslaufend. Ohne sie stoßen die Flächen hart aneinander. */
+.sz-kapitel + .sz-kapitel::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent,
+                color-mix(in srgb, var(--sz-bordeaux) 55%, transparent) 22%,
+                color-mix(in srgb, var(--sz-bordeaux) 55%, transparent) 78%, transparent);
+}
+
+/* Kapitelmarke: Mono-Nummer, Haarlinie, Mono-Kicker. Trägt den Rhythmus
+   der ganzen Seite — die Grundlinien müssen fluchten. */
+.sz-kapitelmarke {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    margin: 0 0 2.5rem;
+}
+
+.sz-kapitelmarke__nr {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-kapitelmarke .hairline { flex: 1; }
+
+.sz-kapitelmarke__kicker {
+    font-size: 0.7rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-kapitelmarke--hell .sz-kapitelmarke__kicker { color: color-mix(in srgb, var(--sz-bg) 70%, transparent); }
+.sz-kapitelmarke--hell .hairline { background: color-mix(in srgb, var(--sz-bg) 22%, transparent); }
+
+/* Auftauchen beim Hereinscrollen */
+.taucht-auf {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
+                transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.taucht-auf.ist-da { opacity: 1; transform: none; }
+
+/* ===================================================================
+   01 Zugang
+   =================================================================== */
+
+.sz-zugang { background: var(--sz-muted); }
+
+.sz-zugang__raster { display: grid; gap: 3.5rem; }
+
+@media (min-width: 1024px) {
+    .sz-zugang__raster { grid-template-columns: 0.92fr 1.08fr; gap: 6rem; }
+}
+
+.sz-zugang__titel {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 4.4rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+
+.sz-zugang__lead { margin: 1.25rem 0 0; max-width: 30rem; color: var(--sz-ink-soft); }
+
+.sz-zugang__karte {
+    position: relative;
+    overflow: hidden;
+    margin-top: 2.25rem;
+    max-width: 27rem;
+    padding: 1.75rem;
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+}
+
+@media (min-width: 768px) { .sz-zugang__karte { padding: 2.25rem; } }
+
+/* Die kurze Bordeaux-Kante oben links — das Kartendetail, das die
+   Fläche zu einem gesetzten Feld macht statt zu einem losen Formular. */
+.sz-zugang__kante {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 4rem;
+    background: var(--sz-bordeaux);
+}
+
+/* wp_login_form bringt eigene Auszeichnung mit — hier wird sie nur
+   gestaltet, nicht ersetzt. */
+.sz-zugang__karte .login-username,
+.sz-zugang__karte .login-password { margin-bottom: 1.5rem; }
+
+.sz-zugang__karte label {
+    display: block;
+    font-family: var(--sz-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    margin-bottom: 0.6rem;
+}
+
+.sz-zugang__karte input[type="text"],
+.sz-zugang__karte input[type="password"] {
+    width: 100%;
+    padding: 1rem;
+    font-size: 0.95rem;
+    background: var(--sz-bg);
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    color: var(--sz-ink);
+}
+
+.sz-zugang__karte .login-remember label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.12em;
+    text-transform: none;
+}
+
+.sz-zugang__karte .login-submit input[type="submit"] {
+    margin-top: 0.5rem;
+    width: 100%;
+    padding: 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 0;
+    cursor: pointer;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    border-radius: var(--sz-radius);
+}
+
+.sz-zugang__fuss {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.78rem;
+}
+
+.sz-zugang__fuss a { color: var(--sz-bordeaux-text); }
+.sz-zugang__sicher { font-size: 0.62rem; color: var(--sz-ink-soft); }
+.sz-zugang__angemeldet { margin: 0 0 1.25rem; }
+
+.sz-zugang__neulead { margin: 1.5rem 0 0; max-width: 32rem; font-size: 1.0625rem; line-height: 1.65; }
+
+.sz-schritte { list-style: none; margin: 2.5rem 0 2rem; padding: 0; max-width: 32rem; }
+
+.sz-schritt {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    border-top: 1px solid var(--sz-border-strong);
+    padding-block: 1.25rem;
+}
+
+.sz-schritt__nr { padding-top: 0.3rem; font-size: 0.68rem; color: var(--sz-bordeaux-text); }
+.sz-schritt__titel { margin: 0; font-size: 1.15rem; line-height: 1.2; }
+.sz-schritt__text { margin: 0.5rem 0 0; font-size: 0.85rem; line-height: 1.6; color: var(--sz-ink-soft); }
+
+@media (min-width: 768px) { .sz-schritt__titel { font-size: 1.3rem; } }
+
+.sz-zugang__abschluss { max-width: 32rem; border-top: 1px solid var(--sz-border-strong); padding-top: 2rem; }
+.sz-zugang__fein { margin: 1.25rem 0 0; font-size: 0.78rem; line-height: 1.6; color: var(--sz-ink-soft); }
+
+/* Knöpfe */
+.sz-knopf {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 1rem 2rem;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.sz-knopf--voll {
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    border: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.sz-knopf--umriss {
+    background: transparent;
+    color: var(--sz-ink);
+    border: 1px solid var(--sz-border-strong);
+}
+
+/* ===================================================================
+   02 Bestellwege
+   =================================================================== */
+
+.sz-wege__kopf { display: grid; gap: 2rem; margin-top: 2.5rem; }
+
+@media (min-width: 1024px) {
+    .sz-wege__kopf { grid-template-columns: 1.25fr 0.75fr; align-items: end; }
+}
+
+.sz-wege__titel {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5.8vw, 5.8rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0;
+    max-width: 18ch;
+}
+
+.sz-wege__lead { margin: 0; max-width: 36rem; line-height: 1.7; color: var(--sz-ink-soft); }
+
+.sz-wege__raster {
+    list-style: none;
+    margin: 3.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    border-left: 1px solid var(--sz-border-strong);
+    border-top: 1px solid var(--sz-border-strong);
+}
+
+@media (min-width: 768px) { .sz-wege__raster { grid-template-columns: repeat(3, 1fr); } }
+
+.sz-wege__zelle {
+    border-right: 1px solid var(--sz-border-strong);
+    border-bottom: 1px solid var(--sz-border-strong);
+}
+
+.sz-weg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 360px;
+    padding: 1.5rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+}
+
+@media (min-width: 768px) { .sz-weg { min-height: 460px; padding: 2rem; } }
+
+.sz-weg__licht {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 700ms ease;
+    background: radial-gradient(circle at 50% 100%,
+                color-mix(in srgb, var(--sz-bordeaux) 26%, transparent), transparent 64%);
+}
+
+.sz-weg:hover .sz-weg__licht,
+.sz-weg:focus-visible .sz-weg__licht { opacity: 1; }
+
+.sz-weg > *:not(.sz-weg__licht) { position: relative; z-index: 1; }
+
+.sz-weg__kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+
+.sz-weg__index {
+    font-size: 0.5625rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-weg__punkt {
+    margin-top: 0.125rem;
+    width: 0.375rem;
+    height: 0.375rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--sz-bordeaux);
+    transition: background 300ms ease;
+}
+
+.sz-weg:hover .sz-weg__punkt { background: var(--sz-bordeaux); }
+
+.sz-weg__titel { margin: 1.5rem 0 0; font-size: 1.45rem; line-height: 1.04; }
+.sz-weg__text { margin: 1rem 0 0; font-size: 0.85rem; line-height: 1.6; color: var(--sz-ink-soft); }
+
+@media (min-width: 768px) { .sz-weg__titel { margin-top: 2rem; font-size: 2rem; } }
+
+.sz-weg__buehne {
+    position: relative;
+    margin-top: auto;
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding-block: 2rem;
+}
+
+.sz-weg__halo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    aspect-ratio: 1;
+    width: 58%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    transition: width 700ms ease;
+    background: radial-gradient(circle,
+                color-mix(in srgb, var(--sz-bordeaux) 14%, transparent), transparent 68%);
+}
+
+.sz-weg:hover .sz-weg__halo { width: 66%; }
+
+.sz-weg__symbol {
+    position: relative;
+    width: 100%;
+    max-width: 112px;
+    height: auto;
+    color: var(--sz-bordeaux);
+    opacity: 0.72;
+    transition: transform 700ms ease;
+}
+
+@media (min-width: 768px) { .sz-weg__symbol { max-width: 140px; } }
+
+.sz-weg:hover .sz-weg__symbol { transform: scale(1.07); }
+
+.sz-weg__strich {
+    display: block;
+    height: 1px;
+    width: 2.5rem;
+    background: var(--sz-bordeaux);
+    transition: width 500ms ease;
+}
+
+.sz-weg:hover .sz-weg__strich { width: 6rem; }
+
+.sz-weg__mehr {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    color: var(--sz-bordeaux-text);
+    transition: transform 500ms ease;
+}
+
+.sz-weg:hover .sz-weg__mehr { transform: translateX(4px); }
+
+/* ===================================================================
+   04 Die Tour — invertiertes Kapitel als Rhythmuswechsel
+   =================================================================== */
+
+.sz-tour { background: var(--sz-ink); color: var(--sz-bg); }
+.sz-tour .sz-kapitelmarke__nr { color: color-mix(in srgb, var(--sz-bordeaux) 78%, var(--sz-bg)); }
+
+.sz-tour__kopf { display: grid; gap: 2rem; margin-top: 2.5rem; }
+
+@media (min-width: 1024px) {
+    .sz-tour__kopf { grid-template-columns: 1fr 1fr; align-items: end; }
+}
+
+.sz-tour__titel {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4.4vw, 3.8rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    margin: 0;
+    max-width: 15ch;
+}
+
+.sz-tour__lead { margin: 0; line-height: 1.7; color: color-mix(in srgb, var(--sz-bg) 68%, transparent); }
+
+.sz-tour__karte { position: relative; margin-top: 3.5rem; }
+.sz-tour__svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.sz-tour__fluss {
+    fill: none;
+    stroke: color-mix(in srgb, var(--sz-bg) 14%, transparent);
+    stroke-width: 1.5;
+}
+
+.sz-tour__stich {
+    fill: none;
+    stroke: color-mix(in srgb, var(--sz-bg) 22%, transparent);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+}
+
+.sz-tour__achse {
+    fill: none;
+    stroke: color-mix(in srgb, var(--sz-bg) 26%, transparent);
+    stroke-width: 2;
+    stroke-dasharray: 6 6;
+    stroke-linejoin: round;
+}
+
+.sz-tour__befahren {
+    fill: none;
+    stroke: var(--sz-bordeaux);
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.sz-tour__ort circle { fill: color-mix(in srgb, var(--sz-bg) 82%, transparent); }
+.sz-tour__lager circle { fill: var(--sz-bordeaux); }
+
+.sz-tour__ort text,
+.sz-tour__lager text {
+    font-family: var(--sz-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    fill: color-mix(in srgb, var(--sz-bg) 72%, transparent);
+}
+
+.sz-tour__lager text { fill: var(--sz-bg); font-size: 11px; letter-spacing: 0.18em; }
+
+.sz-tour__porter {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8%;
+    min-width: 54px;
+    height: auto;
+    transform-origin: 50% 78%;
+    will-change: transform;
+    pointer-events: none;
+}
+
+.sz-tour__zusagen {
+    list-style: none;
+    margin: 3.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) { .sz-tour__zusagen { grid-template-columns: repeat(3, 1fr); gap: 3rem; } }
+
+.sz-zusage {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+                transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    border-top: 1px solid color-mix(in srgb, var(--sz-bg) 20%, transparent);
+    padding-top: 1.5rem;
+}
+
+.sz-zusage.ist-da { opacity: 1; transform: none; }
+
+.sz-zusage__nr {
+    font-size: 0.66rem;
+    letter-spacing: 0.24em;
+    color: color-mix(in srgb, var(--sz-bordeaux) 80%, var(--sz-bg));
+}
+
+.sz-zusage__titel { margin: 0.4rem 0 0; font-size: 1.1rem; line-height: 1.2; }
+
+.sz-zusage__text {
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--sz-bg) 62%, transparent);
+}
+
+@media (min-width: 768px) { .sz-zusage__titel { font-size: 1.3rem; } }
+
+/* ===================================================================
+   05 Partnerbetriebe
+   =================================================================== */
+
+.sz-partner__kopf { display: grid; gap: 2rem; margin-top: 2.5rem; }
+
+@media (min-width: 1024px) {
+    .sz-partner__kopf { grid-template-columns: 1.25fr 0.75fr; align-items: end; }
+}
+
+.sz-partner__titel {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4.6vw, 4rem);
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    margin: 0;
+    max-width: 20ch;
+}
+
+.sz-partner__lead { margin: 0; line-height: 1.7; color: var(--sz-ink-soft); }
+
+.sz-partner__punkte {
+    list-style: none;
+    margin: 3.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 2.5rem;
+}
+
+@media (min-width: 768px) { .sz-partner__punkte { grid-template-columns: repeat(3, 1fr); } }
+
+.sz-partner__punkt { border-top: 1px solid var(--sz-border-strong); padding-top: 1.5rem; }
+.sz-partner__nr { font-size: 0.66rem; letter-spacing: 0.24em; color: var(--sz-bordeaux-text); }
+.sz-partner__ptitel { margin: 0.4rem 0 0; font-size: 1.3rem; line-height: 1.2; }
+.sz-partner__ptext { margin: 0.75rem 0 0; font-size: 0.88rem; line-height: 1.65; color: var(--sz-ink-soft); }
+
+/* ===================================================================
+   06 Marken
+   =================================================================== */
+
+.sz-marken { background: var(--sz-muted); }
+
+.sz-marken__titel {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4.6vw, 4rem);
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    margin: 2.5rem 0 0;
+}
+
+.sz-marken__raster {
+    list-style: none;
+    margin: 3rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-left: 1px solid var(--sz-border);
+    border-top: 1px solid var(--sz-border);
+}
+
+@media (min-width: 640px)  { .sz-marken__raster { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .sz-marken__raster { grid-template-columns: repeat(6, 1fr); } }
+
+.sz-marken__zelle { border-right: 1px solid var(--sz-border); border-bottom: 1px solid var(--sz-border); }
+
+.sz-marke {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1.25rem 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 300ms ease;
+}
+
+.sz-marke:hover { background: var(--sz-bordeaux-soft); }
+.sz-marke__name { font-size: 0.9rem; }
+.sz-marke__zahl { font-size: 0.62rem; color: var(--sz-ink-soft); }
+
+/* ===================================================================
+   Hero — die Mindmap-Einblendung
+   =================================================================== */
+
+.sz-mindmap {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 480ms ease;
+}
+
+.sz-mindmap.ist-offen { opacity: 1; }
+.sz-mindmap__svg { width: 100%; height: 100%; overflow: visible; }
+
+/* Die Einblendung liegt im Vordergrund, nicht im Hintergrund. Damit sie
+   lesbar bleibt, tritt stattdessen der übrige Text zurück. */
+.sz-hero.ist-verschleiert .wrap > *:not(.statement) {
+    opacity: 0.35;
+    transition: opacity 480ms ease;
+}
+
+.sz-mindmap__ast {
+    fill: none;
+    stroke: color-mix(in srgb, var(--sz-bordeaux) 55%, transparent);
+    stroke-width: 1.25;
+    opacity: 0;
+    animation: sz-ast 620ms cubic-bezier(0.22, 1, 0.36, 1) var(--verzug, 0ms) forwards;
+}
+
+.sz-mindmap__knoten {
+    fill: var(--sz-bordeaux);
+    opacity: 0;
+    animation: sz-pop 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--verzug, 0ms) forwards;
+}
+
+.sz-mindmap__wort {
+    font-family: var(--sz-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    fill: var(--sz-ink);
+    opacity: 0;
+    animation: sz-pop 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--verzug, 0ms) forwards;
+}
+
+@keyframes sz-ast { to { opacity: 0.9; } }
+@keyframes sz-pop { to { opacity: 0.95; } }
+
+/* ===================================================================
+   Rücksicht auf reduzierte Bewegung
+   =================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .taucht-auf { opacity: 1; transform: none; transition: none; }
+    .sz-zusage  { opacity: 1; transform: none; transition: none; }
+    .sz-mindmap { display: none; }
+}
