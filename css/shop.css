@@ -517,3 +517,216 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     letter-spacing: 0.18em;
     text-transform: uppercase;
 }
+
+/* ===================================================================
+   Warenkorb
+   =================================================================== */
+
+.woocommerce-cart .entry-title,
+.woocommerce-cart .page-title {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+    margin-bottom: 2rem;
+}
+
+/* Die Summenkarte rechts. */
+.woocommerce-cart .cart_totals,
+.wc-block-cart__sidebar {
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    padding: 1.75rem;
+}
+
+.woocommerce-cart .cart_totals h2,
+.wc-block-cart__totals-title {
+    font-family: var(--sz-display) !important;
+    font-weight: 400 !important;
+    font-size: 1.5rem !important;
+    letter-spacing: -0.01em;
+    text-transform: none !important;
+    margin-bottom: 1.25rem;
+}
+
+.woocommerce-cart .cart_totals table,
+.woocommerce-cart .cart_totals th,
+.woocommerce-cart .cart_totals td { border: 0 !important; }
+
+.woocommerce-cart .cart_totals .order-total td,
+.wc-block-components-totals-footer-item {
+    font-family: var(--sz-mono);
+    font-size: 1.35rem;
+}
+
+/* ===================================================================
+   Wunschtermin
+   =================================================================== */
+
+.sz-termin {
+    margin-top: 3rem;
+    padding: 2rem 1.5rem 2.25rem;
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+}
+
+@media (min-width: 768px) { .sz-termin { padding: 2.5rem 2.5rem 2.75rem; } }
+
+.sz-termin__kopf {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sz-termin__titel {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+    letter-spacing: -0.02em;
+}
+
+.sz-termin__merk {
+    font-size: 0.66rem;
+    letter-spacing: 0.2em;
+    color: var(--sz-ink-soft);
+}
+
+.sz-termin__lead {
+    margin: 0.9rem 0 0;
+    max-width: 62ch;
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+}
+
+/* --- Die Tageskacheln ---------------------------------------------
+   Waagrecht scrollbar statt umgebrochen: zwölf Tage in zwei Reihen
+   lesen sich wie eine Tabelle, in einer Reihe wie ein Kalender. */
+
+.sz-termin__tage {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+}
+
+.sz-tag {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    min-width: 5.5rem;
+    padding: 0.85rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    text-align: left;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-bg);
+    color: var(--sz-ink);
+    cursor: pointer;
+    line-height: 1.2;
+    min-height: 0;
+    transition: border-color 200ms ease, background 200ms ease;
+}
+
+.sz-tag:hover:not(:disabled) { border-color: var(--sz-bordeaux); background: var(--sz-bg); }
+
+.sz-tag[aria-pressed="true"] {
+    border-color: var(--sz-bordeaux);
+    background: var(--sz-bordeaux-soft);
+}
+
+/* Geschlossene Tage bleiben sichtbar, aber deutlich zurückgenommen —
+   wer den Montag gar nicht fände, hielte es für einen Fehler. */
+.sz-tag.ist-zu {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--sz-muted);
+}
+
+.sz-tag__wtag { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sz-ink-soft); }
+.sz-tag__datum { font-size: 1.05rem; letter-spacing: 0.02em; }
+.sz-tag__frei { font-size: 0.62rem; color: var(--sz-ink-soft); }
+
+.sz-tag[aria-pressed="true"] .sz-tag__frei { color: var(--sz-bordeaux-text); }
+
+/* --- Zeitfenster --------------------------------------------------- */
+
+.sz-termin__label {
+    margin: 1.75rem 0 0.75rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-termin__fenster { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.sz-fenster {
+    box-sizing: border-box;
+    padding: 0.6rem 1.2rem;
+    min-height: 0;
+    min-width: 0;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    background: var(--sz-bg);
+    color: var(--sz-ink);
+    font-family: var(--sz-mono);
+    font-size: 0.78rem;
+    cursor: pointer;
+    line-height: 1.4;
+    transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
+}
+
+.sz-fenster:hover { border-color: var(--sz-bordeaux); }
+
+.sz-fenster[aria-pressed="true"] {
+    background: var(--sz-bordeaux);
+    border-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+/* --- Das Ergebnis --------------------------------------------------- */
+
+.sz-termin__ergebnis {
+    margin: 1.75rem 0 0;
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--sz-bordeaux);
+    font-family: var(--sz-display);
+    font-size: 1.1rem;
+}
+
+.sz-termin__fein {
+    margin: 0.75rem 0 0;
+    font-size: 0.72rem;
+    color: var(--sz-ink-soft);
+}
+
+/* --- In der Kasse ---------------------------------------------------- */
+
+.sz-termin__kasse {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin: 1.25rem 0;
+    padding: 0.9rem 1.1rem;
+    border-left: 2px solid var(--sz-bordeaux);
+    background: var(--sz-muted);
+}
+
+.sz-termin__kasse .sz-termin__label { margin: 0; flex-basis: 100%; }
+.sz-termin__kasse strong { font-family: var(--sz-display); font-weight: 400; font-size: 1.05rem; }
+.sz-termin__kasse .ist-fehlend { color: var(--sz-bordeaux-text); }
+.sz-termin__kasse a { font-size: 0.8rem; color: var(--sz-bordeaux-text); }
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-tag, .sz-fenster { transition: none; }
+}
