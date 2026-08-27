@@ -110,7 +110,7 @@ $sz_konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('my
     <span class="sz-lauf__route"></span>
     <img class="sz-lauf__porter" data-sz-lauf
          src="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/porter-oben.webp'); ?>"
-         width="672" height="1080" alt="" loading="lazy" decoding="async">
+         width="672" height="1080" alt="" decoding="async">
 </div>
 
 <?php wp_footer(); ?>

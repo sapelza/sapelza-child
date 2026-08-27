@@ -478,12 +478,19 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
    Bildlaufanzeige — der Porter am rechten Rand
    =================================================================== */
 
+/*
+ * Der Behaelter ist so breit wie der Wagen, nicht wie die Linie.
+ *
+ * Zuerst war er 2px schmal — genau die Breite der Route. WordPress setzt
+ * aber img { max-width: 100% }, und damit wurde der Porter auf 2px
+ * gekappt und lud nie. Die Linie sitzt jetzt mittig im breiten Behaelter.
+ */
 .sz-lauf {
     position: fixed;
-    right: 1.75rem;
+    right: 1.25rem;
     top: calc(var(--sz-kopf-oben) + var(--sz-kopf-klein) + 2rem);
     bottom: 3rem;
-    width: 2px;
+    width: 44px;
     z-index: 40;
     pointer-events: none;
 }
@@ -491,7 +498,11 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 /* Die Route: gestrichelt, in Bordeaux, dezent. */
 .sz-lauf__route {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
     background-image: linear-gradient(
         var(--sz-bordeaux) 0 6px,
         transparent 6px 12px
@@ -505,6 +516,7 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
     left: 50%;
     top: 0;
     width: 34px;
+    max-width: none;   /* sonst kappt WordPress’ img-Regel auf die Behaelterbreite */
     height: auto;
     transform: translate(-50%, -50%);
     will-change: transform;

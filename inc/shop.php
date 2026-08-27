@@ -7,8 +7,11 @@
  * (Preisgruppen, Staffelpreise, Sichtbarkeit). Wer sie ersetzt, bricht das
  * still — und merkt es erst, wenn ein Kunde falsche Preise sieht.
  *
- * Ersetzt wird deshalb nur, was reine Darstellung ist: die Produktkachel
- * (woocommerce/content-product.php) und das, was hier eingehängt wird.
+ * Es wird ueberhaupt keine WooCommerce-Vorlage ersetzt. Alles hier haengt
+ * sich ein oder gestaltet — auch die Produktkachel, die zunaechst als
+ * eigene content-product.php entstand und wieder verworfen wurde: sie haette
+ * woocommerce_after_shop_loop_item_title uebersprungen, und genau dort setzt
+ * B2BKing die Preise.
  */
 
 if (!defined('ABSPATH')) exit;
@@ -133,3 +136,111 @@ add_action('wp_enqueue_scripts', function () {
         wp_get_theme()->get('Version')
     );
 }, 30);
+
+/* ===================================================================
+   Produktseite
+   ===================================================================
+
+   Wieder über Haken, nicht über ersetzte Vorlagen. woocommerce_single_
+   product_summary trägt die ganze rechte Spalte; wir haengen uns an
+   bekannten Prioritaeten dazwischen:
+
+     4  unsere Markenzeile
+     5  Titel            (WooCommerce)
+     6  unsere Artikelnummer-Zeile
+    10  Preis            (WooCommerce / B2BKing)
+    11  unser Steuerhinweis
+    20  Kurzbeschreibung (WooCommerce)
+    25  unser Zustellhinweis
+    30  In den Warenkorb (WooCommerce)
+*/
+
+/**
+ * Die Marke über dem Titel — wie im Entwurf, mit Punkt davor.
+ */
+add_action('woocommerce_single_product_summary', function () {
+    global $product;
+    if (!$product instanceof WC_Product) return;
+    if (!function_exists('sz_marken_taxonomie')) return;
+
+    $taxonomie = sz_marken_taxonomie();
+    if ($taxonomie === '') return;
+
+    $begriffe = get_the_terms($product->get_id(), $taxonomie);
+    if (!$begriffe || is_wp_error($begriffe)) return;
+
+    printf(
+        '<p class="sz-produkt__marke mono"><span class="sz-punkt sz-punkt--da" aria-hidden="true"></span>%s</p>',
+        esc_html($begriffe[0]->name)
+    );
+}, 4);
+
+/**
+ * Artikelnummer und EAN unter dem Titel.
+ *
+ * Die EAN führt WooCommerce seit 9.x als _global_unique_id. Aeltere
+ * Installationen haben sie oft als eigenes Meta — beides wird geprüft,
+ * und fehlt beides, steht nur die Artikelnummer da.
+ */
+add_action('woocommerce_single_product_summary', function () {
+    global $product;
+    if (!$product instanceof WC_Product) return;
+
+    $teile = [];
+
+    $nummer = $product->get_sku();
+    if ($nummer) {
+        $teile[] = sprintf(
+            /* translators: %s ist die Artikelnummer. */
+            esc_html__('Art.-Nr. %s', 'sapelza-shop'),
+            esc_html($nummer)
+        );
+    }
+
+    $ean = method_exists($product, 'get_global_unique_id') ? $product->get_global_unique_id() : '';
+    if (!$ean) $ean = (string) $product->get_meta('_ean', true);
+    if ($ean) {
+        $teile[] = sprintf(
+            /* translators: %s ist die EAN des Artikels. */
+            esc_html__('EAN %s', 'sapelza-shop'),
+            esc_html($ean)
+        );
+    }
+
+    if (!$teile) return;
+
+    echo '<p class="sz-produkt__nummern mono">' . implode(' · ', $teile) . '</p>';
+}, 6);
+
+/**
+ * Der Steuerhinweis unter dem Preis.
+ *
+ * Bewusst klein und neben dem Preis, nicht darunter: er ist eine Fußnote,
+ * keine Aussage.
+ */
+add_action('woocommerce_single_product_summary', function () {
+    global $product;
+    if (!$product instanceof WC_Product || !$product->get_price_html()) return;
+
+    echo '<p class="sz-produkt__steuer">'
+       . esc_html__('inkl. MwSt. · zzgl. Zustellung', 'sapelza-shop')
+       . '</p>';
+}, 11);
+
+/**
+ * Der Hinweis auf den Wunschtermin.
+ *
+ * Der Liefertag ist das, was diesen Shop von einem Versandhaus
+ * unterscheidet — er gehört auf die Produktseite, nicht erst in die Kasse.
+ */
+add_action('woocommerce_single_product_summary', function () {
+    ?>
+    <p class="sz-produkt__termin">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false">
+            <rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>
+        </svg>
+        <?php echo esc_html__('Den Liefertermin bestimmen Sie beim Bestellen', 'sapelza-shop'); ?>
+    </p>
+    <?php
+}, 25);
