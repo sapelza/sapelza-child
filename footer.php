@@ -1,0 +1,104 @@
+<?php
+/**
+ * Die Fußzeile.
+ *
+ * Schließt die drei Hüllen, die header.php geöffnet hat: .ast-container,
+ * #content und #page. Wer hier eine davon vergisst, zerlegt das Layout
+ * jeder Seite — und der Fehler zeigt sich erst weit unten.
+ *
+ * Die Anschrift steht bewusst als Text im Theme und nicht in einem Widget:
+ * sie ändert sich alle paar Jahre, und ein leerer Widget-Bereich auf einer
+ * frischen Installation wäre schlimmer als ein fester Text.
+ */
+
+if (!defined('ABSPATH')) exit;
+
+$sz_shop  = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('shop') : home_url('/shop/');
+$sz_konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : home_url('/my-account/');
+
+?>
+        </div><!-- .ast-container -->
+    </div><!-- #content -->
+
+    <footer class="sz-fuss" role="contentinfo">
+        <div class="sz-fuss__innen">
+
+            <div class="sz-fuss__marke">
+                <?php
+                // Fest zusammengesetzt in sz_logo().
+                echo sz_logo(); // phpcs:ignore WordPress.Security.EscapeOutput
+                ?>
+                <p class="sz-fuss__anschrift">
+                    <?php echo esc_html__('Kaufhaus Sapelza', 'sapelza-shop'); ?><br>
+                    <?php echo esc_html__('Graf-Künigl-Straße 2', 'sapelza-shop'); ?><br>
+                    <?php echo esc_html__('39034 Toblach (BZ)', 'sapelza-shop'); ?>
+                </p>
+            </div>
+
+            <div class="sz-fuss__spalte">
+                <h2 class="sz-fuss__titel mono"><?php echo esc_html__('Sortiment', 'sapelza-shop'); ?></h2>
+                <ul class="sz-fuss__liste">
+                    <?php
+                    $sz_bereiche = function_exists('sz_bereiche') ? sz_bereiche() : [];
+                    if ($sz_bereiche) {
+                        foreach ($sz_bereiche as $sz_b) {
+                            printf(
+                                '<li><a href="%s">%s</a></li>',
+                                esc_url(get_term_link($sz_b)),
+                                esc_html($sz_b->name)
+                            );
+                        }
+                    }
+                    ?>
+                    <li><a href="<?php echo esc_url($sz_shop); ?>"><?php echo esc_html__('Alle Artikel', 'sapelza-shop'); ?></a></li>
+                </ul>
+            </div>
+
+            <div class="sz-fuss__spalte">
+                <h2 class="sz-fuss__titel mono"><?php echo esc_html__('Service', 'sapelza-shop'); ?></h2>
+                <?php if (has_nav_menu('sz-fuss')) : ?>
+                    <?php
+                    wp_nav_menu([
+                        'theme_location' => 'sz-fuss',
+                        'container'      => false,
+                        'menu_class'     => 'sz-fuss__liste',
+                        'depth'          => 1,
+                    ]);
+                    ?>
+                <?php else : ?>
+                    <ul class="sz-fuss__liste">
+                        <li><a href="<?php echo esc_url(home_url('/meine-artikel/')); ?>"><?php echo esc_html__('Meine Artikel', 'sapelza-shop'); ?></a></li>
+                        <li><a href="<?php echo esc_url($sz_konto); ?>"><?php echo esc_html__('B2B-Konto', 'sapelza-shop'); ?></a></li>
+                        <li><span class="sz-fuss__hinweis"><?php echo esc_html__('Zustellung nur im Hochpustertal', 'sapelza-shop'); ?></span></li>
+                    </ul>
+                <?php endif; ?>
+            </div>
+
+            <div class="sz-fuss__spalte">
+                <h2 class="sz-fuss__titel mono"><?php echo esc_html__('Kontakt', 'sapelza-shop'); ?></h2>
+                <ul class="sz-fuss__liste">
+                    <li><a href="tel:+390474972205">+39 0474 972205</a></li>
+                    <li><a href="mailto:info@sapelza.it">info@sapelza.it</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="sz-fuss__zeile">
+            <span class="mono">
+                <?php
+                printf(
+                    /* translators: %d ist das laufende Jahr. */
+                    esc_html__('© %d Kaufhaus Sapelza · Toblach', 'sapelza-shop'),
+                    (int) date_i18n('Y')
+                );
+                ?>
+            </span>
+        </div>
+    </footer>
+
+</div><!-- #page -->
+
+<?php wp_footer(); ?>
+</body>
+</html>

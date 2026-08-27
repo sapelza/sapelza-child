@@ -1,0 +1,319 @@
+/*
+ * Kopf- und Fußzeile.
+ *
+ * Wird auf JEDER Seite geladen, nicht nur auf der Startseite: sie sind der
+ * Rahmen, in dem alles andere steht. Das ist der eine Baustein, der jede
+ * Seite auf einmal näher an den Entwurf bringt.
+ */
+
+/* Sprungmarke — sichtbar erst beim Tabben, aber dann richtig. */
+.sz-sprung {
+    position: absolute;
+    left: -9999px;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+.sz-sprung:focus { left: 1rem; top: 1rem; }
+
+/* ===================================================================
+   Kopfzeile
+   =================================================================== */
+
+.sz-kopf {
+    position: relative;
+    background: var(--sz-bg);
+    border-bottom: 1px solid var(--sz-border);
+}
+
+.sz-kopf__innen {
+    margin-inline: auto;
+    max-width: 1400px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .sz-kopf__innen { padding-inline: 3rem; gap: 2.5rem; }
+}
+
+/* Das Logo. Feste Höhe, Breite folgt — sonst springt die Leiste beim
+   Laden, weil das Bild erst spät seine Maße meldet. */
+.sz-logo { display: inline-flex; align-items: center; flex-shrink: 0; }
+.sz-logo img { display: block; height: 38px; width: auto; }
+
+.sz-logo--text {
+    font-family: var(--sz-display);
+    font-size: 1.35rem;
+    color: var(--sz-ink);
+    text-decoration: none;
+}
+
+/* WordPress' eigenes Website-Logo trägt eine andere Klasse. */
+.custom-logo-link { display: inline-flex; align-items: center; flex-shrink: 0; }
+.custom-logo-link img { display: block; height: 38px; width: auto; }
+
+/* --- Navigation --------------------------------------------------- */
+
+.sz-nav { flex: 1; }
+
+.sz-nav__liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.75rem;
+}
+
+.sz-nav__liste a,
+.sz-nav__liste .menu-item > a {
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--sz-ink);
+    white-space: nowrap;
+    transition: color 200ms ease;
+}
+
+.sz-nav__liste a:hover,
+.sz-nav__liste .current-menu-item > a { color: var(--sz-bordeaux-text); }
+
+/* Untermenüs bleiben schlicht: ausklappen beim Anfahren, kein Theater. */
+.sz-nav__liste .sub-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    position: absolute;
+    z-index: 20;
+    min-width: 12rem;
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border);
+    display: none;
+}
+
+.sz-nav__liste li { position: relative; }
+.sz-nav__liste li:hover > .sub-menu,
+.sz-nav__liste li:focus-within > .sub-menu { display: block; }
+.sz-nav__liste .sub-menu a { display: block; padding: 0.5rem 1rem; }
+
+/* --- Werkzeuge rechts --------------------------------------------- */
+
+.sz-werkzeuge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.sz-werkzeug,
+.sz-kopf .sz-modus {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--sz-border);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--sz-ink);
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 200ms ease, color 200ms ease;
+}
+
+/* Astra faerbt Knoepfe beim Anfahren ein. Hier soll nur der Rand
+   reagieren — dieselbe Kollision wie bei den Hero-Woertern. */
+.sz-werkzeug:hover,
+.sz-werkzeug:focus,
+.sz-werkzeug:focus-visible,
+.sz-kopf .sz-modus:hover,
+.sz-kopf .sz-modus:focus,
+.sz-kopf .sz-modus:focus-visible {
+    background: transparent;
+    box-shadow: none;
+    color: var(--sz-bordeaux-text);
+    border-color: var(--sz-bordeaux);
+}
+
+.sz-warenkorb { position: relative; }
+
+.sz-warenkorb__zahl {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding-inline: 0.25rem;
+    border-radius: 999px;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-family: var(--sz-mono);
+    font-size: 0.62rem;
+    line-height: 1.15rem;
+    text-align: center;
+}
+
+/* --- Suchfeld ------------------------------------------------------ */
+
+.sz-suchfeld {
+    border-top: 1px solid var(--sz-border);
+    background: var(--sz-muted);
+}
+
+.sz-suchfeld[hidden] { display: none; }
+
+.sz-suchfeld {
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+@media (min-width: 768px) { .sz-suchfeld { padding-inline: 3rem; } }
+
+.sz-suchfeld input[type="search"] {
+    flex: 1;
+    max-width: 34rem;
+    padding: 0.8rem 1.1rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-size: 0.95rem;
+}
+
+.sz-suchfeld button {
+    padding: 0.8rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* --- Menüknopf für schmale Fenster --------------------------------- */
+
+.sz-kopf__auf {
+    display: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-left: auto;
+    border: 1px solid var(--sz-border);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+.sz-kopf__auf span,
+.sz-kopf__auf span::before,
+.sz-kopf__auf span::after {
+    position: absolute;
+    left: 50%;
+    width: 1rem;
+    height: 1px;
+    background: var(--sz-ink);
+    transform: translateX(-50%);
+}
+
+.sz-kopf__auf span { top: 50%; }
+.sz-kopf__auf span::before { content: ""; top: -5px; }
+.sz-kopf__auf span::after  { content: ""; top: 5px; }
+
+@media (max-width: 979px) {
+    .sz-kopf__auf { display: block; }
+    .sz-werkzeuge { margin-left: 0; order: 3; }
+
+    .sz-nav {
+        order: 4;
+        flex-basis: 100%;
+        display: none;
+        border-top: 1px solid var(--sz-border);
+        padding-top: 1rem;
+    }
+
+    .sz-nav.ist-offen { display: block; }
+    .sz-nav__liste { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .sz-nav__liste .sub-menu { position: static; display: block; border: 0; padding-left: 1rem; background: none; }
+}
+
+/* ===================================================================
+   Fußzeile
+   =================================================================== */
+
+.sz-fuss {
+    background: var(--sz-muted);
+    border-top: 1px solid var(--sz-border);
+    margin-top: 4rem;
+}
+
+.sz-fuss__innen {
+    margin-inline: auto;
+    max-width: 1400px;
+    padding: 3.5rem 1.5rem 2.5rem;
+    display: grid;
+    gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .sz-fuss__innen { padding-inline: 3rem; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 3rem; }
+}
+
+.sz-fuss__marke .sz-logo img,
+.sz-fuss__marke .custom-logo-link img { height: 34px; }
+
+.sz-fuss__anschrift {
+    margin: 1.25rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+}
+
+.sz-fuss__titel {
+    margin: 0 0 1.25rem;
+    font-family: var(--sz-mono);
+    font-size: 0.66rem;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-fuss__liste { list-style: none; margin: 0; padding: 0; }
+.sz-fuss__liste li { margin-bottom: 0.7rem; }
+
+.sz-fuss__liste a {
+    font-size: 0.88rem;
+    color: var(--sz-ink);
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.sz-fuss__liste a:hover { color: var(--sz-bordeaux-text); }
+.sz-fuss__hinweis { font-size: 0.88rem; color: var(--sz-ink-soft); }
+
+.sz-fuss__zeile {
+    border-top: 1px solid var(--sz-border);
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    color: var(--sz-ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-nav__liste a,
+    .sz-werkzeug,
+    .sz-fuss__liste a { transition: none; }
+}

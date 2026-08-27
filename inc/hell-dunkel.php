@@ -69,22 +69,12 @@ function sz_modus_knopf(): string
  */
 add_shortcode('sz_modus', fn() => sz_modus_knopf());
 
-/**
- * Und automatisch ans Ende der Kopfzeilen-Navigation.
+/*
+ * Frueher haengte sich der Knopf selbst ans Menue — ueber wp_nav_menu_items
+ * und wp_list_pages. Das war eine Kruecke, solange Astra die Kopfzeile
+ * besass und wir keinen Platz dafuer hatten.
  *
- * Zwei Haken, weil WordPress zwei verschiedene Wege geht: wp_nav_menu,
- * sobald dem Bereich ein Menü zugewiesen ist — und wp_page_menu als
- * Rückfall, solange keines zugewiesen ist. Der zweite Fall ist der
- * Grund, warum ein Filter auf wp_nav_menu_items hier ins Leere lief.
+ * Seit das Theme eine eigene header.php mitbringt, setzt sie ihn dort
+ * bewusst neben Suche, Konto und Warenkorb. Die beiden Filter sind
+ * deshalb entfallen: sonst stuende der Knopf zweimal da.
  */
-add_filter('wp_nav_menu_items', function ($items, $args) {
-    if (!in_array($args->theme_location ?? '', ['primary', 'main_menu'], true)) return $items;
-    return $items . '<li class="menu-item sz-modus-item">' . sz_modus_knopf() . '</li>';
-}, 10, 2);
-
-add_filter('wp_list_pages', function ($ausgabe, $args) {
-    // wp_page_menu ruft mit title_li = "" und echo = 0 auf. Ein Seiten-
-    // Widget tut das nicht — dort hat der Knopf nichts verloren.
-    if (($args['title_li'] ?? 'x') !== '' || (int) ($args['echo'] ?? 1) !== 0) return $ausgabe;
-    return $ausgabe . '<li class="page_item menu-item sz-modus-item">' . sz_modus_knopf() . '</li>';
-}, 10, 2);
