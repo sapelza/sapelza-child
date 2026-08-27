@@ -67,7 +67,7 @@ add_filter('woocommerce_dropdown_variation_attribute_options_args', function ($a
  * überleben. Hier bleibt nur der Hell/Dunkel-Umschalter: der ist Rahmenwerk,
  * und ein neues Theme brächte seinen eigenen mit.
  */
-foreach (['hell-dunkel', 'katalog'] as $teil) {
+foreach (['hell-dunkel', 'katalog', 'danke'] as $teil) {
     $pfad = get_stylesheet_directory() . '/inc/' . $teil . '.php';
     if (file_exists($pfad)) require_once $pfad;
 }

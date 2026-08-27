@@ -1,0 +1,91 @@
+/*
+ * Der Dank auf der Seite „Bestellung erhalten".
+ *
+ * Im Seitenfluss, nicht darüber: bei Vorkasse stehen hier die Bankdaten.
+ * Nichts wird verdeckt, nichts muss weggeklickt werden.
+ */
+
+.sz-danke {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+    padding: 2rem 1.5rem;
+    background: var(--sz-muted);
+    border-radius: var(--sz-radius);
+}
+
+@media (min-width: 768px) {
+    .sz-danke { padding: 2.5rem 3rem; }
+}
+
+/* Die kurze Bordeaux-Kante — dasselbe Kartendetail wie beim Zugang, damit
+   die Bestätigungsseite zur übrigen Seite gehört. */
+.sz-danke::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 4rem;
+    background: var(--sz-bordeaux);
+}
+
+/* Mit Video: zwei Spalten ab Tablet, das Bild rechts. */
+@media (min-width: 768px) {
+    .sz-danke.hat-video {
+        display: grid;
+        grid-template-columns: 1fr minmax(0, 15rem);
+        align-items: center;
+        gap: 2.5rem;
+    }
+}
+
+.sz-danke__video {
+    display: block;
+    width: 100%;
+    max-width: 15rem;
+    height: auto;
+    margin: 0 auto 1.5rem;
+    /* Damit ein WebM mit Alphakanal nicht auf Weiß sitzt. */
+    background: transparent;
+}
+
+@media (min-width: 768px) {
+    .sz-danke__video { order: 2; margin: 0; }
+    .sz-danke__text  { order: 1; }
+}
+
+.sz-danke__kicker {
+    margin: 0;
+    font-family: var(--sz-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-danke__titel {
+    margin: 0.75rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+}
+
+.sz-danke__lead {
+    margin: 0.9rem 0 0;
+    max-width: 46ch;
+    line-height: 1.65;
+    color: var(--sz-ink-soft);
+}
+
+/*
+ * Wer reduzierte Bewegung eingestellt hat, bekommt den Dank als Text.
+ * Das Video wird zusaetzlich per Skript angehalten und entladen,
+ * damit bei reduzierter Bewegung auch nichts nachgeladen wird.
+ */
+@media (prefers-reduced-motion: reduce) {
+    .sz-danke__video { display: none; }
+    .sz-danke.hat-video { display: block; }
+}
