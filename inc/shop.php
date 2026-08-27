@@ -210,3 +210,57 @@ add_action('woocommerce_after_add_to_cart_form', function () {
     </p>
     <?php
 });
+
+/* ===================================================================
+   Kasse — Kopf und Schrittanzeige
+   =================================================================== */
+
+/**
+ * Kapitelmarke, Titel und die drei Schritte über der Kasse.
+ *
+ * Über den Seiteninhalt eingefügt, nicht über einen WooCommerce-Haken:
+ * die gängigen Kassen-Haken gehören zur klassischen Fassung und laufen
+ * auf der Block-Kasse nie.
+ *
+ * Die Schrittanzeige ist bewusst nicht klickbar. Sie zeigt, wo man steht
+ * — sie ist kein Menü. Zurück geht es über den Warenkorb.
+ */
+add_filter('the_content', function ($inhalt) {
+    if (!function_exists('is_checkout') || !is_checkout()) return $inhalt;
+    if (function_exists('is_order_received_page') && is_order_received_page()) return $inhalt;
+    if (!in_the_loop() || !is_main_query()) return $inhalt;
+    if (!function_exists('WC') || !WC()->cart || WC()->cart->is_empty()) return $inhalt;
+
+    $schritte = [
+        ['nr' => '01', 'name' => __('Warenkorb', 'sapelza-shop'),        'stand' => 'fertig'],
+        ['nr' => '02', 'name' => __('Adresse & Zahlung', 'sapelza-shop'), 'stand' => 'jetzt'],
+        ['nr' => '03', 'name' => __('Bestätigung', 'sapelza-shop'),       'stand' => 'offen'],
+    ];
+
+    ob_start();
+    ?>
+    <header class="sz-kasse__kopf">
+        <p class="sz-kapitelmarke">
+            <span class="sz-kapitelmarke__nr mono">02</span>
+            <span class="hairline" aria-hidden="true"></span>
+            <span class="sz-kapitelmarke__kicker mono">
+                <?php echo esc_html__('Schritt 02 von 03', 'sapelza-shop'); ?>
+            </span>
+        </p>
+
+        <h1 class="sz-kasse__titel"><?php echo esc_html__('Kasse', 'sapelza-shop'); ?></h1>
+
+        <ol class="sz-schritte-leiste">
+            <?php foreach ($schritte as $s) : ?>
+                <li class="sz-schritt-feld ist-<?php echo esc_attr($s['stand']); ?>">
+                    <span class="sz-schritt-feld__zeichen mono" aria-hidden="true">
+                        <?php echo $s['stand'] === 'fertig' ? '&check;' : esc_html($s['nr']); ?>
+                    </span>
+                    <span class="sz-schritt-feld__name"><?php echo esc_html($s['name']); ?></span>
+                </li>
+            <?php endforeach; ?>
+        </ol>
+    </header>
+    <?php
+    return (string) ob_get_clean() . $inhalt;
+}, 18);

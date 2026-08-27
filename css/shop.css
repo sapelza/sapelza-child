@@ -730,3 +730,190 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
 @media (prefers-reduced-motion: reduce) {
     .sz-tag, .sz-fenster { transition: none; }
 }
+
+/* ===================================================================
+   Kasse
+   ===================================================================
+
+   Deckt die Block- UND die klassische Fassung ab. WooCommerce Blocks
+   bringt schwebende Feldbeschriftungen mit — die lassen sich nicht in
+   Versalien über dem Feld verwandeln, ohne die Mechanik zu brechen.
+   Typografie, Farben, Bestellkarte und Knöpfe treffen den Entwurf; die
+   Felder bleiben Blocks eigene.
+*/
+
+/* Astras Seitentitel entfällt — wir setzen einen eigenen. */
+.woocommerce-checkout .entry-title,
+.woocommerce-checkout .page-title { display: none; }
+
+.sz-kasse__kopf { padding-block: clamp(1.5rem, 4vh, 3rem) 2rem; }
+
+.sz-kasse__titel {
+    margin: 1.5rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+}
+
+/* --- Die drei Schritte ---------------------------------------------
+   Nicht klickbar: sie zeigen, wo man steht, sie sind kein Menü. */
+
+.sz-schritte-leiste {
+    list-style: none;
+    margin: 2.25rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--sz-border);
+}
+
+@media (min-width: 768px) { .sz-schritte-leiste { grid-template-columns: repeat(3, 1fr); } }
+
+.sz-schritt-feld {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--sz-border);
+    font-size: 0.9rem;
+    color: var(--sz-ink-soft);
+}
+
+@media (min-width: 768px) {
+    .sz-schritt-feld { border-bottom: 0; border-right: 1px solid var(--sz-border); }
+    .sz-schritt-feld:last-child { border-right: 0; }
+}
+
+.sz-schritt-feld__zeichen {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 0.62rem;
+}
+
+.sz-schritt-feld.ist-fertig { color: var(--sz-bordeaux-text); }
+.sz-schritt-feld.ist-fertig .sz-schritt-feld__zeichen { background: var(--sz-bordeaux); border-color: var(--sz-bordeaux); color: var(--sz-bordeaux-fg); }
+.sz-schritt-feld.ist-jetzt { color: var(--sz-ink); }
+.sz-schritt-feld.ist-jetzt .sz-schritt-feld__zeichen { color: var(--sz-bordeaux); border-color: var(--sz-bordeaux); }
+.sz-schritt-feld.ist-offen { opacity: 0.55; }
+
+/* --- Abschnittsüberschriften --------------------------------------- */
+
+.woocommerce-checkout h3,
+.woocommerce-checkout .wc-block-components-title,
+.woocommerce-checkout .wc-block-components-checkout-step__title {
+    font-family: var(--sz-display) !important;
+    font-weight: 400 !important;
+    font-size: 1.6rem !important;
+    letter-spacing: -0.02em;
+    text-transform: none !important;
+    color: var(--sz-ink) !important;
+}
+
+/* Blocks nummeriert die Schritte selbst — das macht schon unsere Leiste. */
+.wc-block-components-checkout-step__heading-content,
+.wc-block-components-checkout-step__number { display: none !important; }
+
+/* --- Die Bestellkarte rechts ---------------------------------------- */
+
+.wc-block-checkout__sidebar,
+.woocommerce-checkout #order_review {
+    background: var(--sz-muted);
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    padding: 1.75rem;
+}
+
+.wc-block-components-totals-item,
+.woocommerce-checkout #order_review .cart-subtotal,
+.woocommerce-checkout #order_review .shipping {
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+}
+
+.wc-block-components-totals-footer-item,
+.woocommerce-checkout #order_review .order-total {
+    font-family: var(--sz-mono) !important;
+    font-size: 1.4rem !important;
+    border-top: 1px solid var(--sz-border-strong);
+    padding-top: 0.9rem;
+    margin-top: 0.9rem;
+}
+
+.woocommerce-checkout #order_review table,
+.woocommerce-checkout #order_review th,
+.woocommerce-checkout #order_review td { border: 0 !important; }
+
+/* --- Knöpfe ---------------------------------------------------------- */
+
+.wc-block-components-checkout-place-order-button,
+.woocommerce-checkout #place_order {
+    width: 100%;
+    padding: 1.1rem 1.5rem !important;
+    border-radius: var(--sz-radius) !important;
+    background: var(--sz-bordeaux) !important;
+    color: var(--sz-bordeaux-fg) !important;
+    font-family: var(--sz-body) !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em;
+}
+
+/* --- Zahlarten als Zeilen, wie im Entwurf ---------------------------- */
+
+.wc-block-components-radio-control__option,
+.woocommerce-checkout .wc_payment_method label {
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    padding: 1rem 1.15rem !important;
+    margin-bottom: 0.6rem;
+    background: var(--sz-bg);
+}
+
+.wc-block-components-radio-control__option--checked,
+.woocommerce-checkout .wc_payment_method input:checked + label {
+    border-color: var(--sz-bordeaux);
+    background: var(--sz-bordeaux-soft);
+}
+
+.woocommerce-checkout ul.wc_payment_methods { list-style: none; padding: 0; border: 0 !important; }
+.woocommerce-checkout ul.wc_payment_methods li { margin: 0; }
+
+/* --- Felder ---------------------------------------------------------- */
+
+.woocommerce-checkout .form-row label {
+    font-family: var(--sz-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.woocommerce-checkout .form-row input[type="text"],
+.woocommerce-checkout .form-row input[type="email"],
+.woocommerce-checkout .form-row input[type="tel"],
+.woocommerce-checkout .form-row textarea,
+.wc-block-components-text-input input {
+    border: 1px solid var(--sz-border-strong) !important;
+    border-radius: var(--sz-radius) !important;
+    background: var(--sz-surface) !important;
+    color: var(--sz-ink) !important;
+    padding: 0.9rem 1rem !important;
+    font-size: 0.95rem;
+}
+
+.wc-block-components-text-input input:focus,
+.woocommerce-checkout .form-row input:focus {
+    border-color: var(--sz-bordeaux) !important;
+    box-shadow: none !important;
+    outline: none;
+}
