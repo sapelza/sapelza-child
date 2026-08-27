@@ -114,11 +114,23 @@
     flex-shrink: 0;
 }
 
+/*
+ * Astra setzt inline „button { padding: 15px 30px }“. Wer hier nur Breite
+ * und Hoehe setzt, bekommt einen 62px breiten Knopf, in dem das Symbol auf
+ * 0px zusammengequetscht wird — ein leeres Oval. Padding und min-width
+ * muessen ausdruecklich zurueck.
+ */
 .sz-werkzeug,
 .sz-kopf .sz-modus {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    padding: 0;
+    min-width: 0;
+    line-height: 1;
+    font-size: 0.9rem;
     width: 2.25rem;
     height: 2.25rem;
     border: 1px solid var(--sz-border);
@@ -143,6 +155,8 @@
     color: var(--sz-bordeaux-text);
     border-color: var(--sz-bordeaux);
 }
+
+.sz-werkzeug svg { flex-shrink: 0; }
 
 .sz-warenkorb { position: relative; }
 
