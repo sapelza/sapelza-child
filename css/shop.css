@@ -1016,3 +1016,209 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     color: var(--sz-ink-soft);
     margin-top: 1.5rem;
 }
+
+/* ===================================================================
+   Schnellerfassung
+   =================================================================== */
+
+.sz-erfassung { margin-block: 2rem 4rem; }
+
+.sz-erfassung__wege {
+    display: inline-flex;
+    gap: 0;
+    padding: 0.25rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    margin-bottom: 2.5rem;
+}
+
+.sz-erfassung__weg {
+    box-sizing: border-box;
+    padding: 0.55rem 1.5rem !important;
+    min-width: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--sz-ink-soft);
+    font-size: 0.9rem;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.sz-erfassung__weg[aria-selected="true"] {
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+/* --- Die Tabelle ---------------------------------------------------- */
+
+.sz-erfassung__tabelle {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sz-erfassung__tabelle th {
+    text-align: left;
+    font-family: var(--sz-mono);
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    padding: 0 0.75rem 0.75rem;
+    border-bottom: 1px solid var(--sz-border-strong);
+}
+
+.sz-erfassung__tabelle td {
+    padding: 0.9rem 0.75rem;
+    border-bottom: 1px solid var(--sz-border);
+    vertical-align: middle;
+}
+
+.sz-erfassung__nummer {
+    width: 100%;
+    max-width: 12rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+}
+
+.sz-erfassung__nummer:focus { border-color: var(--sz-bordeaux); outline: none; }
+
+.sz-erfassung__artikel em { color: var(--sz-ink-soft); font-size: 0.85rem; }
+.sz-erfassung__marke { display: block; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sz-bordeaux-text); }
+.sz-erfassung__name { display: block; font-family: var(--sz-display); font-size: 1.05rem; line-height: 1.2; }
+.sz-erfassung__fehler { color: var(--sz-bordeaux-text); font-size: 0.85rem; }
+.sz-erfassung__bestand,
+.sz-erfassung__zeilensumme { font-size: 0.85rem; white-space: nowrap; }
+
+/* Mengenwähler */
+.sz-menge { display: inline-flex; align-items: stretch; border: 1px solid var(--sz-border-strong); border-radius: 999px; overflow: hidden; }
+
+.sz-menge button {
+    box-sizing: border-box;
+    width: 2rem;
+    padding: 0 !important;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--sz-ink);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.sz-menge input {
+    width: 2.75rem;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+    color: var(--sz-ink);
+    -moz-appearance: textfield;
+}
+
+.sz-menge input::-webkit-outer-spin-button,
+.sz-menge input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.sz-erfassung__weg-knopf {
+    box-sizing: border-box;
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0 !important;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--sz-ink-soft);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.sz-erfassung__weg-knopf:hover { color: var(--sz-bordeaux-text); background: transparent; }
+
+/* --- Fuß der Erfassung ---------------------------------------------- */
+
+.sz-erfassung__fuss {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.75rem;
+}
+
+.sz-erfassung__hilfe { margin: 0; font-size: 0.8rem; color: var(--sz-ink-soft); max-width: 42ch; }
+
+.sz-erfassung__summe { display: flex; align-items: center; gap: 1rem; }
+.sz-erfassung__summe > .mono { font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--sz-ink-soft); }
+.sz-erfassung__summe strong { font-size: 1.5rem; font-weight: 400; }
+
+.sz-erfassung__knopf {
+    padding: 0.9rem 1.75rem !important;
+    border: 0;
+    border-radius: var(--sz-radius);
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.sz-erfassung__knopf:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* --- Scannen --------------------------------------------------------- */
+
+.sz-erfassung__scan { display: grid; gap: 2.5rem; }
+
+@media (min-width: 900px) { .sz-erfassung__scan { grid-template-columns: 0.9fr 1.1fr; align-items: start; } }
+
+.sz-scan__buehne {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--sz-muted);
+    border-radius: var(--sz-radius);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+
+.sz-scan__buehne video { width: 100%; height: 100%; object-fit: cover; }
+
+.sz-scan__rahmen {
+    position: absolute;
+    inset: 22% 12%;
+    border: 2px solid var(--sz-bordeaux);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.sz-scan__hinweis {
+    position: absolute;
+    bottom: 1rem;
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-scan__text h3 { margin: 0 0 0.9rem; font-size: 1.6rem; }
+.sz-scan__text p { line-height: 1.7; color: var(--sz-ink-soft); }
+
+.sz-scan__kasten {
+    padding: 0.9rem 1.1rem;
+    border-left: 2px solid var(--sz-bordeaux);
+    background: var(--sz-muted);
+    font-size: 0.85rem;
+}
+
+.sz-scan__kasten:empty { display: none; }
+
+@media (max-width: 700px) {
+    .sz-erfassung__tabelle thead { display: none; }
+    .sz-erfassung__tabelle tr { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; padding-block: 0.75rem; border-bottom: 1px solid var(--sz-border); }
+    .sz-erfassung__tabelle td { border: 0; padding: 0.25rem 0; }
+}

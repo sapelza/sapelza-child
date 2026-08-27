@@ -127,7 +127,19 @@ add_action('woocommerce_before_shop_loop', function () {
  */
 add_action('wp_enqueue_scripts', function () {
     if (!function_exists('is_woocommerce')) return;
-    if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) return;
+
+    /*
+     * Auch auf gewoehnlichen Seiten, die einen unserer Bausteine tragen —
+     * die Schnellerfassung ist keine WooCommerce-Seite, braucht diese
+     * Regeln aber. Ohne diese Zeile stuende sie voellig ungestaltet da.
+     */
+    $eigener_baustein = false;
+    if (is_singular()) {
+        $inhalt = get_post_field('post_content', get_queried_object_id());
+        $eigener_baustein = is_string($inhalt) && has_shortcode($inhalt, 'sz_schnellerfassung');
+    }
+
+    if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page() && !$eigener_baustein) return;
 
     wp_enqueue_style(
         'sapelza-shop-seiten',
