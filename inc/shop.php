@@ -141,18 +141,18 @@ add_action('wp_enqueue_scripts', function () {
    Produktseite
    ===================================================================
 
-   Wieder über Haken, nicht über ersetzte Vorlagen. woocommerce_single_
-   product_summary trägt die ganze rechte Spalte; wir haengen uns an
-   bekannten Prioritaeten dazwischen:
+   Wieder ueber Haken, nicht ueber ersetzte Vorlagen — aber NICHT ueber
+   Prioritaeten von woocommerce_single_product_summary: Astra ordnet diese
+   Spalte selbst um, dadurch landeten Einschuebe nicht dort, wo die Zahl
+   es vermuten liesse.
 
-     4  unsere Markenzeile
-     5  Titel            (WooCommerce)
-     6  unsere Artikelnummer-Zeile
-    10  Preis            (WooCommerce / B2BKing)
-    11  unser Steuerhinweis
-    20  Kurzbeschreibung (WooCommerce)
-    25  unser Zustellhinweis
-    30  In den Warenkorb (WooCommerce)
+   Verlaesslich sind benannte Haken:
+
+     woocommerce_single_product_summary, 4   Markenzeile vor dem Titel
+     woocommerce_after_add_to_cart_form      Hinweis auf den Wunschtermin
+
+   Artikelnummer und Steuerangabe kommen von WooCommerce selbst und werden
+   nur gestaltet — siehe die Begruendungen weiter unten.
 */
 
 /**
@@ -175,57 +175,23 @@ add_action('woocommerce_single_product_summary', function () {
     );
 }, 4);
 
-/**
- * Artikelnummer und EAN unter dem Titel.
+/*
+ * Keine eigene Artikelnummer-Zeile.
  *
- * Die EAN führt WooCommerce seit 9.x als _global_unique_id. Aeltere
- * Installationen haben sie oft als eigenes Meta — beides wird geprüft,
- * und fehlt beides, steht nur die Artikelnummer da.
+ * Sie stand doppelt: unsere zeigte die Nummer des Elternprodukts, die von
+ * WooCommerce weiter unten die der gewaehlten Variante — zwei
+ * verschiedene Nummern fuer dasselbe Produkt. WooCommerces eigene ist die
+ * richtige, weil sie mit dem Gebinde wechselt. Sie wird nur gestaltet.
  */
-add_action('woocommerce_single_product_summary', function () {
-    global $product;
-    if (!$product instanceof WC_Product) return;
 
-    $teile = [];
-
-    $nummer = $product->get_sku();
-    if ($nummer) {
-        $teile[] = sprintf(
-            /* translators: %s ist die Artikelnummer. */
-            esc_html__('Art.-Nr. %s', 'sapelza-shop'),
-            esc_html($nummer)
-        );
-    }
-
-    $ean = method_exists($product, 'get_global_unique_id') ? $product->get_global_unique_id() : '';
-    if (!$ean) $ean = (string) $product->get_meta('_ean', true);
-    if ($ean) {
-        $teile[] = sprintf(
-            /* translators: %s ist die EAN des Artikels. */
-            esc_html__('EAN %s', 'sapelza-shop'),
-            esc_html($ean)
-        );
-    }
-
-    if (!$teile) return;
-
-    echo '<p class="sz-produkt__nummern mono">' . implode(' · ', $teile) . '</p>';
-}, 6);
-
-/**
- * Der Steuerhinweis unter dem Preis.
+/*
+ * Und kein eigener Steuerhinweis.
  *
- * Bewusst klein und neben dem Preis, nicht darunter: er ist eine Fußnote,
- * keine Aussage.
+ * Er behauptete "inkl. MwSt.", waehrend der Shop die Preise "excl. IVA"
+ * ausweist. Eine falsche Steuerangabe ist auf einem Rechnungsshop kein
+ * Schoenheitsfehler. Was gilt, sagt WooCommerce selbst — wir erfinden es
+ * nicht dazu.
  */
-add_action('woocommerce_single_product_summary', function () {
-    global $product;
-    if (!$product instanceof WC_Product || !$product->get_price_html()) return;
-
-    echo '<p class="sz-produkt__steuer">'
-       . esc_html__('inkl. MwSt. · zzgl. Zustellung', 'sapelza-shop')
-       . '</p>';
-}, 11);
 
 /**
  * Der Hinweis auf den Wunschtermin.
@@ -233,7 +199,7 @@ add_action('woocommerce_single_product_summary', function () {
  * Der Liefertag ist das, was diesen Shop von einem Versandhaus
  * unterscheidet — er gehört auf die Produktseite, nicht erst in die Kasse.
  */
-add_action('woocommerce_single_product_summary', function () {
+add_action('woocommerce_after_add_to_cart_form', function () {
     ?>
     <p class="sz-produkt__termin">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -243,4 +209,4 @@ add_action('woocommerce_single_product_summary', function () {
         <?php echo esc_html__('Den Liefertermin bestimmen Sie beim Bestellen', 'sapelza-shop'); ?>
     </p>
     <?php
-}, 25);
+});

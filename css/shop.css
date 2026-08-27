@@ -313,13 +313,19 @@ html[data-sz="dark"] .woocommerce ul.products li.product a img { mix-blend-mode:
 
 .single-product div.product { padding-block: clamp(2rem, 5vh, 3.5rem); }
 
+/*
+ * Der Weg kann drei Zeilen lang werden. In Versalien und weit gesperrt
+ * wird daraus ein Block, der lauter ist als der Produktname darunter —
+ * deshalb klein, eng und ohne Grossbuchstaben.
+ */
 .woocommerce-breadcrumb {
     font-family: var(--sz-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    line-height: 1.6;
     color: var(--sz-ink-soft) !important;
-    margin-bottom: 2rem !important;
+    margin-bottom: 1.75rem !important;
 }
 
 .woocommerce-breadcrumb a { color: var(--sz-ink-soft); }
@@ -350,6 +356,10 @@ html[data-sz="dark"] .woocommerce ul.products li.product a img { mix-blend-mode:
     margin-bottom: 1.5rem;
 }
 
+/*
+ * Traegt jetzt die Artikelnummer allein. Sie wechselt mit dem gewaehlten
+ * Gebinde — deshalb ist sie die richtige, nicht die des Elternprodukts.
+ */
 .single-product .product_meta {
     font-family: var(--sz-mono);
     font-size: 0.7rem;
@@ -439,22 +449,6 @@ table.b2bking_bulk_table th {
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--sz-bordeaux-text);
-}
-
-.sz-produkt__nummern {
-    margin: 0 0 1.25rem;
-    font-family: var(--sz-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    color: var(--sz-ink-soft);
-}
-
-/* Der Steuerhinweis steht neben dem Preis, nicht darunter — er ist eine
-   Fußnote. Der negative Abstand holt ihn auf die Preiszeile hinauf. */
-.sz-produkt__steuer {
-    margin: -0.9rem 0 1.5rem;
-    font-size: 0.72rem;
-    color: var(--sz-ink-soft);
 }
 
 .sz-produkt__termin {
