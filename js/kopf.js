@@ -30,7 +30,37 @@
         });
     }
 
+    /*
+     * Der Kopf wird beim Scrollen flacher.
+     *
+     * Die Schwelle liegt bei 40px und hat eine Hysterese: erst ab 40 klein,
+     * erst unter 20 wieder gross. Ohne den Abstand flackert die Leiste,
+     * sobald jemand genau auf der Schwelle stehen bleibt.
+     */
+    function schrumpfenAufsetzen() {
+        var kopf = document.querySelector(".sz-kopf");
+        if (!kopf) return;
+
+        var klein = false;
+        var wartet = false;
+
+        function pruefen() {
+            var y = window.scrollY || document.documentElement.scrollTop || 0;
+            if (!klein && y > 40) { klein = true; kopf.classList.add("ist-klein"); }
+            else if (klein && y < 20) { klein = false; kopf.classList.remove("ist-klein"); }
+        }
+
+        window.addEventListener("scroll", function () {
+            if (wartet) return;
+            wartet = true;
+            window.requestAnimationFrame(function () { wartet = false; pruefen(); });
+        }, { passive: true });
+
+        pruefen();
+    }
+
     function los() {
+        schrumpfenAufsetzen();
         umschalten(
             document.querySelector('.sz-kopf__auf'),
             document.getElementById('sz-nav'),

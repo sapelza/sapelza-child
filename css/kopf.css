@@ -1,14 +1,24 @@
 /*
  * Kopf- und Fußzeile.
  *
- * Wird auf JEDER Seite geladen, nicht nur auf der Startseite: sie sind der
- * Rahmen, in dem alles andere steht. Das ist der eine Baustein, der jede
- * Seite auf einmal näher an den Entwurf bringt.
+ * Wird auf JEDER Seite geladen: sie sind der Rahmen, in dem alles andere
+ * steht.
+ *
+ * Der Kopf liegt FEST am oberen Rand — nicht sticky. Grund: body trägt
+ * overflow-x: hidden, und darunter ist position: sticky unzuverlässig, weil
+ * der Kasten dann an einem anderen Bezug klebt als am Fenster. fixed ist
+ * davon unabhängig.
  */
+
+:root {
+    --sz-kopf-hoch:  6.25rem;   /* Ausgangshöhe */
+    --sz-kopf-klein: 4.25rem;   /* nach dem Scrollen */
+    --sz-kopf-oben:  0px;       /* Platz für die WordPress-Adminleiste */
+}
 
 /* Sprungmarke — sichtbar erst beim Tabben, aber dann richtig. */
 .sz-sprung {
-    position: absolute;
+    position: fixed;
     left: -9999px;
     z-index: 100;
     padding: 0.75rem 1.25rem;
@@ -23,15 +33,39 @@
    =================================================================== */
 
 .sz-kopf {
-    position: relative;
+    position: fixed;
+    top: var(--sz-kopf-oben);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: var(--sz-kopf-hoch);
     background: var(--sz-bg);
     border-bottom: 1px solid var(--sz-border);
+    transition: height 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sz-kopf.ist-klein { height: var(--sz-kopf-klein); }
+
+/*
+ * Der Platzhalter. Immer die volle Höhe: der Kopf schrumpft erst beim
+ * Scrollen, und ganz oben braucht der Inhalt den vollen Abstand. Damit
+ * springt beim Schrumpfen nichts.
+ */
+#page { padding-top: var(--sz-kopf-hoch); }
+
+/* Die Adminleiste liegt darüber. Ab 782px wird sie mitgescrollt statt
+   fixiert — dort gehört der Kopf wieder ganz nach oben. */
+.admin-bar { --sz-kopf-oben: 32px; }
+
+@media screen and (max-width: 782px) {
+    .admin-bar { --sz-kopf-oben: 0px; }
 }
 
 .sz-kopf__innen {
     margin-inline: auto;
     max-width: 1400px;
-    padding: 1rem 1.5rem;
+    height: 100%;
+    padding-inline: 1.5rem;
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -41,21 +75,30 @@
     .sz-kopf__innen { padding-inline: 3rem; gap: 2.5rem; }
 }
 
-/* Das Logo. Feste Höhe, Breite folgt — sonst springt die Leiste beim
-   Laden, weil das Bild erst spät seine Maße meldet. */
-.sz-logo { display: inline-flex; align-items: center; flex-shrink: 0; }
-.sz-logo img { display: block; height: 38px; width: auto; }
+/* --- Logo ----------------------------------------------------------
+   Feste Höhe, Breite folgt — sonst springt die Leiste beim Laden, weil
+   das Bild erst spät seine Maße meldet. Schrumpft mit dem Kopf mit. */
+
+.sz-logo,
+.custom-logo-link { display: inline-flex; align-items: center; flex-shrink: 0; }
+
+.sz-logo img,
+.custom-logo-link img {
+    display: block;
+    height: 3.25rem;
+    width: auto;
+    transition: height 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sz-kopf.ist-klein .sz-logo img,
+.sz-kopf.ist-klein .custom-logo-link img { height: 2.15rem; }
 
 .sz-logo--text {
     font-family: var(--sz-display);
-    font-size: 1.35rem;
+    font-size: 1.6rem;
     color: var(--sz-ink);
     text-decoration: none;
 }
-
-/* WordPress' eigenes Website-Logo trägt eine andere Klasse. */
-.custom-logo-link { display: inline-flex; align-items: center; flex-shrink: 0; }
-.custom-logo-link img { display: block; height: 38px; width: auto; }
 
 /* --- Navigation --------------------------------------------------- */
 
@@ -86,7 +129,6 @@
 .sz-nav__liste a:hover,
 .sz-nav__liste .current-menu-item > a { color: var(--sz-bordeaux-text); }
 
-/* Untermenüs bleiben schlicht: ausklappen beim Anfahren, kein Theater. */
 .sz-nav__liste .sub-menu {
     list-style: none;
     margin: 0;
@@ -109,19 +151,18 @@
 .sz-werkzeuge {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     margin-left: auto;
     flex-shrink: 0;
 }
 
 /*
  * Astra setzt inline „button { padding: 15px 30px }“. Wer hier nur Breite
- * und Hoehe setzt, bekommt einen 62px breiten Knopf, in dem das Symbol auf
+ * und Höhe setzt, bekommt einen 62px breiten Knopf, in dem das Symbol auf
  * 0px zusammengequetscht wird — ein leeres Oval. Padding und min-width
- * muessen ausdruecklich zurueck.
+ * müssen ausdrücklich zurück.
  */
-.sz-werkzeug,
-.sz-kopf .sz-modus {
+.sz-werkzeug {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -130,7 +171,6 @@
     padding: 0;
     min-width: 0;
     line-height: 1;
-    font-size: 0.9rem;
     width: 2.25rem;
     height: 2.25rem;
     border: 1px solid var(--sz-border);
@@ -142,14 +182,9 @@
     transition: border-color 200ms ease, color 200ms ease;
 }
 
-/* Astra faerbt Knoepfe beim Anfahren ein. Hier soll nur der Rand
-   reagieren — dieselbe Kollision wie bei den Hero-Woertern. */
 .sz-werkzeug:hover,
 .sz-werkzeug:focus,
-.sz-werkzeug:focus-visible,
-.sz-kopf .sz-modus:hover,
-.sz-kopf .sz-modus:focus,
-.sz-kopf .sz-modus:focus-visible {
+.sz-werkzeug:focus-visible {
     background: transparent;
     box-shadow: none;
     color: var(--sz-bordeaux-text);
@@ -176,21 +211,94 @@
     text-align: center;
 }
 
-/* --- Suchfeld ------------------------------------------------------ */
+/* --- Hell/Dunkel als Schiebeschalter --------------------------------
+ *
+ * Das Markup bleibt, wie es war (Knopf mit zwei Zeichen) — nur die
+ * Gestaltung macht daraus einen Schalter. So bleibt der Kurzcode
+ * [sz_modus] unverändert nutzbar.
+ *
+ * Das Eltern-Stylesheet blendet je eines der beiden Zeichen aus
+ * (Spezifität 0-2-0). Hier sollen beide stehen, deshalb 0-3-0.
+ */
 
-.sz-suchfeld {
-    border-top: 1px solid var(--sz-border);
+.sz-kopf .sz-modus {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    width: 3.6rem;
+    height: 2rem;
+    padding: 0 0.45rem;
+    min-width: 0;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
     background: var(--sz-muted);
+    cursor: pointer;
+    line-height: 1;
+    transition: background 260ms ease, border-color 200ms ease;
 }
 
-.sz-suchfeld[hidden] { display: none; }
+.sz-kopf .sz-modus:hover,
+.sz-kopf .sz-modus:focus,
+.sz-kopf .sz-modus:focus-visible {
+    background: var(--sz-muted);
+    box-shadow: none;
+    border-color: var(--sz-bordeaux);
+}
+
+.sz-kopf .sz-modus .sz-modus-hell,
+.sz-kopf .sz-modus .sz-modus-dunkel {
+    display: inline-block;
+    font-size: 0.7rem;
+    line-height: 1;
+    color: var(--sz-ink-soft);
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Der Knopf, der wandert. */
+.sz-kopf .sz-modus::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0.2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--sz-surface);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    transform: translateY(-50%);
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-sz="dark"] .sz-kopf .sz-modus::after {
+    transform: translateY(-50%) translateX(1.55rem);
+}
+
+html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
+
+/* --- Suchfeld ------------------------------------------------------
+   Faellt unter die Leiste, statt sie hoeher zu machen — der Kopf hat
+   eine feste Hoehe, sonst spraenge der Platzhalter darunter. */
 
 .sz-suchfeld {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--sz-border);
+    border-bottom: 1px solid var(--sz-border);
+    background: var(--sz-muted);
     padding: 1rem 1.5rem;
     display: flex;
     gap: 0.75rem;
     align-items: center;
 }
+
+.sz-suchfeld[hidden] { display: none; }
 
 @media (min-width: 768px) { .sz-suchfeld { padding-inline: 3rem; } }
 
@@ -220,14 +328,17 @@
 
 .sz-kopf__auf {
     display: none;
+    box-sizing: border-box;
+    padding: 0;
+    min-width: 0;
     width: 2.25rem;
     height: 2.25rem;
-    margin-left: auto;
     border: 1px solid var(--sz-border);
     border-radius: 50%;
     background: transparent;
     cursor: pointer;
     position: relative;
+    flex-shrink: 0;
 }
 
 .sz-kopf__auf span,
@@ -246,15 +357,23 @@
 .sz-kopf__auf span::after  { content: ""; top: 5px; }
 
 @media (max-width: 979px) {
-    .sz-kopf__auf { display: block; }
-    .sz-werkzeuge { margin-left: 0; order: 3; }
+    :root { --sz-kopf-hoch: 4.75rem; --sz-kopf-klein: 4rem; }
 
+    .sz-kopf__auf { display: block; }
+    .sz-kopf__innen { gap: 0.75rem; }
+
+    /* Auf schmalen Fenstern klappt die Navigation unter die Leiste,
+       genau wie das Suchfeld — der Kopf selbst bleibt flach. */
     .sz-nav {
-        order: 4;
-        flex-basis: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
         display: none;
+        background: var(--sz-bg);
         border-top: 1px solid var(--sz-border);
-        padding-top: 1rem;
+        border-bottom: 1px solid var(--sz-border);
+        padding: 1.25rem 1.5rem;
     }
 
     .sz-nav.ist-offen { display: block; }
@@ -285,7 +404,7 @@
 }
 
 .sz-fuss__marke .sz-logo img,
-.sz-fuss__marke .custom-logo-link img { height: 34px; }
+.sz-fuss__marke .custom-logo-link img { height: 2.75rem; }
 
 .sz-fuss__anschrift {
     margin: 1.25rem 0 0;
@@ -326,7 +445,17 @@
     color: var(--sz-ink-soft);
 }
 
+/* ===================================================================
+   Reduzierte Bewegung: die Größen ändern sich weiterhin, nur ohne
+   Übergang. Ein Kopf, der beim Scrollen springt, ist immer noch besser
+   als einer, der die Einstellung ignoriert.
+   =================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
+    .sz-kopf,
+    .sz-logo img,
+    .custom-logo-link img,
+    .sz-kopf .sz-modus::after,
     .sz-nav__liste a,
     .sz-werkzeug,
     .sz-fuss__liste a { transition: none; }
