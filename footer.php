@@ -99,6 +99,20 @@ $sz_konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('my
 
 </div><!-- #page -->
 
+<?php
+/*
+ * Die Bildlaufanzeige: der Porter faehrt am rechten Rand eine gestrichelte
+ * Route hinunter, waehrend man scrollt. Reine Zier, deshalb aria-hidden und
+ * unter 900px ausgeblendet — auf schmalen Fenstern nimmt sie nur Platz weg.
+ */
+?>
+<div class="sz-lauf" aria-hidden="true">
+    <span class="sz-lauf__route"></span>
+    <img class="sz-lauf__porter" data-sz-lauf
+         src="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/porter-oben.webp'); ?>"
+         width="672" height="1080" alt="" loading="lazy" decoding="async">
+</div>
+
 <?php wp_footer(); ?>
 </body>
 </html>

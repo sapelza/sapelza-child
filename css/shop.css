@@ -1,0 +1,426 @@
+/*
+ * Katalogseiten — Kategorie, Produkt, Warenkorb, Kasse, Konto.
+ *
+ * Nur dort geladen, wo sie gebraucht werden. Astras und WooCommerces
+ * eigene Regeln bleiben bestehen; hier wird nur überschrieben, was die
+ * Designsprache trägt.
+ *
+ * Durchgehend var(--sz-*): nur diese Token kippen unter
+ * html[data-sz="dark"] mit.
+ */
+
+/* ===================================================================
+   Kopf der Kategorieseite
+   =================================================================== */
+
+.sz-katalog__kopf {
+    padding-block: clamp(2rem, 5vh, 4rem) 2.5rem;
+    border-bottom: 1px solid var(--sz-border);
+    margin-bottom: 2.5rem;
+}
+
+.sz-katalog__kicker {
+    margin: 0 0 1rem;
+    font-family: var(--sz-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-katalog__titel {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+}
+
+.sz-katalog__text {
+    margin-top: 1.25rem;
+    max-width: 46ch;
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+}
+
+/* WooCommerce setzt eine eigene Überschrift — unsere steht schon da. */
+.woocommerce-products-header__title,
+.woocommerce-products-header { display: none; }
+
+/* --- Filterreihen --------------------------------------------------- */
+
+.sz-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.sz-chips__label {
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    margin-right: 0.5rem;
+}
+
+.sz-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    font-size: 0.85rem;
+    color: var(--sz-ink);
+    text-decoration: none;
+    transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.sz-chip:hover { border-color: var(--sz-bordeaux); color: var(--sz-bordeaux-text); }
+
+.sz-chip[aria-current] {
+    background: var(--sz-bordeaux);
+    border-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+.sz-chip__zahl { font-family: var(--sz-mono); font-size: 0.66rem; opacity: 0.65; }
+
+.sz-katalog__zeile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--sz-ink-soft);
+}
+
+.sz-katalog__zeile .woocommerce-result-count { margin: 0; }
+.sz-katalog__zeile select { font-family: var(--sz-body); font-size: 0.85rem; }
+
+/* ===================================================================
+   Das Produktraster
+   =================================================================== */
+
+.woocommerce ul.products,
+ul.products {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin: 0 0 3rem;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--sz-border);
+    border-top: 1px solid var(--sz-border);
+}
+
+@media (min-width: 640px)  { .woocommerce ul.products, ul.products { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .woocommerce ul.products, ul.products { grid-template-columns: repeat(3, 1fr); } }
+
+/* WooCommerce setzt Breiten und Abstaende je Spalte — im Raster stoert
+   das nur, deshalb ausdruecklich zurueck. */
+.woocommerce ul.products li.product,
+ul.products li.product {
+    width: auto !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 1.5rem;
+    border-right: 1px solid var(--sz-border);
+    border-bottom: 1px solid var(--sz-border);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/*
+ * Kein eigenes content-product.php.
+ *
+ * WooCommerces Kachel ruft woocommerce_after_shop_loop_item_title auf —
+ * genau dort ersetzt B2BKing die Preise. Eine eigene Vorlage wuerde den
+ * Haken ueberspringen; der Preis verschwaende still oder waere falsch.
+ * Deshalb bleibt die Auszeichnung von WooCommerce, und die Gestaltung
+ * passiert hier.
+ */
+
+/* Dasselbe Bordeaux-Licht wie auf der Startseite. */
+.woocommerce ul.products li.product::before,
+ul.products li.product::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(circle at 50% 100%, var(--sz-bordeaux-soft), transparent 70%);
+    opacity: 0;
+    transform: translateY(30%);
+    transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.woocommerce ul.products li.product:hover::before,
+.woocommerce ul.products li.product:focus-within::before { opacity: 1; transform: translateY(0); }
+
+.woocommerce ul.products li.product > * { position: relative; z-index: 1; }
+
+/* Der Verweis, der Bild und Titel traegt. */
+.woocommerce ul.products li.product a.woocommerce-LoopProduct-link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Quadratisches Bildfeld: sonst fluchten die Zeilen nicht, weil die
+   Produktfotos unterschiedlich hoch sind. */
+.woocommerce ul.products li.product a img,
+ul.products li.product a img {
+    aspect-ratio: 1;
+    object-fit: contain;
+    width: 100%;
+    height: auto;
+    margin: 0 0 1.25rem !important;
+    padding: 1.25rem;
+    background: var(--sz-muted);
+    box-sizing: border-box;
+    mix-blend-mode: multiply;
+}
+
+html[data-sz="dark"] .woocommerce ul.products li.product a img { mix-blend-mode: normal; }
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: 1.15rem !important;
+    line-height: 1.15;
+    padding: 0 !important;
+    margin: 0 0 0.6rem !important;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    color: var(--sz-ink);
+}
+
+/* Die Kategorie ueber dem Namen, so wie im Entwurf die Marke. */
+.woocommerce ul.products li.product .woocommerce-loop-category__title {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: 1.15rem !important;
+}
+
+.woocommerce ul.products li.product .price {
+    font-family: var(--sz-mono);
+    font-size: 1rem !important;
+    color: var(--sz-ink) !important;
+    margin: 0 0 0.5rem !important;
+    display: block;
+}
+
+.woocommerce ul.products li.product .price del { opacity: 0.5; margin-right: 0.4rem; }
+.woocommerce ul.products li.product .price ins { text-decoration: none; color: var(--sz-bordeaux-text); }
+
+/* B2BKings Hinweis anstelle des Preises — er soll wie ein Hinweis
+   aussehen, nicht wie ein Preis. */
+.woocommerce ul.products li.product .b2bking_hidden_price_message,
+.woocommerce ul.products li.product .price .b2bking_login_message {
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--sz-bordeaux-text);
+}
+
+/* Der Warenkorb-Knopf unten. */
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product .added_to_cart {
+    margin-top: auto !important;
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 0.75rem 1rem !important;
+    border-radius: var(--sz-radius) !important;
+    background: var(--sz-bordeaux) !important;
+    color: var(--sz-bordeaux-fg) !important;
+    font-family: var(--sz-body);
+    font-size: 0.8rem !important;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+}
+
+.woocommerce ul.products li.product .added_to_cart {
+    background: transparent !important;
+    color: var(--sz-bordeaux-text) !important;
+    border: 1px solid var(--sz-border-strong);
+    margin-top: 0.5rem !important;
+}
+
+.woocommerce ul.products li.product .onsale {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-family: var(--sz-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--sz-radius);
+    min-height: 0;
+    min-width: 0;
+    line-height: 1.4;
+}
+
+/* ===================================================================
+   Blätterung
+   =================================================================== */
+
+.woocommerce nav.woocommerce-pagination ul {
+    border: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    justify-content: center;
+}
+
+.woocommerce nav.woocommerce-pagination ul li { border: 0; margin: 0; }
+
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+    font-family: var(--sz-mono);
+    font-size: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    color: var(--sz-ink);
+}
+
+.woocommerce nav.woocommerce-pagination ul li span.current {
+    background: var(--sz-bordeaux);
+    border-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+/* ===================================================================
+   Produktseite
+   =================================================================== */
+
+.single-product div.product { padding-block: clamp(2rem, 5vh, 3.5rem); }
+
+.woocommerce-breadcrumb {
+    font-family: var(--sz-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft) !important;
+    margin-bottom: 2rem !important;
+}
+
+.woocommerce-breadcrumb a { color: var(--sz-ink-soft); }
+.woocommerce-breadcrumb a:hover { color: var(--sz-bordeaux-text); }
+
+.single-product div.product .product_title {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4.4vw, 3.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+}
+
+.single-product div.product .price {
+    font-family: var(--sz-mono);
+    font-size: 1.9rem !important;
+    color: var(--sz-ink) !important;
+    margin-bottom: 1.25rem;
+}
+
+.single-product div.product .price del { opacity: 0.5; font-size: 1.1rem; }
+.single-product div.product .price ins { text-decoration: none; color: var(--sz-bordeaux-text); }
+
+.single-product div.product .woocommerce-product-details__short-description {
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+    margin-bottom: 1.5rem;
+}
+
+.single-product .product_meta {
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--sz-ink-soft);
+    border-top: 1px solid var(--sz-border);
+    padding-top: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.single-product div.product form.cart .button {
+    padding: 1rem 2rem !important;
+    border-radius: var(--sz-radius) !important;
+    background: var(--sz-bordeaux) !important;
+    color: var(--sz-bordeaux-fg) !important;
+    font-weight: 600;
+}
+
+/* Das Bildfeld der Produktseite bekommt denselben ruhigen Grund wie die
+   Kacheln — ohne ihn steht ein Platzhalter nackt auf Weiss. */
+.single-product div.product .woocommerce-product-gallery__image {
+    background: var(--sz-muted);
+}
+
+/* --- B2BKing ------------------------------------------------------
+   Die Staffelpreise sind der wichtigste Teil dieser Seite. Sie kommen
+   vom Plugin; hier bekommen sie nur die Hausschrift. */
+
+.b2bking_pricing_table,
+table.b2bking_bulk_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+    margin-block: 1.5rem;
+}
+
+.b2bking_pricing_table th,
+.b2bking_pricing_table td,
+table.b2bking_bulk_table th,
+table.b2bking_bulk_table td {
+    border: 1px solid var(--sz-border);
+    padding: 0.7rem 1rem;
+    text-align: left;
+}
+
+.b2bking_pricing_table th,
+table.b2bking_bulk_table th {
+    font-size: 0.62rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    font-weight: 400;
+    background: var(--sz-muted);
+}
+
+/* ===================================================================
+   Ähnliche Produkte
+   =================================================================== */
+
+.related.products > h2,
+.up-sells > h2,
+.cross-sells > h2 {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-kachel::before { opacity: 1; transform: none; transition: none; }
+    .sz-chip { transition: none; }
+}

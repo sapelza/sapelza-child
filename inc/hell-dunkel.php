@@ -57,9 +57,24 @@ document.addEventListener("click", function (e) {
  */
 function sz_modus_knopf(): string
 {
+    /*
+     * Zeichen statt Schriftzeichen: ☾ und ☀ werden je nach Schriftart
+     * unterschiedlich gross und unterschiedlich hoch gesetzt — neben den
+     * gezeichneten Symbolen daneben fiel das sofort auf. Als SVG haben
+     * alle dieselbe Groesse und dieselbe Strichstaerke.
+     */
+    $gemein = 'width="14" height="14" viewBox="0 0 24 24" fill="none" '
+            . 'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
+            . 'stroke-linejoin="round" aria-hidden="true" focusable="false"';
+
+    $mond  = '<svg ' . $gemein . '><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a7 7 0 1 0 10.5 10.5Z"/></svg>';
+    $sonne = '<svg ' . $gemein . '><circle cx="12" cy="12" r="3.6"/>'
+           . '<path d="M12 3.2v1.6M12 19.2v1.6M3.2 12h1.6M19.2 12h1.6'
+           . 'M5.9 5.9 7 7M17 17l1.1 1.1M18.1 5.9 17 7M7 17l-1.1 1.1"/></svg>';
+
     return '<button type="button" class="sz-modus" aria-label="Hell oder dunkel">'
-         . '<span class="sz-modus-hell" aria-hidden="true">&#9790;</span>'
-         . '<span class="sz-modus-dunkel" aria-hidden="true">&#9728;</span>'
+         . '<span class="sz-modus-hell" aria-hidden="true">' . $mond . '</span>'
+         . '<span class="sz-modus-dunkel" aria-hidden="true">' . $sonne . '</span>'
          . '</button>';
 }
 

@@ -250,14 +250,24 @@
 
 .sz-kopf .sz-modus .sz-modus-hell,
 .sz-kopf .sz-modus .sz-modus-dunkel {
-    display: inline-block;
-    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9rem;
+    height: 0.9rem;
     line-height: 1;
     color: var(--sz-ink-soft);
     position: relative;
     z-index: 1;
     pointer-events: none;
 }
+
+.sz-kopf .sz-modus svg { display: block; width: 0.875rem; height: 0.875rem; }
+
+/* Das jeweils gewaehlte Zeichen tritt hervor, das andere zurueck — sonst
+   sieht der Schalter aus, als waere keine Seite aktiv. */
+html:not([data-sz="dark"]) .sz-kopf .sz-modus .sz-modus-dunkel,
+html[data-sz="dark"] .sz-kopf .sz-modus .sz-modus-hell { color: var(--sz-ink); }
 
 /* Der Knopf, der wandert. */
 .sz-kopf .sz-modus::after {
@@ -296,6 +306,9 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
     display: flex;
     gap: 0.75rem;
     align-items: center;
+    /* Mittig statt linksbuendig — das Feld steht sonst verloren unter
+       dem Logo, waehrend rechts daneben nichts passiert. */
+    justify-content: center;
 }
 
 .sz-suchfeld[hidden] { display: none; }
@@ -459,4 +472,50 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
     .sz-nav__liste a,
     .sz-werkzeug,
     .sz-fuss__liste a { transition: none; }
+}
+
+/* ===================================================================
+   Bildlaufanzeige — der Porter am rechten Rand
+   =================================================================== */
+
+.sz-lauf {
+    position: fixed;
+    right: 1.75rem;
+    top: calc(var(--sz-kopf-oben) + var(--sz-kopf-klein) + 2rem);
+    bottom: 3rem;
+    width: 2px;
+    z-index: 40;
+    pointer-events: none;
+}
+
+/* Die Route: gestrichelt, in Bordeaux, dezent. */
+.sz-lauf__route {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+        var(--sz-bordeaux) 0 6px,
+        transparent 6px 12px
+    );
+    background-size: 2px 12px;
+    opacity: 0.28;
+}
+
+.sz-lauf__porter {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 34px;
+    height: auto;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
+}
+
+/* Unter 900px nimmt sie nur Platz weg. */
+@media (max-width: 900px) {
+    .sz-lauf { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-lauf__porter { transition: none; }
 }

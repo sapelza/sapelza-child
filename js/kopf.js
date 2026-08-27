@@ -59,8 +59,41 @@
         pruefen();
     }
 
+    /*
+     * Der Porter als Bildlaufanzeige.
+     *
+     * Er faehrt die gestrichelte Route am rechten Rand hinunter, im
+     * Verhaeltnis zum Scrollfortschritt. Kein eigener Takt: der
+     * Scrollbalken ist die Zeitachse, sonst laeuft er der Seite hinterher.
+     */
+    function laufAufsetzen() {
+        var bahn = document.querySelector(".sz-lauf");
+        var porter = document.querySelector("[data-sz-lauf]");
+        if (!bahn || !porter) return;
+
+        var wartet = false;
+
+        function setzen() {
+            var hoehe = document.documentElement.scrollHeight - window.innerHeight;
+            var y = window.scrollY || document.documentElement.scrollTop || 0;
+            var p = hoehe > 0 ? y / hoehe : 0;
+            if (p < 0) p = 0; else if (p > 1) p = 1;
+            porter.style.top = (p * 100) + "%";
+        }
+
+        window.addEventListener("scroll", function () {
+            if (wartet) return;
+            wartet = true;
+            window.requestAnimationFrame(function () { wartet = false; setzen(); });
+        }, { passive: true });
+
+        window.addEventListener("resize", setzen);
+        setzen();
+    }
+
     function los() {
         schrumpfenAufsetzen();
+        laufAufsetzen();
         umschalten(
             document.querySelector('.sz-kopf__auf'),
             document.getElementById('sz-nav'),
