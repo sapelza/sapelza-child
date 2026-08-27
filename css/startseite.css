@@ -14,6 +14,20 @@
    Idiome — in der Vorschau global, hier nur für die Startseite
    =================================================================== */
 
+/*
+ * Astra legt Seiteninhalte in .ast-container mit 20px Innenabstand und
+ * einer Maximalbreite. Die Kapitel sollen aber randlos laufen: der dunkle
+ * Tour-Abschnitt ist als volle Bahn gedacht, nicht als Karte. Eingerueckt
+ * bleibt trotzdem alles — dafuer sorgt .wrap, nicht der Container.
+ *
+ * Nur auf dieser Vorlage, damit Shop und Kasse ihren Container behalten.
+ */
+.page-template-page-startseite #content .ast-container {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .sz-start {
     background: var(--sz-bg);
     color: var(--sz-ink);
