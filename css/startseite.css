@@ -131,8 +131,20 @@
     transition: border-color 220ms ease;
 }
 
+/*
+ * Astra setzt inline „button:focus, button:hover { background-color: … }“.
+ * Das ist 0-1-1 und schlaegt .sz-hero__wort mit 0-1-0 — beim Anfahren lag
+ * deshalb ein voller Bordeaux-Block hinter dem Wort statt einer Linie.
+ * Mit Pseudoklasse sind wir bei 0-2-0 und gewinnen.
+ */
 .sz-hero__wort:hover,
-.sz-hero__wort:focus-visible { border-bottom-color: var(--sz-bordeaux); }
+.sz-hero__wort:focus,
+.sz-hero__wort:focus-visible {
+    background: none;
+    box-shadow: none;
+    color: var(--sz-bordeaux-text);
+    border-bottom-color: var(--sz-bordeaux);
+}
 
 .sz-hero__suche {
     margin-top: 2.75rem;

@@ -93,9 +93,17 @@
         }
 
         if (sanft.matches) {
-            /* Endzustand ohne Fahrt: ganze Strecke befahren, alles sichtbar. */
+            /*
+             * Endzustand ohne Fahrt. Der Porter wird NICHT versteckt: reduzierte
+             * Bewegung heisst „nicht animieren“, nicht „weglassen“. Er parkt am
+             * Lager in Toblach — das Bild bleibt vollstaendig, nur still.
+             */
             strecke.style.strokeDashoffset = 0;
-            porter.style.display = 'none';
+            var kb0 = karte.getBoundingClientRect();
+            var lager = strecke.getPointAtLength(laenge * 0.5);
+            porter.style.transform =
+                'translate(' + (lager.x * (kb0.width / 1000)) + 'px, '
+                + (lager.y * (kb0.width / 1000)) + 'px) translate(-50%, -78%)';
             for (var i = 0; i < zusagen.length; i++) zusagen[i].classList.add('ist-da');
             return;
         }
