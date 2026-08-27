@@ -806,9 +806,15 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
 
 /* --- Abschnittsüberschriften --------------------------------------- */
 
+/*
+ * Nur die Abschnittsueberschriften. Die erste Fassung traf ueber
+ * .wc-block-components-title auch die Produktnamen in der
+ * Bestelluebersicht — die standen dann in 1,6rem Serifenschrift und
+ * brachen mitten im Wort um.
+ */
 .woocommerce-checkout h3,
-.woocommerce-checkout .wc-block-components-title,
-.woocommerce-checkout .wc-block-components-checkout-step__title {
+.woocommerce-checkout .wc-block-components-checkout-step__title,
+.woocommerce-checkout .wc-block-components-totals-wrapper > .wc-block-components-title {
     font-family: var(--sz-display) !important;
     font-weight: 400 !important;
     font-size: 1.6rem !important;
@@ -868,19 +874,35 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
 
 /* --- Zahlarten als Zeilen, wie im Entwurf ---------------------------- */
 
+/*
+ * Links MUSS Platz fuer den Knopf bleiben: Blocks setzt ihn absolut, und
+ * ein zu kleiner Innenabstand schiebt den Text darunter. Genau das war in
+ * der ersten Fassung zu sehen — "chpustertal Kostenlos".
+ */
 .wc-block-components-radio-control__option,
 .woocommerce-checkout .wc_payment_method label {
     border: 1px solid var(--sz-border-strong);
     border-radius: var(--sz-radius);
-    padding: 1rem 1.15rem !important;
+    padding: 1rem 1.15rem 1rem 2.9rem !important;
     margin-bottom: 0.6rem;
     background: var(--sz-bg);
 }
 
+/* Zurueckhaltend: eine Bordeaux-Kante genuegt, eine rosa Flaeche
+   schreit. */
 .wc-block-components-radio-control__option--checked,
 .woocommerce-checkout .wc_payment_method input:checked + label {
     border-color: var(--sz-bordeaux);
-    background: var(--sz-bordeaux-soft);
+    background: color-mix(in srgb, var(--sz-bordeaux) 6%, transparent);
+}
+
+/* Produktnamen in der Bestelluebersicht bleiben Fliesßtext. */
+.wc-block-components-order-summary-item__description .wc-block-components-product-name {
+    font-family: var(--sz-body) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.35;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .woocommerce-checkout ul.wc_payment_methods { list-style: none; padding: 0; border: 0 !important; }

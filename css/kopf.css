@@ -1,4 +1,47 @@
 /*
+ * Idiome, die auf JEDER Seite gelten.
+ *
+ * Sie standen zuerst als .sz-start .mono in startseite.css — damit galten
+ * sie nur auf der Startseite. In der Kasse stand die Kapitelmarke deshalb
+ * als nackter Fließtext ohne Haarlinie. Klassen, die überall benutzt
+ * werden, muessen auch ueberall definiert sein.
+ */
+
+.mono    { font-family: var(--sz-mono); }
+.display { font-family: var(--sz-display); font-weight: 400; }
+
+.hairline {
+    height: 1px;
+    background: var(--sz-border);
+    border: 0;
+}
+
+.sz-kapitelmarke {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    margin: 0 0 2.5rem;
+}
+
+.sz-kapitelmarke__nr {
+    font-family: var(--sz-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-kapitelmarke .hairline { flex: 1; }
+
+.sz-kapitelmarke__kicker {
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    white-space: nowrap;
+}
+
+/*
  * Kopf- und Fußzeile.
  *
  * Wird auf JEDER Seite geladen: sie sind der Rahmen, in dem alles andere
