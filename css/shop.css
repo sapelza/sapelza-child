@@ -888,12 +888,18 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     background: var(--sz-bg);
 }
 
-/* Zurueckhaltend: eine Bordeaux-Kante genuegt, eine rosa Flaeche
-   schreit. */
+/*
+ * Die Auswahl bekommt KEINE Flaeche, nur eine kraeftigere Kante und einen
+ * Bordeaux-Balken links. Eine eingefaerbte Flaeche zieht mehr
+ * Aufmerksamkeit auf sich als der Bestellknopf — und die Versandart ist
+ * nicht das Wichtigste auf dieser Seite.
+ */
 .wc-block-components-radio-control__option--checked,
-.woocommerce-checkout .wc_payment_method input:checked + label {
+.woocommerce-checkout .wc_payment_method input:checked + label,
+.woocommerce-checkout li.wc_payment_method:has(input:checked) label {
     border-color: var(--sz-bordeaux);
-    background: color-mix(in srgb, var(--sz-bordeaux) 6%, transparent);
+    box-shadow: inset 3px 0 0 0 var(--sz-bordeaux);
+    background: var(--sz-bg);
 }
 
 /* Produktnamen in der Bestelluebersicht bleiben Fliesßtext. */
@@ -938,4 +944,75 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     border-color: var(--sz-bordeaux) !important;
     box-shadow: none !important;
     outline: none;
+}
+
+
+/* ===================================================================
+   Klassische Kasse
+   =================================================================== */
+
+.woocommerce-checkout form.checkout {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+@media (min-width: 1024px) {
+    .woocommerce-checkout form.checkout { grid-template-columns: 1.35fr 0.65fr; column-gap: 3rem; }
+    .woocommerce-checkout form.checkout #customer_details { grid-column: 1; }
+    .woocommerce-checkout form.checkout #order_review_heading,
+    .woocommerce-checkout form.checkout #order_review { grid-column: 2; }
+}
+
+/* Die Adressspalten stehen untereinander, nicht nebeneinander: zwei
+   halbe Spalten in einer schon halben Spalte werden zu Schnipseln. */
+.woocommerce-checkout #customer_details .col-1,
+.woocommerce-checkout #customer_details .col-2 { width: 100%; float: none; }
+
+.woocommerce-checkout #order_review_heading {
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+}
+
+.woocommerce-checkout #order_review {
+    position: sticky;
+    top: calc(var(--sz-kopf-oben) + var(--sz-kopf-klein) + 1.5rem);
+}
+
+.woocommerce-checkout #order_review .shop_table {
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+}
+
+.woocommerce-checkout #order_review .product-name { font-family: var(--sz-body); }
+
+.woocommerce-checkout #place_order {
+    margin-top: 1.25rem;
+    float: none;
+}
+
+/* Zahlung steht jetzt links unter der Adresse — die Kastenoptik der
+   Bestellkarte braucht sie dort nicht. */
+.woocommerce-checkout #payment {
+    background: transparent !important;
+    border-radius: 0;
+    margin-top: 2rem;
+}
+
+.woocommerce-checkout #payment .payment_box {
+    background: var(--sz-muted) !important;
+    border-radius: var(--sz-radius);
+    font-size: 0.85rem;
+    color: var(--sz-ink-soft);
+}
+
+.woocommerce-checkout #payment .payment_box::before { display: none !important; }
+
+.woocommerce-checkout .woocommerce-terms-and-conditions-wrapper {
+    font-size: 0.85rem;
+    color: var(--sz-ink-soft);
+    margin-top: 1.5rem;
 }

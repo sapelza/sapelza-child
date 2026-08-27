@@ -264,3 +264,29 @@ add_filter('the_content', function ($inhalt) {
     <?php
     return (string) ob_get_clean() . $inhalt;
 }, 18);
+
+/* ===================================================================
+   Klassische Kasse — Zahlung nach links
+   =================================================================== */
+
+/**
+ * Die Zahlungsauswahl gehört unter die Adresse, nicht in die Bestellkarte.
+ *
+ * WooCommerce hängt sie standardmäßig an woocommerce_checkout_order_review
+ * (Priorität 20) — also in die rechte Spalte, zusammen mit Summen und
+ * Bestellknopf. Im Entwurf steht sie links unter der Adresse, und rechts
+ * bleibt nur die Bestellung mit dem Knopf.
+ *
+ * Kein Vorlagen-Eingriff nötig: der Haken wird abgehängt und woanders
+ * wieder eingehängt. So bleibt jede Erweiterung, die sich in das Formular
+ * einklinkt, unangetastet.
+ *
+ * Wirkt nur auf der klassischen Kasse. Auf der Block-Fassung gibt es diese
+ * Haken nicht — dort passiert schlicht nichts.
+ */
+add_action('wp', function () {
+    if (!function_exists('is_checkout') || !is_checkout()) return;
+
+    remove_action('woocommerce_checkout_order_review', 'woocommerce_checkout_payment', 20);
+    add_action('woocommerce_checkout_after_customer_details', 'woocommerce_checkout_payment', 20);
+});
