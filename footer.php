@@ -106,6 +106,20 @@ $sz_konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('my
  * unter 900px ausgeblendet — auf schmalen Fenstern nimmt sie nur Platz weg.
  */
 ?>
+<?php
+/*
+ * Das Wasserzeichen.
+ *
+ * Die Konturform des Logos, sehr blass, auf jeder Seite. Sie loest die
+ * wechselnden Riesenziffern ab, die uneinheitlich wirkten. Bewusst das
+ * echte Logo und kein Nachbau — entsaettigt und stark zurueckgenommen.
+ */
+?>
+<div class="sz-wasserzeichen" aria-hidden="true">
+    <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/logo.png'); ?>"
+         width="219" height="141" alt="" decoding="async">
+</div>
+
 <div class="sz-lauf" aria-hidden="true">
     <span class="sz-lauf__route"></span>
     <img class="sz-lauf__porter" data-sz-lauf

@@ -574,3 +574,81 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 @media (prefers-reduced-motion: reduce) {
     .sz-lauf__porter { transition: none; }
 }
+
+/* ===================================================================
+   Wasserzeichen
+   ===================================================================
+
+   Die Logoform, sehr blass, auf jeder Seite. Sie hat die wechselnden
+   Riesenziffern abgeloest, die uneinheitlich wirkten.
+
+   Entsaettigt statt nachgebaut: das echte Logo, nur zurueckgenommen.
+   Ein zweites, eigens gezeichnetes Logo waere ein zweites Logo.
+*/
+
+.sz-wasserzeichen {
+    position: fixed;
+    right: -6vw;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    width: min(52vw, 780px);
+}
+
+.sz-wasserzeichen img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: grayscale(1);
+    opacity: 0.045;
+}
+
+html[data-sz="dark"] .sz-wasserzeichen img { opacity: 0.06; filter: grayscale(1) invert(1); }
+
+/* Der Inhalt muss darueber liegen, sonst verschwindet Text dahinter. */
+#page { position: relative; z-index: 1; }
+
+@media (max-width: 900px) {
+    .sz-wasserzeichen { display: none; }
+}
+
+@media print {
+    .sz-wasserzeichen { display: none !important; }
+}
+
+/* ===================================================================
+   Kicker
+   ===================================================================
+
+   Stand frueher in startseite.css und war auf .sz-start beschraenkt.
+   Das Etikettenkapitel auf "Meine Artikel" braucht ihn ebenso, also
+   gehoert er hierher — kopf.css laedt ueberall.
+*/
+
+/* Der Kicker: Mono, klein, weit gesperrt, bordeaux. Nicht die
+   Display-Variante der übrigen Seiten — der Rhythmus hängt daran. */
+.kicker {
+    font-family: var(--sz-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.kicker__punkt {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--sz-bordeaux);
+    animation: sz-puls 2.4s ease-in-out infinite;
+}
+
+@keyframes sz-puls {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}

@@ -47,31 +47,8 @@
 .sz-start .display { font-family: var(--sz-display); font-weight: 400; }
 .sz-start .mono    { font-family: var(--sz-mono); }
 
-/* Der Kicker: Mono, klein, weit gesperrt, bordeaux. Nicht die
-   Display-Variante der übrigen Seiten — der Rhythmus hängt daran. */
-.sz-start .kicker {
-    font-family: var(--sz-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--sz-bordeaux-text);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.sz-start .kicker__punkt {
-    width: 0.4rem;
-    height: 0.4rem;
-    border-radius: 50%;
-    background: var(--sz-bordeaux);
-    animation: sz-puls 2.4s ease-in-out infinite;
-}
-
-@keyframes sz-puls {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: 0.35; }
-}
+/* Kicker und Puls stehen in kopf.css — sie werden auch auf
+   "Meine Artikel" gebraucht, und kopf.css laedt auf jeder Seite. */
 
 /* Haarlinie — trägt die Kapitelmarken */
 .sz-start .hairline {

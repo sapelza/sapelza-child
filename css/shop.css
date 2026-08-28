@@ -1453,3 +1453,145 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     .sz-bogen__blatt { border: 0; width: auto; padding: 8mm; }
     @page { size: A4; margin: 0; }
 }
+
+/* ===================================================================
+   Meine Artikel — Spalten, Bestellen, Etikettenkapitel
+   =================================================================== */
+
+.sz-artikelsuche { display: block; margin-bottom: 2rem; }
+
+.sz-artikelsuche input[type="search"] {
+    width: 100%;
+    max-width: 30rem;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-size: 0.95rem;
+}
+
+.sz-artikelkopf {
+    display: none;
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--sz-border-strong);
+}
+
+/* Spaltenbild ab Tablet — darunter stapelt sich die Zeile. */
+@media (min-width: 1000px) {
+    .sz-artikelkopf,
+    .sz-artikelzeile {
+        display: grid;
+        grid-template-columns: 1.5rem 1.4fr 1.8fr 6rem 6rem auto auto;
+        gap: 1.25rem;
+        align-items: center;
+    }
+}
+
+.sz-artikelzeile[hidden] { display: none !important; }
+
+.sz-artikelzeile__katalog { min-width: 0; }
+.sz-artikelmarke { display: block; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sz-bordeaux-text); }
+.sz-artikelrhythmus { display: block; margin-top: 0.2rem; font-size: 0.72rem; color: var(--sz-ink-soft); }
+
+.sz-artikelbestand { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; white-space: nowrap; }
+
+.sz-inkorb {
+    box-sizing: border-box;
+    width: 2.1rem; height: 2.1rem;
+    padding: 0 !important; min-width: 0;
+    border: 1px solid var(--sz-bordeaux);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--sz-bordeaux-text);
+    font-size: 1.05rem; line-height: 1;
+    cursor: pointer;
+    transition: background 200ms ease, color 200ms ease;
+}
+
+.sz-inkorb:hover { background: var(--sz-bordeaux); color: var(--sz-bordeaux-fg); }
+.sz-inkorb.ist-drin { background: var(--sz-bordeaux); color: var(--sz-bordeaux-fg); }
+.sz-inkorb:disabled { opacity: 0.4; cursor: wait; }
+
+.sz-artikelfuss { margin-top: 1.25rem; font-size: 0.78rem; color: var(--sz-ink-soft); }
+
+/* --- Das Etikettenkapitel --------------------------------------------- */
+
+.sz-etikettenkapitel { margin-top: 4rem; padding-block: clamp(3rem, 6vh, 5rem) 0; }
+
+.sz-etiketten__titel {
+    margin: 1.25rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4.6vw, 3.6rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+}
+
+.sz-etiketten__lead { margin: 1.25rem 0 0; max-width: 58ch; line-height: 1.7; color: var(--sz-ink-soft); }
+
+.sz-etiketten__wahl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.sz-etiketten-zahl { font-size: 0.7rem; letter-spacing: 0.16em; color: var(--sz-ink-soft); margin-right: 0.5rem; }
+
+.sz-etiketten__groessen { display: inline-flex; padding: 0.25rem; border: 1px solid var(--sz-border-strong); border-radius: 999px; }
+
+.sz-groesse {
+    box-sizing: border-box;
+    padding: 0.5rem 1.1rem !important;
+    min-width: 0;
+    border: 0; border-radius: 999px;
+    background: transparent;
+    color: var(--sz-ink-soft);
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    cursor: pointer;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.sz-groesse[aria-pressed="true"] { background: var(--sz-bordeaux); color: var(--sz-bordeaux-fg); }
+
+.sz-etiketten__vorschautitel {
+    margin: 2.5rem 0 1rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-etiketten__vorschau {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.sz-etiketten__vorschau .sz-etikett {
+    border: 1px solid var(--sz-border);
+    background: #fff;
+    border-radius: var(--sz-radius);
+}
+
+.sz-artikelbereich { margin-block: 2rem; }
+
+/* Der Bestandspunkt: gruen heisst lieferbar. Nur ein Punkt, keine
+   Ampel — mehr Farbe waere mehr Behauptung, als der Bestand hergibt. */
+.sz-punkt {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--sz-border-strong);
+    flex: none;
+}
+
+.sz-punkt--da { background: #2f7d4f; }
