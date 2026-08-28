@@ -1323,3 +1323,133 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     background: var(--sz-muted);
     color: var(--sz-ink-soft);
 }
+
+/* ===================================================================
+   Etiketten
+   =================================================================== */
+
+.sz-etiketten-leiste {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-muted);
+    font-size: 0.85rem;
+}
+
+.sz-etiketten-zahl { font-size: 0.7rem; letter-spacing: 0.16em; color: var(--sz-ink-soft); }
+.sz-etiketten-groesse { display: flex; align-items: center; gap: 0.6rem; margin-left: auto; }
+.sz-etiketten-groesse .mono { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sz-ink-soft); }
+.sz-etiketten-groesse select { font-size: 0.82rem; padding: 0.4rem 0.6rem; border: 1px solid var(--sz-border-strong); border-radius: var(--sz-radius); background: var(--sz-surface); color: var(--sz-ink); }
+
+.sz-artikelwahl { display: inline-flex; align-items: center; }
+
+.sz-qr-knopf {
+    box-sizing: border-box;
+    width: 2.1rem; height: 2.1rem;
+    padding: 0 !important; min-width: 0;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: transparent;
+    color: var(--sz-ink-soft);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+
+.sz-qr-knopf:hover { border-color: var(--sz-bordeaux); color: var(--sz-bordeaux-text); background: transparent; }
+
+/* Einzelner Code, gross auf dem Schirm — praktisch, wenn jemand mit dem
+   Handy danebensteht. */
+.sz-qr-deckel {
+    position: fixed; inset: 0; z-index: 200;
+    display: grid; place-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 1.5rem;
+}
+
+.sz-qr-karte {
+    background: #fff;
+    padding: 2rem;
+    border-radius: var(--sz-radius);
+    text-align: center;
+    max-width: 22rem;
+}
+
+.sz-qr-name { margin: 0 0 1rem; font-family: var(--sz-display); font-size: 1.4rem; color: #1a1a1c; }
+.sz-qr-bild svg { width: 100%; max-width: 15rem; height: auto; }
+.sz-qr-nummer { margin: 0.75rem 0 1.25rem; font-size: 0.8rem; color: #5c5850; }
+
+/* --- Der Bogen -------------------------------------------------------- */
+
+.sz-bogen { margin-top: 2.5rem; }
+
+.sz-bogen__leiste {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+    padding: 0.9rem 1.25rem; margin-bottom: 1rem;
+    border: 1px solid var(--sz-border-strong);
+    background: var(--sz-muted);
+    font-size: 0.85rem;
+}
+
+.sz-bogen__zu {
+    padding: 0.6rem 1.2rem !important; min-width: 0;
+    border: 1px solid var(--sz-border-strong); border-radius: var(--sz-radius);
+    background: transparent; color: var(--sz-ink); cursor: pointer; font-size: 0.85rem;
+}
+
+/* A4 mit den ueblichen 8 mm Rand. */
+.sz-bogen__blatt {
+    width: 210mm;
+    max-width: 100%;
+    padding: 8mm;
+    box-sizing: border-box;
+    background: #fff;
+    display: grid;
+    grid-template-columns: repeat(var(--etikett-spalten, 3), var(--etikett-breite, 70mm));
+    justify-content: start;
+    border: 1px solid var(--sz-border);
+}
+
+.sz-etikett {
+    box-sizing: border-box;
+    width: var(--etikett-breite, 70mm);
+    height: var(--etikett-hoehe, 37mm);
+    padding: 3mm;
+    display: flex;
+    align-items: center;
+    gap: 3mm;
+    overflow: hidden;
+    color: #1a1a1c;
+}
+
+.sz-etikett__text { flex: 1; min-width: 0; }
+
+.sz-etikett__name {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-size: var(--etikett-name, 11pt);
+    line-height: 1.15;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+.sz-etikett__nummer { margin: 1mm 0 0; font-size: 6.5pt; letter-spacing: 0.08em; color: #5c5850; }
+
+.sz-etikett__qr { flex-shrink: 0; width: var(--etikett-qr, 26mm); }
+.sz-etikett__qr svg { display: block; width: 100%; height: auto; }
+
+/*
+ * Beim Drucken bleibt nur der Bogen. Ohne das kaeme die halbe Seite mit
+ * aufs Papier — Kopfzeile, Navigation, Fusszeile.
+ */
+@media print {
+    body > *:not(.sz-bogen) { display: none !important; }
+    .sz-bogen { margin: 0; }
+    .sz-bogen__leiste { display: none !important; }
+    .sz-bogen__blatt { border: 0; width: auto; padding: 8mm; }
+    @page { size: A4; margin: 0; }
+}
