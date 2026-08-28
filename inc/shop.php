@@ -136,7 +136,10 @@ add_action('wp_enqueue_scripts', function () {
     $eigener_baustein = false;
     if (is_singular()) {
         $inhalt = get_post_field('post_content', get_queried_object_id());
-        $eigener_baustein = is_string($inhalt) && has_shortcode($inhalt, 'sz_schnellerfassung');
+        $eigener_baustein = is_string($inhalt) && (
+            has_shortcode($inhalt, 'sz_schnellerfassung') ||
+            has_shortcode($inhalt, 'sz_meine_artikel')
+        );
     }
 
     if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page() && !$eigener_baustein) return;

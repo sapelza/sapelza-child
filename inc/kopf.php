@@ -35,11 +35,21 @@ function sz_kopf_menue_rueckfall(): void
     $konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : home_url('/my-account/');
 
     $punkte = [
-        ['t' => __('Sortiment', 'sapelza-shop'),       'u' => $shop],
+        ['t' => __('Sortiment', 'sapelza-shop'), 'u' => $shop],
+    ];
+
+    /* Nur zeigen, wenn die Seite auch existiert — ein Menuepunkt ins Leere
+       ist schlimmer als ein fehlender. */
+    $erfassung = function_exists('sz_erfassung_url') ? sz_erfassung_url() : '';
+    if ($erfassung) {
+        $punkte[] = ['t' => __('Schnellerfassung', 'sapelza-shop'), 'u' => $erfassung];
+    }
+
+    $punkte = array_merge($punkte, [
         ['t' => __('Meine Artikel', 'sapelza-shop'),   'u' => home_url('/meine-artikel/')],
         ['t' => __('Partnerbetriebe', 'sapelza-shop'), 'u' => home_url('/#sz-partner-titel')],
         ['t' => __('Konto', 'sapelza-shop'),           'u' => $konto],
-    ];
+    ]);
 
     echo '<ul class="sz-nav__liste">';
     foreach ($punkte as $p) {

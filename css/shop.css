@@ -1222,3 +1222,104 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     .sz-erfassung__tabelle tr { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; padding-block: 0.75rem; border-bottom: 1px solid var(--sz-border); }
     .sz-erfassung__tabelle td { border: 0; padding: 0.25rem 0; }
 }
+
+/* ===================================================================
+   Meine Artikel — eigene Namen
+   =================================================================== */
+
+.sz-meine-artikel { margin-block: 2rem 4rem; }
+
+.sz-artikelzeile {
+    display: grid;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--sz-border);
+}
+
+@media (min-width: 900px) {
+    .sz-artikelzeile { grid-template-columns: 2.2fr 1fr 1fr 0.9fr auto; }
+}
+
+.sz-artikelzeile__namen { min-width: 0; }
+
+/*
+ * Der eigene Name ist die Schaltfläche — er sieht aus wie Text, bis man
+ * darüberfährt. Ein Stift daneben wäre ein zweiter Bedienweg für dieselbe
+ * Sache.
+ */
+.sz-eigenname {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.15rem 0.4rem !important;
+    margin-left: -0.4rem;
+    min-width: 0;
+    border: 0;
+    border-radius: var(--sz-radius);
+    background: transparent;
+    color: var(--sz-ink);
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.2;
+    text-align: left;
+    cursor: text;
+    transition: background 180ms ease;
+}
+
+.sz-eigenname:hover,
+.sz-eigenname:focus-visible { background: var(--sz-muted); }
+
+.sz-eigenname.ist-leer {
+    font-family: var(--sz-body);
+    font-size: 0.85rem;
+    color: var(--sz-ink-soft);
+    font-style: italic;
+}
+
+.sz-eigenname__feld {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.15rem 0.4rem;
+    margin-left: -0.4rem;
+    border: 1px solid var(--sz-bordeaux);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-family: var(--sz-display);
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+.sz-eigenname__feld:focus { outline: none; }
+
+.sz-katalogname {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.82rem;
+    color: var(--sz-ink-soft);
+    text-decoration: none;
+}
+
+.sz-katalogname:hover { color: var(--sz-bordeaux-text); }
+.sz-artikelnummer { margin-left: 0.5rem; font-size: 0.7rem; opacity: 0.8; }
+
+.sz-eigenname__wer {
+    display: block;
+    margin-top: 0.3rem;
+    font-family: var(--sz-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: var(--sz-ink-soft);
+}
+
+.sz-artikelmeta { font-size: 0.82rem; color: var(--sz-ink-soft); }
+.sz-artikelpreis { font-family: var(--sz-mono); font-size: 0.95rem; }
+
+.sz-hinweis {
+    padding: 1.25rem 1.5rem;
+    border-left: 2px solid var(--sz-bordeaux);
+    background: var(--sz-muted);
+    color: var(--sz-ink-soft);
+}

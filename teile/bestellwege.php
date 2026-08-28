@@ -6,9 +6,9 @@
  * Bordeaux-Licht, das beim Anfahren von unten steigt — dieselbe Tiefe wie
  * im Sortiment, damit die Seite einen Rhythmus hat und nicht drei.
  *
- * Zwei der drei Ziele gibt es noch nicht (Schnellerfassung, Scannen). Sie
- * verweisen deshalb auf das Konto statt ins Leere; sobald die Seiten
- * existieren, wird hier ein Ziel eingetragen — nicht der Weg erfunden.
+ * Die ersten beiden Wege fuehren zur Schnellerfassung. Wo sie liegt, wird
+ * gesucht und nicht angenommen — wer die Seite umbenennt, soll keine toten
+ * Verweise bekommen. Fehlt sie ganz, fuehren sie zum Konto.
  */
 
 if (!defined('ABSPATH')) exit;
@@ -17,20 +17,28 @@ $sz_konto = function_exists('wc_get_page_permalink')
     ? wc_get_page_permalink('myaccount')
     : home_url('/my-account/');
 
+/*
+ * Die Schnellerfassung wird gesucht, nicht angenommen. Existiert sie
+ * nicht, fuehren die ersten beiden Wege weiter zum Konto — ein Verweis
+ * ins Leere waere schlimmer als ein Umweg.
+ */
+$sz_erfassung = function_exists('sz_erfassung_url') ? sz_erfassung_url() : '';
+if (!$sz_erfassung) $sz_erfassung = $sz_konto;
+
 $sz_wege = [
     [
         'symbol' => 'tastatur',
         't' => __('Schnellerfassung', 'sapelza-shop'),
         'b' => __('Artikelnummer oder EAN eintippen; Bezeichnung, Bestand und Preis ergänzen sich von selbst, die Eingabe springt weiter in die nächste Zeile. Eine lange Bestellung entsteht in einem Zug, ohne einen einzigen Klick im Katalog.', 'sapelza-shop'),
         'm' => __('Zur Erfassung', 'sapelza-shop'),
-        'href' => $sz_konto,
+        'href' => $sz_erfassung,
     ],
     [
         'symbol' => 'scan',
         't' => __('Scannen', 'sapelza-shop'),
         'b' => __('Barcode mit der Kamera Ihres Mobilgeräts erfassen, ebenso über die QR-Etiketten an Ihrem Lagerplatz. Sie bestellen dort, wo Ihnen der Mangel auffällt — im Lager, nicht Stunden später am Schreibtisch.', 'sapelza-shop'),
         'm' => __('Kamera öffnen', 'sapelza-shop'),
-        'href' => $sz_konto,
+        'href' => $sz_erfassung,
     ],
     [
         'symbol' => 'wiederholen',
