@@ -5,7 +5,7 @@ GitHub Theme URI: https://github.com/sapelza/sapelza-child
 Description:  Child-Theme für Astra – übernimmt die Gestaltung der SAPELZA-Homepage. Das Verhalten liegt im Plugin „SAPELZA Shop“.
 Author:       SAPELZA
 Template:     astra
-Version:      1.18.0
+Version:      1.19.0
 Text Domain:  sapelza-shop
 */
 
@@ -810,60 +810,16 @@ html:not([data-sz="dark"]) .sz-modus-dunkel { display: none; }
     color: var(--sz-ink-soft);
 }
 
-/* --- Meine Artikel ------------------------------------------------- */
-
-.sz-meine-artikel {
-    display: grid;
-    gap: 1px;
-    background: var(--sz-border);
-    border: 1px solid var(--sz-border);
-    border-radius: var(--sz-radius);
-    overflow: hidden;
-}
-
-.sz-artikelzeile {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) 1fr 1fr auto auto;
-    gap: 1.2rem;
-    align-items: center;
-    padding: 0.9rem 1.2rem;
-    background: var(--sz-bg);
-}
-
-.sz-artikelname {
-    font-size: 0.9rem;
-    color: inherit;
-    text-decoration: none;
-}
-
-.sz-artikelname:hover { color: var(--sz-bordeaux-text); }
-
-.sz-artikelnummer,
-.sz-artikelmeta {
-    display: block;
-    font-family: var(--sz-mono);
-    font-size: 0.68rem;
-    color: var(--sz-ink-soft);
-}
-
-.sz-artikelpreis {
-    font-family: var(--sz-mono);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.sz-artikelzeile .button {
-    white-space: nowrap;
-    padding-inline: 1.2rem;
-}
-
-@media (max-width: 782px) {
-    .sz-artikelzeile {
-        grid-template-columns: 1fr auto;
-        row-gap: 0.35rem;
-    }
-    .sz-artikelname { grid-column: 1 / -1; }
-}
+/* --- Meine Artikel ---------------------------------------------------
+ *
+ * Stand hier bis 1.19.0 mit eigenem Spaltenbild: ein Gitter aus 1px-Fugen,
+ * fuenf Spalten, .sz-artikelname und .sz-artikelnummer. Die Auszeichnung
+ * hat seither sieben Spalten und andere Klassen; die alten Regeln haben
+ * nur noch dagegen gearbeitet — sie gaben der Zeile einen waagrechten
+ * Innenabstand, sodass Kopfzeile und Warenzeilen um 20px versetzt standen.
+ *
+ * Alles zu "Meine Artikel" steht jetzt in css/shop.css, an einer Stelle.
+ * -------------------------------------------------------------------- */
 
 /* =====================================================================
    11 · Wunschtermin in der Kasse
