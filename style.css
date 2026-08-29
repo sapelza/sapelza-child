@@ -5,7 +5,7 @@ GitHub Theme URI: https://github.com/sapelza/sapelza-child
 Description:  Child-Theme für Astra – übernimmt die Gestaltung der SAPELZA-Homepage. Das Verhalten liegt im Plugin „SAPELZA Shop“.
 Author:       SAPELZA
 Template:     astra
-Version:      1.17.0
+Version:      1.18.0
 Text Domain:  sapelza-shop
 */
 
@@ -49,6 +49,55 @@ html[data-sz="dark"] {
 }
 
 /* SZ:TOKEN-ENDE */
+
+/* ===================================================================
+   Tiefe und Breite
+   ===================================================================
+
+   Von Hand, ausserhalb des erzeugten Blocks oben — der wird beim
+   naechsten Lauf von theme.mjs ueberschrieben.
+
+   TIEFE. Die Seite bestand aus Haarlinien ohne jede Erhebung: alles
+   lag flach auf dem Papier. Drei Lagen machen eine Karte greifbar —
+   Kontakt (1px), Naehe (14px), Umgebung (44px). In Tintenfarbe statt
+   Schwarz, sonst steht der Schatten kalt gegen das warme Papier.
+
+   Im Dunkeln traegt Schwarz auf Fast-Schwarz nichts, dort macht ein
+   heller Saum an der Oberkante die Arbeit.
+
+   BREITE. Der Inhalt stand auf 1400px fest, WooCommerce sogar auf
+   Astras 1200px. Auf einem 1900px-Schirm blieb links und rechts je
+   ein Viertel der Flaeche leer. Die Schale waechst jetzt mit.
+   =================================================================== */
+
+:root {
+    --sz-hebung:
+        0 1px 2px rgba(26, 26, 28, 0.05),
+        0 6px 14px -4px rgba(26, 26, 28, 0.07),
+        0 22px 44px -18px rgba(26, 26, 28, 0.12);
+    --sz-hebung-stark:
+        0 2px 4px rgba(26, 26, 28, 0.06),
+        0 14px 28px -6px rgba(26, 26, 28, 0.1),
+        0 38px 66px -24px rgba(26, 26, 28, 0.16);
+
+    --sz-schale: 1400px;
+}
+
+html[data-sz="dark"] {
+    --sz-hebung:
+        inset 0 1px 0 rgba(236, 232, 223, 0.06),
+        0 2px 6px rgba(0, 0, 0, 0.55),
+        0 20px 48px -20px rgba(0, 0, 0, 0.9);
+    --sz-hebung-stark:
+        inset 0 1px 0 rgba(236, 232, 223, 0.1),
+        0 8px 20px rgba(0, 0, 0, 0.6),
+        0 36px 72px -24px rgba(0, 0, 0, 0.95);
+}
+
+@media (min-width: 1600px) { :root { --sz-schale: 1500px; } }
+@media (min-width: 1750px) { :root { --sz-schale: 1640px; } }
+@media (min-width: 1900px) { :root { --sz-schale: 1780px; } }
+@media (min-width: 2200px) { :root { --sz-schale: 1960px; } }
 
 
 /* =====================================================================

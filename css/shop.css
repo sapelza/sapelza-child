@@ -109,17 +109,22 @@
    Das Produktraster
    =================================================================== */
 
+/*
+ * Frueher ein Gitter aus geteilten Haarlinien ohne Abstand. Auf dem
+ * Schirm las sich das als Tabelle. Jetzt echte Kacheln: eigene Flaeche,
+ * bordeauxfarbene Kante links, Erhebung — wie in der Vorlage.
+ */
 .woocommerce ul.products,
 ul.products {
     display: grid !important;
     grid-template-columns: 1fr;
-    gap: 0;
+    gap: 1.25rem;
     margin: 0 0 3rem;
     padding: 0;
     list-style: none;
-    border-left: 1px solid var(--sz-border);
-    border-top: 1px solid var(--sz-border);
 }
+
+@media (min-width: 1024px) { .woocommerce ul.products, ul.products { gap: 1.75rem; } }
 
 @media (min-width: 640px)  { .woocommerce ul.products, ul.products { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .woocommerce ul.products, ul.products { grid-template-columns: repeat(3, 1fr); } }
@@ -132,8 +137,10 @@ ul.products li.product {
     float: none !important;
     margin: 0 !important;
     padding: 1.5rem;
-    border-right: 1px solid var(--sz-border);
-    border-bottom: 1px solid var(--sz-border);
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border);
+    border-left: 2px solid var(--sz-bordeaux);
+    box-shadow: var(--sz-hebung);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -166,6 +173,13 @@ ul.products li.product::before {
 
 .woocommerce ul.products li.product:hover::before,
 .woocommerce ul.products li.product:focus-within::before { opacity: 1; transform: translateY(0); }
+
+.woocommerce ul.products li.product:hover,
+.woocommerce ul.products li.product:focus-within,
+ul.products li.product:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sz-hebung-stark);
+}
 
 .woocommerce ul.products li.product > * { position: relative; z-index: 1; }
 

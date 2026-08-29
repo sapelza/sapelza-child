@@ -243,21 +243,39 @@
 
 .sz-wege__lead { margin: 0; max-width: 36rem; line-height: 1.7; color: var(--sz-ink-soft); }
 
+/*
+ * Frueher ein Raster aus geteilten Haarlinien: drei Felder in einem
+ * Gitter, ohne eigene Flaeche. Das las sich als Tabelle, nicht als drei
+ * Wege. Jetzt drei Karten mit Abstand, Kante und Erhebung.
+ */
 .sz-wege__raster {
     list-style: none;
     margin: 3.5rem 0 0;
     padding: 0;
     display: grid;
     grid-template-columns: 1fr;
-    border-left: 1px solid var(--sz-border-strong);
-    border-top: 1px solid var(--sz-border-strong);
+    gap: 1.5rem;
 }
 
-@media (min-width: 768px) { .sz-wege__raster { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 768px) { .sz-wege__raster { grid-template-columns: repeat(3, 1fr); gap: 2rem; } }
 
 .sz-wege__zelle {
-    border-right: 1px solid var(--sz-border-strong);
-    border-bottom: 1px solid var(--sz-border-strong);
+    background: var(--sz-surface);
+    border: 1px solid var(--sz-border);
+    border-left: 2px solid var(--sz-bordeaux);
+    box-shadow: var(--sz-hebung);
+    transition: box-shadow 300ms ease, transform 300ms ease;
+}
+
+.sz-wege__zelle:hover,
+.sz-wege__zelle:focus-within {
+    transform: translateY(-4px);
+    box-shadow: var(--sz-hebung-stark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-wege__zelle:hover,
+    .sz-wege__zelle:focus-within { transform: none; }
 }
 
 .sz-weg {

@@ -106,7 +106,7 @@
 
 .sz-kopf__innen {
     margin-inline: auto;
-    max-width: 1400px;
+    max-width: var(--sz-schale);
     height: 100%;
     padding-inline: 1.5rem;
     display: flex;
@@ -160,8 +160,8 @@
 .sz-nav__liste a,
 .sz-nav__liste .menu-item > a {
     font-family: var(--sz-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     text-decoration: none;
     color: var(--sz-ink);
@@ -449,7 +449,7 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 
 .sz-fuss__innen {
     margin-inline: auto;
-    max-width: 1400px;
+    max-width: var(--sz-schale);
     padding: 3.5rem 1.5rem 2.5rem;
     display: grid;
     gap: 2.5rem;
@@ -651,4 +651,51 @@ html[data-sz="dark"] .sz-wasserzeichen img { opacity: 0.06; filter: grayscale(1)
 @keyframes sz-puls {
     0%, 100% { opacity: 1; }
     50%      { opacity: 0.35; }
+}
+
+
+/* ===================================================================
+   Der Astra-Deckel
+   ===================================================================
+
+   Astra setzt die Breite von .ast-container per Customizer als Inline-CSS
+   in den <head> — also NACH unseren Dateien. Reihenfolge hilft da nicht,
+   Spezifitaet schon: #page traegt eine ID, damit gewinnt die Regel ohne
+   !important.
+
+   Das betrifft vor allem den Shop: WooCommerce-Seiten liegen in diesem
+   Container, und nur er hielt sie auf 1200px in der Mitte.
+*/
+
+#page .ast-container,
+#page #content .ast-container {
+    max-width: var(--sz-schale);
+}
+
+/* ===================================================================
+   Karten mit Tiefe
+   ===================================================================
+
+   Alles, was eine eigene Flaeche hat, bekommt dieselbe Erhebung. Eine
+   Stelle, damit die Seite einen Rhythmus behaelt statt sieben.
+*/
+
+.sz-zugang__karte,
+.sz-hero__feld,
+.sz-termin {
+    box-shadow: var(--sz-hebung);
+}
+
+/* Beim Zeigen hebt sich, was anklickbar ist. Unter reduzierter Bewegung
+   bleibt der Schatten, die Verschiebung faellt weg — nicht bewegen
+   heisst nicht unsichtbar. */
+.woocommerce ul.products li.product,
+ul.products li.product {
+    transition: box-shadow 300ms ease, transform 300ms ease, border-color 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .woocommerce ul.products li.product:hover,
+    .woocommerce ul.products li.product:focus-within,
+    ul.products li.product:hover { transform: none; }
 }
