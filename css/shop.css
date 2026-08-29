@@ -2256,3 +2256,167 @@ ul.products li.product .price small {
     line-height: 1;
     white-space: nowrap;
 }
+
+/* ===================================================================
+   Der Katalogkopf
+   ===================================================================
+
+   Nach dem Entwurf: Brotkrumen, Kapitelmarke, grosse Ueberschrift mit
+   Slogan, dann drei Leisten quer ueber die Seite.
+*/
+
+.sz-krumen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-size: 0.78rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-krumen a { color: inherit; text-decoration: none; }
+.sz-krumen a:hover { color: var(--sz-bordeaux-text); }
+.sz-krumen [aria-current] { color: var(--sz-ink); }
+.sz-krumen__strich { opacity: 0.4; }
+
+.sz-katalog__titel {
+    margin: 2.25rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.8rem, 6.6vw, 6rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+}
+
+/* Der Slogan steht im Entwurf an einer bordeauxfarbenen Kante, in der
+   kursiven Serifenschrift. Er traegt den Ton der Seite. */
+.sz-katalog__slogan {
+    display: inline-block;
+    margin: 2rem 0 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--sz-bordeaux);
+    font-family: var(--sz-display);
+    font-style: italic;
+    font-size: 1.35rem;
+    line-height: 1.4;
+    color: var(--sz-bordeaux-text);
+}
+
+/* --- Die Leisten -------------------------------------------------------
+ *
+ * Sie laufen von Rand zu Rand, auch wenn sie in einem gedeckelten
+ * Container stehen: der negative Aussenabstand zieht sie bis an den
+ * Fensterrand, der gleich grosse Innenabstand holt den Inhalt zurueck
+ * in die Schale.
+ *
+ * 100vw ist breiter als der Inhalt, sobald ein Rollbalken da ist. Damit
+ * das keinen waagrechten Rollbalken erzeugt, schneidet #content ab.
+ * overflow-x: clip und nicht hidden \u2014 hidden wuerde einen eigenen
+ * Rollbereich aufmachen und Sticky-Elemente darin festnageln.
+ */
+
+#content { overflow-x: clip; }
+
+.sz-band {
+    margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50%);
+    margin-top: 3rem;
+    border-top: 1px solid var(--sz-border);
+    border-bottom: 1px solid var(--sz-border);
+}
+
+.sz-band + .sz-band { margin-top: 0; border-top: 0; }
+
+.sz-band--bereich { background: color-mix(in srgb, var(--sz-bg) 60%, var(--sz-muted)); }
+.sz-band--kategorien,
+.sz-band--marken { background: var(--sz-muted); }
+
+.sz-band__innen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    padding-block: 1.25rem;
+}
+
+.sz-band__innen--stapel {
+    display: block;
+    padding-block: 1.5rem;
+}
+
+.sz-band__notiz {
+    margin-left: auto;
+    font-size: 0.72rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-kicker-klein {
+    display: block;
+    font-family: var(--sz-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-band__innen--stapel .sz-kicker-klein { margin: 0 0 1rem; }
+
+/* Der Bereichsschalter: zwei Wege in einer Kapsel, der aktuelle gefuellt. */
+.sz-schalter {
+    display: inline-flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+}
+
+.sz-schalter__weg {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.86rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--sz-ink-soft);
+    white-space: nowrap;
+    transition: background 200ms ease, color 200ms ease;
+}
+
+.sz-schalter__weg:hover { color: var(--sz-ink); }
+
+.sz-schalter__weg[aria-current] {
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+}
+
+/* In der Leiste braucht die Chipreihe keinen eigenen Abstand mehr. */
+.sz-band .sz-chips { margin-top: 0; gap: 0.65rem; }
+
+.sz-chip[aria-current] {
+    background: var(--sz-bordeaux-soft);
+    border-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-text);
+    font-weight: 600;
+}
+
+.sz-chip__zahl { font-size: 0.7rem; color: var(--sz-ink-soft); }
+.sz-chip[aria-current] .sz-chip__zahl { color: var(--sz-bordeaux-text); }
+
+/* --- Die Trefferzeile --- */
+
+.sz-katalog__zeile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block: 2.5rem 2rem;
+}
+
+.sz-katalog__treffer {
+    margin: 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}

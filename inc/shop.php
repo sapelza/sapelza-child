@@ -41,81 +41,246 @@ remove_action('woocommerce_before_shop_loop', 'woocommerce_result_count', 20);
 remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
 
 /**
- * Der Kopf einer Kategorieseite.
+ * Der Kopf einer Katalogseite.
  *
- * Grosse Überschrift, Beschreibung, dann die Unterkategorien und Marken
- * als Filterreihen. Alles aus echten Begriffen — nichts fest verdrahtet.
+ * Nach dem Entwurf: Brotkrumen, Kapitelmarke, grosse Ueberschrift mit
+ * Slogan, dann drei Leisten quer ueber die Seite — Bereich, Kategorien,
+ * Marken — und zuletzt die Trefferzeile.
+ *
+ * Auf /shop/ gab es vorher fast nichts: ohne Begriff war die Elternkette
+ * leer, also fielen die Unterkategorien weg, und eine Beschreibung hat
+ * die Seite auch nicht. Uebrig blieben Kicker, Titel und die Trefferzahl.
+ * Deshalb steht hier ueberall ein Fall fuer die Wurzel daneben.
+ *
+ * Alle Zahlen kommen aus dem Katalog. Nichts ist fest verdrahtet — was
+ * der Shop nicht fuehrt, wird nicht behauptet.
  */
 add_action('woocommerce_before_shop_loop', function () {
     if (!function_exists('is_woocommerce')) return;
 
     $begriff = is_product_taxonomy() ? get_queried_object() : null;
-    $titel   = $begriff instanceof WP_Term ? $begriff->name : __('Sortiment', 'sapelza-shop');
-    $text    = $begriff instanceof WP_Term ? term_description($begriff) : '';
+    if (!$begriff instanceof WP_Term) $begriff = null;
+
+    $titel = $begriff ? $begriff->name : __('Sortiment', 'sapelza-shop');
+    $text  = $begriff ? term_description($begriff) : '';
+
+    /* --- Die Kette vom Shop bis hierher ------------------------------ */
+    $pfad = [];
+    $kette = [];
+    if ($begriff) {
+        $vorfahren = get_ancestors($begriff->term_id, $begriff->taxonomy, 'taxonomy');
+        foreach (array_reverse($vorfahren) as $id) {
+            $t = get_term($id);
+            if ($t instanceof WP_Term) $pfad[] = $t;
+        }
+        $pfad[]  = $begriff;
+        $kette   = array_merge([$begriff->term_id], $vorfahren);
+    }
+
+    /* --- In welchem Bereich stehen wir? ------------------------------- */
+    $bereiche   = function_exists('sz_bereiche') ? sz_bereiche() : [];
+    $bereich    = null;
+    foreach ($bereiche as $b) {
+        if (in_array((int) $b->term_id, $kette, true)) { $bereich = $b; break; }
+    }
+
+    /*
+     * Der Kicker nennt den Bereich, in dem man steht — auf der Wurzel
+     * den Katalog selbst. So weiss man auch auf einer tiefen Kategorie,
+     * zu welcher Haelfte des Hauses sie gehoert.
+     */
+    $kicker = $bereich ? $bereich->name : __('Katalog', 'sapelza-shop');
+
+    /* --- Der Slogan --------------------------------------------------- */
+    $slogan = '';
+    if ($text !== '') {
+        /* Der erste Satz der Beschreibung, wenn er kurz genug ist. */
+        $roh = trim(wp_strip_all_tags($text));
+        $ende = strcspn($roh, '.!?');
+        $erster = trim(substr($roh, 0, $ende + 1));
+        if ($erster !== '' && mb_strlen($erster) <= 90) $slogan = $erster;
+    }
+
+    if ($slogan === '' && !$begriff) {
+        /*
+         * Auf der Wurzel eine Zeile aus echten Zahlen statt einer
+         * Behauptung: so viele Abteilungen, so viele Artikel.
+         */
+        $abteilungen = 0;
+        foreach ($bereiche as $b) {
+            $abteilungen += count(function_exists('sz_abteilungen') ? sz_abteilungen((int) $b->term_id) : []);
+        }
+        $artikel = (int) wp_count_posts('product')->publish;
+
+        if ($abteilungen > 0 && $artikel > 0) {
+            $slogan = sprintf(
+                /* translators: 1: Zahl der Abteilungen als Wort, 2: Zahl der Artikel. */
+                __('%1$s Abteilungen, %2$s Artikel, geliefert im Hochpustertal.', 'sapelza-shop'),
+                function_exists('sz_als_wort') ? sz_als_wort($abteilungen) : (string) $abteilungen,
+                number_format_i18n($artikel)
+            );
+        }
+    }
+
+    /* --- Die Kategorien der Leiste ------------------------------------ */
+    $eltern = 0;
+    if ($begriff) {
+        $kinder = get_terms(['taxonomy' => 'product_cat', 'parent' => $begriff->term_id, 'hide_empty' => true]);
+        $eltern = (!is_wp_error($kinder) && $kinder) ? (int) $begriff->term_id : (int) $begriff->parent;
+    }
+
+    $geschwister = get_terms([
+        'taxonomy'   => 'product_cat',
+        'parent'     => $eltern,
+        'hide_empty' => true,
+        'orderby'    => 'count',
+        'order'      => 'DESC',
+    ]);
+    if (is_wp_error($geschwister)) $geschwister = [];
+
+    /* Auf der Wurzel sind das die Bereiche selbst — dann waere die
+       Leiste eine Wiederholung der Bereichsleiste darueber. */
+    $bereich_ids = array_map(static fn($b) => (int) $b->term_id, $bereiche);
+    if (!$begriff) {
+        $unter = [];
+        foreach ($bereiche as $b) {
+            foreach (function_exists('sz_abteilungen') ? sz_abteilungen((int) $b->term_id) : [] as $a) {
+                $unter[] = $a;
+            }
+        }
+        usort($unter, static fn($x, $y) => $y->count <=> $x->count);
+        $geschwister = array_slice($unter, 0, 14);
+    }
+
+    $marken = function_exists('sz_marken_liste') ? sz_marken_liste(12) : [];
+    $marken_name = __('Marke', 'sapelza-shop');
+    if ($marken && function_exists('sz_marken_taxonomie')) {
+        $tx = get_taxonomy(sz_marken_taxonomie());
+        if ($tx && !empty($tx->labels->singular_name)) $marken_name = $tx->labels->singular_name;
+    }
 
     ?>
     <header class="sz-katalog__kopf">
-        <p class="sz-katalog__kicker mono"><?php echo esc_html__('Sortiment', 'sapelza-shop'); ?></p>
+        <?php if ($pfad) : ?>
+            <nav class="sz-krumen" aria-label="<?php echo esc_attr__('Brotkrumen', 'sapelza-shop'); ?>">
+                <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"><?php echo esc_html__('Sortiment', 'sapelza-shop'); ?></a>
+                <?php foreach ($pfad as $i => $t) :
+                    $letzter = ($i === count($pfad) - 1); ?>
+                    <span class="sz-krumen__strich" aria-hidden="true">/</span>
+                    <?php if ($letzter) : ?>
+                        <span aria-current="page"><?php echo esc_html($t->name); ?></span>
+                    <?php else : ?>
+                        <a href="<?php echo esc_url(get_term_link($t)); ?>"><?php echo esc_html($t->name); ?></a>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </nav>
+        <?php endif; ?>
+
+        <p class="sz-kapitelmarke">
+            <span class="sz-kapitelmarke__nr mono">03</span>
+            <span class="hairline"></span>
+            <span class="sz-kapitelmarke__kicker mono"><?php echo esc_html($kicker); ?></span>
+        </p>
+
         <h1 class="sz-katalog__titel"><?php echo esc_html($titel); ?></h1>
-        <?php if ($text) : ?>
+
+        <?php if ($slogan !== '') : ?>
+            <p class="sz-katalog__slogan"><?php echo esc_html($slogan); ?></p>
+        <?php endif; ?>
+
+        <?php if ($text !== '' && $slogan !== wp_strip_all_tags($text)) : ?>
             <div class="sz-katalog__text"><?php echo wp_kses_post($text); ?></div>
         <?php endif; ?>
+    </header>
 
+    <?php if (count($bereiche) > 1) : ?>
+        <div class="sz-band sz-band--bereich">
+            <div class="sz-band__innen">
+                <span class="sz-kicker-klein"><?php echo esc_html__('Bereich', 'sapelza-shop'); ?></span>
+                <nav class="sz-schalter" aria-label="<?php echo esc_attr__('Bereich', 'sapelza-shop'); ?>">
+                    <?php foreach ($bereiche as $b) :
+                        $ist = ($bereich && (int) $b->term_id === (int) $bereich->term_id); ?>
+                        <a class="sz-schalter__weg" href="<?php echo esc_url(get_term_link($b)); ?>"
+                           <?php echo $ist ? 'aria-current="page"' : ''; ?>>
+                            <?php echo esc_html($b->name); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+                <?php if ($bereich) : ?>
+                    <span class="sz-band__notiz">
+                        <?php printf(
+                            esc_html(_n('%s Artikel in diesem Bereich', '%s Artikel in diesem Bereich', (int) $bereich->count, 'sapelza-shop')),
+                            esc_html(number_format_i18n((int) $bereich->count))
+                        ); ?>
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($geschwister) : ?>
+        <div class="sz-band sz-band--kategorien">
+            <div class="sz-band__innen sz-band__innen--stapel">
+                <p class="sz-kicker-klein"><?php echo esc_html__('Unterkategorien', 'sapelza-shop'); ?></p>
+                <nav class="sz-chips" aria-label="<?php echo esc_attr__('Unterkategorien', 'sapelza-shop'); ?>">
+                    <?php foreach ($geschwister as $g) :
+                        $aktiv = ($begriff && (int) $g->term_id === (int) $begriff->term_id); ?>
+                        <a class="sz-chip" href="<?php echo esc_url(get_term_link($g)); ?>"
+                           <?php echo $aktiv ? 'aria-current="page"' : ''; ?>>
+                            <?php echo esc_html($g->name); ?>
+                            <span class="sz-chip__zahl mono"><?php echo esc_html(number_format_i18n((int) $g->count)); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($marken) : ?>
+        <div class="sz-band sz-band--marken">
+            <div class="sz-band__innen sz-band__innen--stapel">
+                <p class="sz-kicker-klein"><?php echo esc_html($marken_name); ?></p>
+                <nav class="sz-chips" aria-label="<?php echo esc_attr($marken_name); ?>">
+                    <?php foreach ($marken as $m) : ?>
+                        <a class="sz-chip" href="<?php echo esc_url(get_term_link($m)); ?>">
+                            <?php echo esc_html($m->name); ?>
+                            <span class="sz-chip__zahl mono"><?php echo esc_html(number_format_i18n((int) $m->count)); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </nav>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <div class="sz-katalog__zeile">
         <?php
         /*
-         * Unterkategorien. Auf einer Oberkategorie sind das die
-         * Abteilungen, auf einer Abteilung die Geschwister — so bleibt
-         * man beim Wechseln auf derselben Ebene statt hinauszuspringen.
+         * Die Trefferzeile selbst gesetzt: WooCommerces Satz ("Ergebnisse
+         * 1 - 24 von 288 werden angezeigt") passt nicht in die Zeile, die
+         * der Entwurf dort vorsieht.
          */
-        $eltern = 0;
-        if ($begriff instanceof WP_Term) {
-            $kinder = get_terms(['taxonomy' => 'product_cat', 'parent' => $begriff->term_id, 'hide_empty' => true]);
-            $eltern = (!is_wp_error($kinder) && $kinder) ? $begriff->term_id : (int) $begriff->parent;
-        }
+        global $wp_query;
+        $gesamt = (int) $wp_query->found_posts;
+        $pro    = (int) $wp_query->get('posts_per_page');
+        $seite  = max(1, (int) $wp_query->get('paged'));
+        $ab     = ($seite - 1) * $pro + 1;
+        $bisher = min($gesamt, $seite * $pro);
 
-        $geschwister = $eltern
-            ? get_terms(['taxonomy' => 'product_cat', 'parent' => $eltern, 'hide_empty' => true, 'orderby' => 'count', 'order' => 'DESC'])
-            : [];
+        if ($gesamt > 0) : ?>
+            <p class="sz-katalog__treffer mono">
+                <?php printf(
+                    /* translators: 1: erster Artikel, 2: letzter Artikel, 3: Gesamtzahl. */
+                    esc_html__('%1$s – %2$s von %3$s Artikeln', 'sapelza-shop'),
+                    esc_html(number_format_i18n($ab)),
+                    esc_html(number_format_i18n($bisher)),
+                    esc_html(number_format_i18n($gesamt))
+                ); ?>
+            </p>
+        <?php endif;
 
-        if (!is_wp_error($geschwister) && $geschwister) :
-            ?>
-            <nav class="sz-chips" aria-label="<?php echo esc_attr__('Unterkategorien', 'sapelza-shop'); ?>">
-                <?php foreach ($geschwister as $g) :
-                    $aktiv = ($begriff instanceof WP_Term && $g->term_id === $begriff->term_id);
-                    ?>
-                    <a class="sz-chip" href="<?php echo esc_url(get_term_link($g)); ?>"
-                       <?php echo $aktiv ? 'aria-current="true"' : ''; ?>>
-                        <?php echo esc_html($g->name); ?>
-                        <span class="sz-chip__zahl"><?php echo esc_html((string) $g->count); ?></span>
-                    </a>
-                <?php endforeach; ?>
-            </nav>
-        <?php endif; ?>
-
-        <?php
-        /* Marken, nur wenn dieser Shop welche führt. */
-        $marken = function_exists('sz_marken_liste') ? sz_marken_liste(10) : [];
-        if ($marken) :
-            ?>
-            <nav class="sz-chips sz-chips--marken" aria-label="<?php echo esc_attr__('Marken', 'sapelza-shop'); ?>">
-                <span class="sz-chips__label mono"><?php echo esc_html__('Marke', 'sapelza-shop'); ?></span>
-                <?php foreach ($marken as $m) : ?>
-                    <a class="sz-chip" href="<?php echo esc_url(get_term_link($m)); ?>">
-                        <?php echo esc_html($m->name); ?>
-                        <span class="sz-chip__zahl"><?php echo esc_html((string) $m->count); ?></span>
-                    </a>
-                <?php endforeach; ?>
-            </nav>
-        <?php endif; ?>
-
-        <div class="sz-katalog__zeile">
-            <?php
-            // Trefferzahl und Sortierung stehen jetzt hier, unter dem Kopf.
-            woocommerce_result_count();
-            woocommerce_catalog_ordering();
-            ?>
-        </div>
-    </header>
+        woocommerce_catalog_ordering();
+        ?>
+    </div>
     <?php
 }, 5);
 
