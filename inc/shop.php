@@ -358,3 +358,13 @@ add_filter('body_class', function ($klassen) {
 
     return $klassen;
 });
+
+/*
+ * Vier Artikel je Reihe.
+ *
+ * WooCommerce haengt der Liste .columns-N an, und Astras Rasterdatei
+ * richtet sich danach. Statt gegen diese Regel anzuschreiben, stellen
+ * wir die Zahl selbst: dann heisst die Klasse .columns-4 und Astras
+ * eigene Regel liefert vier Spalten.
+ */
+add_filter('loop_shop_columns', static fn() => 4, 20);

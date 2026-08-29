@@ -182,27 +182,42 @@
         function zeichne(schluessel, quelle) {
             var hb = hero.getBoundingClientRect();
             var qb = quelle.getBoundingClientRect();
-            var ox = qb.left - hb.left + qb.width / 2;
-            var oy = qb.top - hb.top + qb.height / 2;
 
             var namen = zweige[schluessel] || [];
-            var teile = ['<svg class="sz-mindmap__svg" viewBox="0 0 ' + Math.round(hb.width) + ' ' + Math.round(hb.height) + '">'];
 
             /*
-             * Die Richtung wird nach freiem Raum gewählt, nicht nach einem
-             * festen Winkelraster: die Überschrift ist breiter als jeder
-             * sinnvolle Radius, ein genormtes Spinnennetz läge quer darüber.
-             * Deshalb streuen die Äste nach unten und zur freien Seite.
+             * Die Aeste streuten frueher vom Wort aus nach unten. Die
+             * Ueberschrift laeuft aber ueber vier Zeilen und nimmt die
+             * halbe Breite ein — die Namen landeten mitten im Text.
+             *
+             * Jetzt steht die Namensspalte im freien Raum rechts neben der
+             * Ueberschrift, und die Aeste laufen vom rechten Rand des
+             * Wortes dorthin. Der Kontrollpunkt sitzt knapp hinter dem
+             * Text, damit die Bogen ihn schnell verlassen.
              */
-            var nachRechts = ox < hb.width * 0.55;
+            var titel = hero.querySelector('h1') || quelle;
+            var tb = titel.getBoundingClientRect();
+            var textRechts = tb.right - hb.left;
+
+            /* Zu eng: dann lieber gar nichts zeichnen. Ein Netz, das in
+               der Ueberschrift klebt, ist schlechter als keines. */
+            if (hb.width - textRechts < 260) { schliesse(); return; }
+
+            var spalte = Math.min(hb.width - 190, textRechts + 90);
+            var mitte  = hb.height * 0.46;
+            var schritt = Math.min(48, (hb.height * 0.62) / Math.max(namen.length, 1));
+
+            var ox = Math.min(qb.right - hb.left, textRechts);
+            var oy = qb.top - hb.top + qb.height / 2;
+
+            var teile = ['<svg class="sz-mindmap__svg" viewBox="0 0 ' + Math.round(hb.width) + ' ' + Math.round(hb.height) + '">'];
+
+            var nachRechts = true;
             for (var i = 0; i < namen.length; i++) {
-                var t = (i + 1) / (namen.length + 1);
-                var weite = (nachRechts ? 1 : -1) * (120 + t * 280);
-                var hoehe = 60 + i * 44 + (i % 2 ? 18 : -8);
-                var zx = ox + weite;
-                var zy = oy + hoehe;
-                var kx = ox + weite * 0.45;
-                var ky = oy + hoehe * 0.35;
+                var zx = spalte + (i % 2 ? 26 : 0);
+                var zy = mitte + (i - (namen.length - 1) / 2) * schritt;
+                var kx = textRechts + 24;
+                var ky = oy + (zy - oy) * 0.18;
 
                 teile.push('<path class="sz-mindmap__ast" style="--verzug:' + (i * 55) + 'ms" d="M' + ox + ' ' + oy + ' Q' + kx + ' ' + ky + ' ' + zx + ' ' + zy + '"/>');
                 teile.push('<circle class="sz-mindmap__knoten" style="--verzug:' + (i * 55 + 120) + 'ms" cx="' + zx + '" cy="' + zy + '" r="3"/>');

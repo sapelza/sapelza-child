@@ -1986,3 +1986,273 @@ ul.products li.product .price small {
 @media (max-width: 780px) {
     .sz-artikeltabelle { min-width: 44rem; }
 }
+
+/* ===================================================================
+   Astras Tabellengitter
+   ===================================================================
+
+   Astra zeichnet um jede Tabelle ein vollstaendiges Gitter:
+
+       table, td, th { border: 1px solid var(--ast-border-color); }
+       table         { border-collapse: separate; border-width: 1px 0 0 1px; }
+       td, th        { border-width: 0 1px 1px 0; }
+
+   Meine Regeln setzten nur border-bottom, und nur auf td. Alles andere
+   blieb stehen: die senkrechten Striche zwischen den Spalten, der Kasten
+   um die Tabelle, die Linien in der Kopfzeile. Im Entwurf gibt es nur
+   eine waagrechte Haarlinie je Zeile.
+
+   Also erst alles auf null, dann die eine Linie. td UND th, sonst bleibt
+   die Kopfzeile eingerahmt.
+*/
+
+.sz-artikeltabelle,
+.sz-erfassung__tabelle {
+    border: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 0;
+}
+
+.sz-artikeltabelle th,
+.sz-artikeltabelle td,
+.sz-erfassung__tabelle th,
+.sz-erfassung__tabelle td {
+    border: 0;
+    border-bottom: 1px solid var(--sz-border);
+}
+
+/* Die letzte Zeile braucht keine Linie: darunter kommt nichts mehr. */
+.sz-artikeltabelle tbody tr:last-child td,
+.sz-erfassung__tabelle tbody tr:last-child td { border-bottom: 0; }
+
+/* ===================================================================
+   Vier Kacheln je Reihe
+   ===================================================================
+
+   WooCommerce haengt der Liste die Klasse .columns-N an, und Astras
+   woocommerce-layout-grid.min.css setzt danach das Raster:
+
+       .woocommerce ul.products:not(.elementor-grid).columns-3
+           { grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+   Das wiegt vier Klassen, meine Regel zwei \u2014 sie kam nie zum Zug.
+   Die Zahl selbst stellt jetzt ein Filter in shop.php auf vier; diese
+   Regeln hier fangen die uebrigen Faelle ab, mit demselben Gewicht wie
+   Astra und weiter hinten in der Reihenfolge.
+*/
+
+@media (min-width: 1024px) {
+    .woocommerce ul.products:not(.elementor-grid),
+    .woocommerce ul.products:not(.elementor-grid).columns-1,
+    .woocommerce ul.products:not(.elementor-grid).columns-2,
+    .woocommerce ul.products:not(.elementor-grid).columns-3,
+    .woocommerce ul.products:not(.elementor-grid).columns-5,
+    .woocommerce ul.products:not(.elementor-grid).columns-6,
+    .woocommerce-page ul.products:not(.elementor-grid).columns-3 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+
+/* ===================================================================
+   Das Konto
+   ===================================================================
+
+   WooCommerce liefert hier eine Navigationsliste und einen Inhaltsbereich,
+   sonst nichts. Ungestaltet steht das als eingerahmter Kasten neben
+   Fliesstext da — Astra rahmt jede Liste und jede Tabelle ein.
+
+   Zwei Spalten wie im uebrigen Shop: links die Wege, rechts der Inhalt.
+   Der aktive Weg traegt die bordeauxfarbene Kante, wie die Kacheln.
+*/
+
+.woocommerce-account .woocommerce {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+}
+
+@media (min-width: 900px) {
+    .woocommerce-account .woocommerce {
+        grid-template-columns: 15rem 1fr;
+        gap: 4rem;
+        align-items: start;
+    }
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation { margin: 0; }
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 0;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li {
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--sz-border);
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li:last-child { border-bottom: 0; }
+
+.woocommerce-account .woocommerce-MyAccount-navigation li a {
+    display: block;
+    padding: 0.85rem 0 0.85rem 1rem;
+    border-left: 2px solid transparent;
+    font-family: var(--sz-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--sz-ink-soft);
+    transition: color 200ms ease, border-color 200ms ease;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation li a:hover { color: var(--sz-ink); }
+
+.woocommerce-account .woocommerce-MyAccount-navigation li.is-active a {
+    border-left-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-text);
+}
+
+.woocommerce-account .woocommerce-MyAccount-content { min-width: 0; }
+
+.woocommerce-account .woocommerce-MyAccount-content > p:first-child {
+    margin-top: 0;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--sz-border);
+    font-family: var(--sz-display);
+    font-size: 1.35rem;
+    line-height: 1.4;
+    color: var(--sz-ink);
+}
+
+.woocommerce-account .woocommerce-MyAccount-content p { line-height: 1.75; }
+
+.woocommerce-account .woocommerce-MyAccount-content a { color: var(--sz-bordeaux-text); }
+
+/* Astra rahmt auch hier jede Tabelle ein — Bestellungen, Adressen,
+   Downloads. Dieselbe eine Haarlinie wie ueberall. */
+.woocommerce-account table,
+.woocommerce-account table th,
+.woocommerce-account table td {
+    border: 0;
+    border-collapse: collapse;
+}
+
+.woocommerce-account table th,
+.woocommerce-account table td {
+    padding: 0.9rem 0.75rem;
+    border-bottom: 1px solid var(--sz-border);
+    text-align: left;
+}
+
+.woocommerce-account table th {
+    font-family: var(--sz-mono);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+/* ===================================================================
+   Ein Mengenwaehler, nicht zwei
+   ===================================================================
+
+   In der Kachel gab es zwei Bilder: bei einfachen Artikeln ein kleines
+   Kaestchen neben dem Knopf, bei Artikeln mit Gebinden ein Auswahlfeld
+   und darunter ein Feld ueber die volle Breite. Zweimal dieselbe Sache,
+   zweimal anders — das laesst die Seite unfertig wirken.
+
+   Also fuer beide dasselbe: das Gebinde immer auf eigener Zeile, darunter
+   Menge und Knopf nebeneinander.
+*/
+
+.woocommerce ul.products li.product form.cart,
+.woocommerce ul.products li.product .cart {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin: 0.9rem 0 0;
+}
+
+/* Das Gebinde nimmt immer die ganze Zeile. */
+.woocommerce ul.products li.product select {
+    box-sizing: border-box;
+    flex: 1 0 100%;
+    width: 100%;
+    height: 2.6rem;
+    padding: 0 1rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-family: var(--sz-mono);
+    font-size: 0.8rem;
+}
+
+.woocommerce ul.products li.product .quantity {
+    flex: 0 0 auto;
+    margin: 0;
+    width: auto;
+    max-width: none;
+    float: none;
+}
+
+.woocommerce ul.products li.product .quantity input,
+.woocommerce ul.products li.product input.qty,
+.woocommerce ul.products li.product input[type="number"] {
+    box-sizing: border-box;
+    width: 3.6rem;
+    min-width: 0;
+    max-width: 3.6rem;
+    height: 2.6rem;
+    margin: 0;
+    padding: 0 0.4rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    background: var(--sz-surface);
+    text-align: center;
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+    color: var(--sz-ink);
+    -moz-appearance: textfield;
+}
+
+.woocommerce ul.products li.product input[type="number"]::-webkit-outer-spin-button,
+.woocommerce ul.products li.product input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.woocommerce ul.products li.product a.button,
+.woocommerce ul.products li.product button.button,
+.woocommerce ul.products li.product .add_to_cart_button,
+.woocommerce ul.products li.product button[type="submit"] {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    height: 2.6rem;
+    margin: 0;
+    padding: 0 1.25rem !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+}
