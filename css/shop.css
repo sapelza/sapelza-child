@@ -117,21 +117,16 @@
 .woocommerce ul.products,
 ul.products {
     display: grid !important;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
     margin: 0 0 3rem;
     padding: 0;
     list-style: none;
 }
 
-@media (min-width: 1024px) { .woocommerce ul.products, ul.products { gap: 1.75rem; } }
-
-@media (min-width: 640px)  { .woocommerce ul.products, ul.products { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .woocommerce ul.products, ul.products { grid-template-columns: repeat(3, 1fr); } }
-
-/* Ab hier tragen vier Kacheln: die Schale ist dann breit genug, dass
-   jede noch ueber 400px bekommt. Darunter wuerden die Bilder schrumpfen. */
-@media (min-width: 1400px) { .woocommerce ul.products, ul.products { grid-template-columns: repeat(4, 1fr); } }
+/* Die Stufen des Entwurfs: zwei, ab 640px drei, ab 1024px vier. */
+@media (min-width: 640px)  { .woocommerce ul.products, ul.products { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .woocommerce ul.products, ul.products { grid-template-columns: repeat(4, 1fr); } }
 
 /* WooCommerce setzt Breiten und Abstaende je Spalte — im Raster stoert
    das nur, deshalb ausdruecklich zurueck. */
@@ -140,11 +135,9 @@ ul.products li.product {
     width: auto !important;
     float: none !important;
     margin: 0 !important;
-    padding: 1.5rem;
-    background: var(--sz-surface);
-    border: 1px solid var(--sz-border);
-    border-left: 2px solid var(--sz-bordeaux);
-    box-shadow: var(--sz-hebung);
+    padding: 0;
+    background: transparent;
+    border: 0;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -178,12 +171,8 @@ ul.products li.product::before {
 .woocommerce ul.products li.product:hover::before,
 .woocommerce ul.products li.product:focus-within::before { opacity: 1; transform: translateY(0); }
 
-.woocommerce ul.products li.product:hover,
-.woocommerce ul.products li.product:focus-within,
-ul.products li.product:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--sz-hebung-stark);
-}
+/* Kein Anheben: der Entwurf vergroessert beim Zeigen das Bild in seinem
+   Kasten. Das steht weiter unten bei .sz-kachel__bild. */
 
 .woocommerce ul.products li.product > * { position: relative; z-index: 1; }
 
@@ -1246,34 +1235,13 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
    =================================================================== */
 
 /*
- * Die Liste ist eine Karte wie die uebrigen, sonst steht sie als nackte
- * Tabelle auf der Seite.
+ * Die Liste ist jetzt eine echte Tabelle, ohne Karte darum — so steht
+ * es im Entwurf. Ihre Gestaltung steht weiter unten unter
+ * "Meine Artikel — 1:1 aus dem Entwurf". Hier bleibt nur, was die
+ * Bestandsspalte ein- und ausblendet.
  */
-.sz-meine-artikel {
-    margin-block: 2rem 3rem;
-    padding: 0 1.5rem;
-    background: var(--sz-surface);
-    border: 1px solid var(--sz-border);
-    border-left: 2px solid var(--sz-bordeaux);
-    box-shadow: var(--sz-hebung);
-}
+.sz-meine-artikel { margin-block: 2rem 3rem; }
 
-/*
- * Hier stand frueher noch ein zweites Spaltenbild fuer ab 900px, aus der
- * Fassung mit fuenf Spalten. Die Zeile hat aber sieben Kinder, also sind
- * zwei davon in eine zweite Reihe gerutscht. Es gibt jetzt genau eine
- * Definition, weiter unten.
- */
-.sz-artikelzeile {
-    gap: 0.75rem 1.25rem;
-    align-items: center;
-    padding-block: 1.1rem;
-    border-bottom: 1px solid var(--sz-border);
-}
-
-.sz-artikelzeile:last-of-type { border-bottom: 0; }
-
-.sz-artikelzeile__namen { min-width: 0; }
 
 /*
  * Der eigene Name ist die Schaltfläche — er sieht aus wie Text, bis man
@@ -1523,44 +1491,14 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     font-size: 0.95rem;
 }
 
-.sz-artikelkopf {
-    display: none;
-    font-size: 0.6rem;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--sz-ink-soft);
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--sz-border-strong);
-}
-
 /*
- * Spaltenbild ab 1000px — darunter stapelt sich die Zeile.
+ * Hier stand das Spaltenbild aus Rasterzellen, mit festen Breiten fuer
+ * die letzten vier Spalten. Eine Tabelle braucht das nicht: sie rechnet
+ * ihre Spalten ueber alle Zeilen gemeinsam aus. Genau darum fluchtet im
+ * Entwurf alles — er benutzt eine Tabelle.
  *
- * Die letzten vier Spalten haben feste Breiten, keine Anteile. Kopfzeile
- * und Warenzeilen sind je ein eigenes Raster; mit fr rechnete jedes seine
- * Spalten aus dem eigenen Inhalt aus, und nichts stuende uebereinander.
- *
- * 8.5rem fuer den Preis, weil dort nicht nur die Zahl steht, sondern auch
- * der Steuerhinweis des Shops. Mit 6rem lief er in den Mengenwaehler
- * hinein — "16,40 excl. IVA-" mit dem Minusknopf direkt daran.
+ * Was bleibt, ist das Ein- und Ausblenden der Bestandsspalte.
  */
-@media (min-width: 1000px) {
-    .sz-artikelkopf,
-    .sz-artikelzeile {
-        display: grid;
-        grid-template-columns: 1.5rem 1.4fr 1.8fr 5rem 8.5rem 7.5rem 2.5rem;
-        gap: 1.25rem;
-        align-items: center;
-    }
-
-    /* Verwaltet kein Artikel einen Bestand, faellt die Spalte weg. Eine
-       Spalte voller Striche sieht aus, als fehlte etwas. */
-    .sz-meine-artikel.ist-ohne-bestand .sz-artikelkopf,
-    .sz-meine-artikel.ist-ohne-bestand .sz-artikelzeile {
-        grid-template-columns: 1.5rem 1.4fr 1.8fr 8.5rem 7.5rem 2.5rem;
-    }
-}
-
 .sz-meine-artikel.ist-ohne-bestand .sz-spalte-bestand { display: none; }
 
 .sz-artikelzeile[hidden] { display: none !important; }
@@ -1691,33 +1629,360 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
     margin-inline: 0;
 }
 
+
+
+
 /* ===================================================================
-   Meine Artikel auf schmalen Schirmen
+   Die Kachel im Sortiment — 1:1 aus dem Entwurf
    ===================================================================
 
-   Ohne Spaltenbild stapelten sich die sieben Zellen als sieben Zeilen:
-   Haken, Name, Artikel, Bestand, Preis, Menge, Knopf. Eine Bestellung
-   ueber zehn Artikel wurde damit sehr lang.
-
-   Vier Zeilen statt sieben: der eigene Name oben, darunter der Artikel,
-   dann Bestand und Preis nebeneinander, zuletzt Menge und Knopf.
+   Bildkasten im Quadrat, cremefarben, das Bild darin zentriert und beim
+   Zeigen um 4% groesser. Darunter Marke, Name, Preis. Keine Flaeche,
+   keine Kante, kein Schatten — der Kasten traegt die Kachel.
 */
 
-@media (max-width: 999.98px) {
-    .sz-artikelzeile {
-        display: grid;
-        grid-template-columns: 1.5rem 1fr auto;
-        gap: 0.5rem 0.9rem;
-        align-items: center;
-    }
+.sz-kachel__bild {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--sz-muted);
+    border-radius: var(--sz-radius);
+}
 
-    .sz-artikelwahl           { grid-row: 1; grid-column: 1; }
-    .sz-artikelzeile__namen   { grid-row: 1; grid-column: 2 / -1; }
-    .sz-artikelzeile__katalog { grid-row: 2; grid-column: 2 / -1; }
-    .sz-artikelbestand        { grid-row: 3; grid-column: 2; }
-    .sz-artikelpreis          { grid-row: 3; grid-column: 3; text-align: right; }
-    .sz-menge                 { grid-row: 4; grid-column: 2; justify-self: start; }
-    .sz-inkorb                { grid-row: 4; grid-column: 3; justify-self: end; }
+.sz-kachel__bild img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 12%;
+    box-sizing: border-box;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 
-    .sz-meine-artikel { padding-inline: 1rem; }
+.woocommerce ul.products li.product:hover .sz-kachel__bild img,
+ul.products li.product:hover .sz-kachel__bild img { transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+    .woocommerce ul.products li.product:hover .sz-kachel__bild img,
+    ul.products li.product:hover .sz-kachel__bild img { transform: none; }
+}
+
+.sz-kachel__marke {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+ul.products li.product .woocommerce-loop-product__title {
+    margin: 0.25rem 0 0;
+    padding: 0;
+    font-family: var(--sz-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.35;
+    transition: color 300ms ease;
+}
+
+.woocommerce ul.products li.product:hover .woocommerce-loop-product__title,
+ul.products li.product:hover .woocommerce-loop-product__title { color: var(--sz-bordeaux-text); }
+
+.woocommerce ul.products li.product .price,
+ul.products li.product .price {
+    margin-top: 0.35rem;
+    font-family: var(--sz-mono);
+    font-weight: 500;
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: var(--sz-ink);
+}
+
+.woocommerce ul.products li.product .price .woocommerce-price-suffix,
+ul.products li.product .price small {
+    margin-left: 0.4rem;
+    font-family: var(--sz-body);
+    font-size: 0.74rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--sz-ink-soft);
+}
+
+/* ===================================================================
+   Meine Artikel — 1:1 aus dem Entwurf
+   ===================================================================
+
+   Der Entwurf benutzt eine echte Tabelle. Das ist der Grund, warum dort
+   alles fluchtet: eine Tabelle rechnet ihre Spalten ueber alle Zeilen
+   gemeinsam aus. Mein Raster tat das nicht — jede Zeile war ein
+   eigenes Raster und rechnete fuer sich.
+*/
+
+.sz-artikelbereich { margin-block: 0 2rem; }
+
+.sz-eigener-titel .entry-title,
+.sz-eigener-titel .ast-single-post-order .entry-title { display: none; }
+
+.sz-artikeltitel {
+    margin: 2.25rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5.6vw, 4.8rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+}
+
+.sz-artikellead {
+    margin: 1.5rem 0 0;
+    max-width: 36rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+}
+
+/* --- Das Suchfeld mit Lupe --- */
+
+.sz-artikelsuche {
+    position: relative;
+    display: block;
+    margin-top: 2rem;
+    max-width: 34rem;
+}
+
+.sz-artikelsuche svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    color: var(--sz-ink-soft);
+}
+
+.sz-artikelsuche input[type="search"] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    height: 2.6rem;
+    padding: 0 1.25rem 0 3.2rem;
+    border: 1px solid var(--sz-border);
+    border-radius: 999px;
+    background: var(--sz-bg);
+    color: var(--sz-ink);
+    font-size: 1rem;
+}
+
+/* --- Die Tabelle --- */
+
+.sz-artikeltafel { margin-top: 2rem; overflow-x: auto; }
+
+.sz-artikeltabelle {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.sz-artikeltabelle th {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--sz-border);
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--sz-ink-soft);
+}
+
+.sz-artikeltabelle td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--sz-border);
+    vertical-align: top;
+}
+
+.sz-artikelzeile[hidden] { display: none; }
+
+.sz-z-name    { min-width: 190px; }
+.sz-z-artikel { min-width: 230px; }
+
+.sz-artikeltabelle th.sz-z-bestand,
+.sz-artikeltabelle th.sz-z-preis,
+.sz-artikeltabelle th.sz-z-menge,
+.sz-artikeltabelle th.sz-z-korb,
+.sz-artikeltabelle td.sz-z-bestand,
+.sz-artikeltabelle td.sz-z-preis,
+.sz-artikeltabelle td.sz-z-menge,
+.sz-artikeltabelle td.sz-z-korb { text-align: right; white-space: nowrap; }
+
+.sz-artikeltabelle td.sz-z-bestand,
+.sz-artikeltabelle td.sz-z-preis,
+.sz-artikeltabelle td.sz-z-menge,
+.sz-artikeltabelle td.sz-z-korb { vertical-align: middle; }
+
+.sz-artikelwahl input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--sz-bordeaux);
+}
+
+/* Der eigene Name ist die Schaltflaeche, der Stift erscheint beim
+   Zeigen. Ein Stift, der immer da steht, waere ein zweiter Bedienweg. */
+.sz-eigenname {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0 !important;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--sz-display);
+    font-size: 1.18rem;
+    line-height: 1.2;
+    color: var(--sz-ink);
+}
+
+.sz-eigenname.ist-leer { font-family: var(--sz-body); font-size: 0.95rem; font-style: italic; color: var(--sz-ink-soft); }
+
+.sz-eigenname svg { width: 0.75rem; height: 0.75rem; opacity: 0; transition: opacity 200ms ease; color: var(--sz-bordeaux-text); }
+.sz-eigenname:hover svg, .sz-eigenname:focus-visible svg { opacity: 1; }
+
+.sz-eigenname__katalog {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--sz-mono);
+    font-size: 0.7rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-eigenname__feld {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.15rem 0.4rem;
+    border: 1px solid var(--sz-bordeaux);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-family: var(--sz-display);
+    font-size: 1.18rem;
+}
+
+.sz-eigenname__feld:focus { outline: none; }
+
+.sz-eigenname__wer { display: block; margin-top: 0.3rem; font-size: 0.6rem; color: var(--sz-ink-soft); }
+
+.sz-artikelmarke {
+    display: block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-katalogname { font-size: 0.95rem; color: inherit; text-decoration: none; }
+.sz-katalogname:hover { color: var(--sz-bordeaux-text); }
+
+.sz-artikelrhythmus { display: block; margin-top: 0.15rem; font-size: 0.78rem; color: var(--sz-ink-soft); }
+
+.sz-artikelbestand { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; }
+.sz-artikelbestand .sz-punkt { width: 7px; height: 7px; border-radius: 50%; background: var(--sz-bordeaux); flex: none; }
+
+.sz-artikelpreis {
+    font-family: var(--sz-mono);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    font-size: 0.95rem;
+}
+
+.sz-artikelpreis .woocommerce-price-suffix,
+.sz-artikelpreis small {
+    display: block;
+    margin-top: 0.1rem;
+    font-family: var(--sz-body);
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--sz-ink-soft);
+}
+
+.sz-artikeltabelle .sz-menge {
+    display: inline-flex;
+    align-items: stretch;
+    overflow: hidden;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+}
+
+.sz-artikeltabelle .sz-menge button {
+    box-sizing: border-box;
+    width: 2rem; height: 2rem;
+    padding: 0 !important; min-width: 0;
+    border: 0; background: transparent;
+    color: var(--sz-ink); cursor: pointer; line-height: 1;
+}
+
+.sz-artikeltabelle .sz-menge input {
+    width: 2.75rem; border: 0; background: transparent;
+    text-align: center; font-family: var(--sz-mono); font-size: 0.9rem; color: var(--sz-ink);
+    -moz-appearance: textfield;
+}
+
+.sz-inkorb {
+    box-sizing: border-box;
+    display: grid; place-items: center;
+    width: 34px; height: 34px;
+    padding: 0 !important; min-width: 0;
+    border: 1px solid var(--sz-bordeaux);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--sz-bordeaux-text);
+    cursor: pointer;
+    transition: background 200ms ease, color 200ms ease;
+}
+
+.sz-inkorb svg { width: 15px; height: 15px; }
+.sz-inkorb:hover, .sz-inkorb.ist-drin { background: var(--sz-bordeaux); color: var(--sz-bordeaux-fg); }
+.sz-inkorb:disabled { opacity: 0.4; cursor: wait; }
+
+.sz-artikelfuss {
+    display: flex; flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin-top: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--sz-ink-soft);
+}
+
+.sz-artikeltrenner { margin-block: 3.5rem; }
+
+/* --- Der Schlusssatz --- */
+
+.sz-artikelschluss { display: flex; align-items: center; gap: 1.5rem; margin-top: 3.5rem; }
+.sz-artikelschluss__linie { height: 1px; width: 3rem; flex: none; background: var(--sz-bordeaux); }
+
+@media (min-width: 768px) { .sz-artikelschluss__linie { width: 6rem; } }
+
+.sz-artikelschluss__satz {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--sz-bordeaux-text);
+}
+
+@media (min-width: 768px) { .sz-artikelschluss__satz { font-size: 1.875rem; } }
+
+/* Auf schmalen Schirmen darf die Tabelle waagrecht rollen — sie in
+   Kaertchen umzubauen wuerde die Spaltenkoepfe kosten, und ohne die
+   weiss niemand, ob 186 ein Bestand oder ein Preis ist. */
+@media (max-width: 780px) {
+    .sz-artikeltabelle { min-width: 44rem; }
 }

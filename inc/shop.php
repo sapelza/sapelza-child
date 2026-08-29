@@ -305,3 +305,56 @@ add_action('wp', function () {
     remove_action('woocommerce_checkout_order_review', 'woocommerce_checkout_payment', 20);
     add_action('woocommerce_checkout_after_customer_details', 'woocommerce_checkout_payment', 20);
 });
+
+/* ===================================================================
+   Die Kachel im Sortiment
+   ===================================================================
+
+   Der Entwurf setzt das Bild in einen cremefarbenen Kasten im Quadrat
+   und darunter Marke, Name, Preis. Kein eigenes content-product.php:
+   WooCommerces Kachel ruft woocommerce_after_shop_loop_item_title auf,
+   und genau dort setzt B2BKing die Preise. Eine eigene Vorlage wuerde
+   den Haken ueberspringen.
+
+   Also nur zwei Klammern um das Bild und eine Zeile davor.
+*/
+
+add_action('woocommerce_before_shop_loop_item_title', function () {
+    echo '<span class="sz-kachel__bild">';
+}, 5);
+
+add_action('woocommerce_before_shop_loop_item_title', function () {
+    echo '</span>';
+}, 20);
+
+add_action('woocommerce_shop_loop_item_title', function () {
+    if (!function_exists('sz_marken_taxonomie')) return;
+
+    $taxonomie = sz_marken_taxonomie();
+    if ($taxonomie === '') return;
+
+    global $product;
+    if (!$product) return;
+
+    $marken = get_the_terms($product->get_id(), $taxonomie);
+    if (!$marken || is_wp_error($marken)) return;
+
+    printf('<span class="sz-kachel__marke">%s</span>', esc_html($marken[0]->name));
+}, 5);
+
+/*
+ * Auf Seiten mit unseren Bausteinen traegt WordPress den Seitentitel
+ * schon oben. Der Baustein bringt seine eigene Ueberschrift mit
+ * Kapitelmarke und Vorspann mit, wie im Entwurf — sonst stuende
+ * "Meine Artikel" zweimal da.
+ */
+add_filter('body_class', function ($klassen) {
+    if (!is_singular()) return $klassen;
+
+    $inhalt = get_post_field('post_content', get_queried_object_id());
+    if (is_string($inhalt) && has_shortcode($inhalt, 'sz_meine_artikel')) {
+        $klassen[] = 'sz-eigener-titel';
+    }
+
+    return $klassen;
+});
