@@ -155,84 +155,328 @@
     }
 
     /* ---------------------------------------------------------------
-       Hero: das angefahrene Wort öffnet eine Mindmap
+       Hero: der freie Raum rechts neben der Ueberschrift
+       ---------------------------------------------------------------
+
+       Vorher stand hier eine Mindmap, die vom angefahrenen Wort aus
+       nach unten streute. Die Ueberschrift laeuft aber ueber vier
+       Zeilen und nimmt die halbe Breite — die Namen landeten im Text.
+
+       Jetzt: fuer "im Hochpustertal" faehrt der Porter die Talstrasse
+       ab, die Orte leuchten der Reihe nach auf. Fuer die beiden anderen
+       Woerter eine ruhige Liste an derselben Stelle.
+
+       Die Orte stehen mit echten Koordinaten da, nicht als gefaellige
+       Kurve: das Pustertal laeuft von West nach Ost, und Sexten liegt
+       nicht daran, sondern zweigt bei Innichen nach Sueden ab. Eine
+       erfundene Linie haette das verwischt.
        --------------------------------------------------------------- */
 
-    function mindmapAufsetzen() {
+    function heroBeiwerkAufsetzen() {
         var hero = document.querySelector('.sz-hero');
-        if (!hero || sanft.matches) return;
+        if (!hero) return;
 
         var woerter = hero.querySelectorAll('[data-sz-wort]');
         if (!woerter.length) return;
 
         var buehne = document.createElement('div');
-        buehne.className = 'sz-mindmap';
+        buehne.className = 'sz-beiwerk';
         buehne.setAttribute('aria-hidden', 'true');
         hero.appendChild(buehne);
 
-        var zweige = {
-            bereiche: ['Küche', 'Reinigung', 'Hygiene', 'Hotelbedarf', 'Verbrauch', 'Wäsche'],
-            marken: ['Vileda', 'Papernet', 'Sutter', 'Fasana', 'Deiss'],
-            karte: ['Welsberg', 'Niederdorf', 'Toblach', 'Innichen', 'Sexten', 'Winnebach']
+        var porterBild = hero.getAttribute('data-sz-porter') || '';
+
+        /* Hochpustertal, West nach Ost. Sexten zweigt bei Innichen ab. */
+        var TAL = [
+            { name: 'Welsberg',   lat: 46.7519, lon: 12.1122 },
+            { name: 'Niederdorf', lat: 46.7369, lon: 12.1697 },
+            { name: 'Toblach',    lat: 46.7358, lon: 12.2214 },
+            { name: 'Innichen',   lat: 46.7325, lon: 12.2806 },
+            { name: 'Winnebach',  lat: 46.7414, lon: 12.3903 }
+        ];
+        var SEXTEN = { name: 'Sexten', lat: 46.7005, lon: 12.3500, ab: 3 };
+
+        var LISTEN = {
+            bereiche: ['K\u00fcche', 'Reinigung', 'Hygiene', 'Hotelbedarf', 'Verbrauch', 'W\u00e4sche'],
+            marken:   ['Vileda', 'Papernet', 'Sutter', 'Fasana', 'Deiss']
         };
 
         var offen = null;
         var schliessZeit = null;
+        var lauf = null;
 
-        function zeichne(schluessel, quelle) {
+        /* --- Wieviel Platz ist rechts frei? ------------------------- */
+        function freiraum() {
             var hb = hero.getBoundingClientRect();
-            var qb = quelle.getBoundingClientRect();
+            var titel = hero.querySelector('h1');
+            if (!titel) return null;
 
-            var namen = zweige[schluessel] || [];
-
-            /*
-             * Die Aeste streuten frueher vom Wort aus nach unten. Die
-             * Ueberschrift laeuft aber ueber vier Zeilen und nimmt die
-             * halbe Breite ein — die Namen landeten mitten im Text.
-             *
-             * Jetzt steht die Namensspalte im freien Raum rechts neben der
-             * Ueberschrift, und die Aeste laufen vom rechten Rand des
-             * Wortes dorthin. Der Kontrollpunkt sitzt knapp hinter dem
-             * Text, damit die Bogen ihn schnell verlassen.
-             */
-            var titel = hero.querySelector('h1') || quelle;
             var tb = titel.getBoundingClientRect();
-            var textRechts = tb.right - hb.left;
+            var links = tb.right - hb.left + 48;
+            var breite = hb.width - links - 40;
 
-            /* Zu eng: dann lieber gar nichts zeichnen. Ein Netz, das in
-               der Ueberschrift klebt, ist schlechter als keines. */
-            if (hb.width - textRechts < 260) { schliesse(); return; }
+            /* Unter 150px passt nicht einmal mehr ein Ortsname nebeneinander.
+               Dann lieber nichts als ein Gedraenge. */
+            if (breite < 150) return null;
 
-            var spalte = Math.min(hb.width - 190, textRechts + 90);
-            var mitte  = hb.height * 0.46;
-            var schritt = Math.min(48, (hb.height * 0.62) / Math.max(namen.length, 1));
+            return { links: links, oben: hb.height * 0.12, breite: breite, hoehe: hb.height * 0.76 };
+        }
 
-            var ox = Math.min(qb.right - hb.left, textRechts);
-            var oy = qb.top - hb.top + qb.height / 2;
+        /* --- Die Orte in den Rahmen rechnen --------------------------
+         *
+         * Massstabsgetreu: derselbe Faktor fuer beide Achsen. Verzerrte
+         * man die Breite, stuende die Abzweigung nach Sexten falsch.
+         *
+         * Der Rahmen richtet sich deshalb nach dem Tal, nicht umgekehrt:
+         * das Pustertal ist breit und flach, also wird die Buehne ein
+         * breites niedriges Band und sitzt mittig im freien Raum. Vorher
+         * fuellte sie die ganze Hoehe — die Strasse lag dann als duenner
+         * Faden in einem hohen leeren Kasten.
+         *
+         * Rechts bleibt Platz fuer die laengste Ortsbeschriftung, sonst
+         * liefe "Winnebach" aus dem Bild.
+         */
+        function abbilden(raum) {
+            var mittelBreite = Math.cos(46.735 * Math.PI / 180);
+            var punkte = TAL.concat([SEXTEN]).map(function (o) {
+                return { name: o.name, x: o.lon * mittelBreite, y: -o.lat };
+            });
 
-            var teile = ['<svg class="sz-mindmap__svg" viewBox="0 0 ' + Math.round(hb.width) + ' ' + Math.round(hb.height) + '">'];
+            var xs = punkte.map(function (p) { return p.x; });
+            var ys = punkte.map(function (p) { return p.y; });
+            var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
+            var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
 
-            var nachRechts = true;
-            for (var i = 0; i < namen.length; i++) {
-                var zx = spalte + (i % 2 ? 26 : 0);
-                var zy = mitte + (i - (namen.length - 1) / 2) * schritt;
-                var kx = textRechts + 24;
-                var ky = oy + (zy - oy) * 0.18;
+            var rand = 26;
+            var schrift = 96;
+            var faktor = (raum.breite - 2 * rand - schrift) / (x1 - x0 || 1);
 
-                teile.push('<path class="sz-mindmap__ast" style="--verzug:' + (i * 55) + 'ms" d="M' + ox + ' ' + oy + ' Q' + kx + ' ' + ky + ' ' + zx + ' ' + zy + '"/>');
-                teile.push('<circle class="sz-mindmap__knoten" style="--verzug:' + (i * 55 + 120) + 'ms" cx="' + zx + '" cy="' + zy + '" r="3"/>');
-                teile.push('<text class="sz-mindmap__wort" style="--verzug:' + (i * 55 + 180) + 'ms" x="' + (zx + (nachRechts ? 10 : -10)) + '" y="' + (zy + 4) + '" text-anchor="' + (nachRechts ? 'start' : 'end') + '">' + namen[i] + '</text>');
+            var hoehe = (y1 - y0) * faktor + 2 * rand;
+
+            return {
+                hoehe: hoehe,
+                punkte: punkte.map(function (p) {
+                    return {
+                        name: p.name,
+                        x: rand + (p.x - x0) * faktor,
+                        y: rand + (p.y - y0) * faktor
+                    };
+                })
+            };
+        }
+
+        /* Weiche Strasse durch die Punkte (Catmull-Rom als Bezier). */
+        function strasse(pfad) {
+            var d = 'M' + pfad[0].x.toFixed(1) + ' ' + pfad[0].y.toFixed(1);
+            for (var i = 0; i < pfad.length - 1; i++) {
+                var p0 = pfad[i - 1] || pfad[i];
+                var p1 = pfad[i], p2 = pfad[i + 1];
+                var p3 = pfad[i + 2] || p2;
+                var c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+                var c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+                d += ' C' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) +
+                     ' ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) +
+                     ' ' + p2.x.toFixed(1) + ' ' + p2.y.toFixed(1);
+            }
+            return d;
+        }
+
+        function stelle(raum) {
+            buehne.style.left   = Math.round(raum.links) + 'px';
+            buehne.style.top    = Math.round(raum.oben) + 'px';
+            buehne.style.width  = Math.round(raum.breite) + 'px';
+            buehne.style.height = Math.round(raum.hoehe) + 'px';
+        }
+
+        /* --- Die Route ---------------------------------------------- */
+        function zeichneRoute(raum) {
+            var bild = abbilden(raum);
+            var punkte = bild.punkte;
+
+            /* Die Buehne auf die natuerliche Hoehe des Tals stellen und
+               mittig in den freien Raum setzen. */
+            buehne.style.height = Math.round(bild.hoehe) + 'px';
+            buehne.style.top = Math.round(raum.oben + (raum.hoehe - bild.hoehe) / 2) + 'px';
+
+            var tal = punkte.slice(0, TAL.length);
+            var sexten = punkte[punkte.length - 1];
+            var abzweig = tal[SEXTEN.ab];
+
+            var ns = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(ns, 'svg');
+            svg.setAttribute('class', 'sz-route');
+            svg.setAttribute('viewBox', '0 0 ' + Math.round(raum.breite) + ' ' + Math.round(bild.hoehe));
+
+            var ast = document.createElementNS(ns, 'path');
+            ast.setAttribute('class', 'sz-route__ast');
+            ast.setAttribute('d', 'M' + abzweig.x.toFixed(1) + ' ' + abzweig.y.toFixed(1) +
+                                  ' Q' + ((abzweig.x + sexten.x) / 2).toFixed(1) + ' ' + abzweig.y.toFixed(1) +
+                                  ' ' + sexten.x.toFixed(1) + ' ' + sexten.y.toFixed(1));
+            svg.appendChild(ast);
+
+            /* Zwei Linien uebereinander: eine breite blasse als Bett,
+               darauf die schmale kraeftige. So liest sich der Strich als
+               Strasse und nicht als Haarlinie. */
+            var d = strasse(tal);
+
+            var bett = document.createElementNS(ns, 'path');
+            bett.setAttribute('class', 'sz-route__bett');
+            bett.setAttribute('d', d);
+            svg.appendChild(bett);
+
+            var weg = document.createElementNS(ns, 'path');
+            weg.setAttribute('class', 'sz-route__weg');
+            weg.setAttribute('d', d);
+            svg.appendChild(weg);
+
+            var marken = punkte.map(function (p) {
+                var g = document.createElementNS(ns, 'g');
+                g.setAttribute('class', 'sz-route__ort');
+
+                var kreis = document.createElementNS(ns, 'circle');
+                kreis.setAttribute('cx', p.x.toFixed(1));
+                kreis.setAttribute('cy', p.y.toFixed(1));
+                kreis.setAttribute('r', '3.5');
+                g.appendChild(kreis);
+
+                var text = document.createElementNS(ns, 'text');
+                text.setAttribute('x', (p.x + 10).toFixed(1));
+                text.setAttribute('y', (p.y + 4).toFixed(1));
+                text.textContent = p.name;
+                g.appendChild(text);
+
+                svg.appendChild(g);
+                return g;
+            });
+
+            var wagen = null;
+            if (porterBild) {
+                wagen = document.createElementNS(ns, 'image');
+                wagen.setAttribute('class', 'sz-route__porter');
+                wagen.setAttribute('href', porterBild);
+                wagen.setAttribute('width', '30');
+                wagen.setAttribute('height', '48');
+                svg.appendChild(wagen);
             }
 
-            teile.push('</svg>');
-            buehne.innerHTML = teile.join('');
+            buehne.innerHTML = '';
+            buehne.appendChild(svg);
+
+            var laenge = weg.getTotalLength();
+            weg.style.strokeDasharray = laenge;
+            bett.style.strokeDasharray = laenge;
+
+            /* Wo liegt jeder Ort auf der Strasse? Grob abgetastet — auf
+               den Meter kommt es hier nicht an, nur auf die Reihenfolge. */
+            var beiLaenge = tal.map(function (p) {
+                var beste = 0, abstand = Infinity;
+                for (var s = 0; s <= laenge; s += laenge / 160) {
+                    var q = weg.getPointAtLength(s);
+                    var d = (q.x - p.x) * (q.x - p.x) + (q.y - p.y) * (q.y - p.y);
+                    if (d < abstand) { abstand = d; beste = s; }
+                }
+                return beste;
+            });
+
+            function setzen(anteil) {
+                var s = laenge * anteil;
+                weg.style.strokeDashoffset = laenge - s;
+                bett.style.strokeDashoffset = laenge - s;
+
+                for (var i = 0; i < tal.length; i++) {
+                    marken[i].classList.toggle('ist-da', s >= beiLaenge[i] - 2);
+                }
+                /* Sexten kommt mit Innichen, es zweigt dort ab. */
+                marken[marken.length - 1].classList.toggle('ist-da', s >= beiLaenge[SEXTEN.ab] - 2);
+                ast.classList.toggle('ist-da', s >= beiLaenge[SEXTEN.ab] - 2);
+
+                if (wagen) stelleWagen(s);
+            }
+
+            /* Der Wagen steht auf der Strasse und schaut in Fahrtrichtung.
+               Die Drehung muss um seinen eigenen Punkt gehen — dreht man
+               um einen anderen, wandert er aus dem Bild. */
+            function stelleWagen(s) {
+                var q = weg.getPointAtLength(s);
+                var vorn = weg.getPointAtLength(Math.min(laenge, s + 6));
+                var winkel = Math.atan2(vorn.y - q.y, vorn.x - q.x) * 180 / Math.PI + 90;
+                wagen.setAttribute('x', (q.x - 15).toFixed(1));
+                wagen.setAttribute('y', (q.y - 24).toFixed(1));
+                wagen.setAttribute('transform', 'rotate(' + winkel.toFixed(1) + ' ' + q.x.toFixed(1) + ' ' + q.y.toFixed(1) + ')');
+            }
+
+            if (sanft.matches) {
+                /* Nicht bewegen heisst nicht unsichtbar: die ganze Strasse
+                   steht da, alle Orte sind benannt, der Wagen parkt in
+                   Toblach — dort, wo das Haus steht. */
+                setzen(1);
+                if (wagen) stelleWagen(beiLaenge[2]);
+                return;
+            }
+
+            setzen(0);
+            var beginn = null;
+            var dauer = 1700;
+
+            function schritt(zeit) {
+                if (beginn === null) beginn = zeit;
+                var t = Math.min(1, (zeit - beginn) / dauer);
+                /* sanft anfahren und ausrollen */
+                var e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                setzen(e);
+                if (t < 1) lauf = window.requestAnimationFrame(schritt);
+            }
+
+            lauf = window.requestAnimationFrame(schritt);
+        }
+
+        /* --- Die Liste ---------------------------------------------- */
+        function zeichneListe(namen) {
+            var kasten = document.createElement('div');
+            kasten.className = 'sz-beiwerk__liste';
+
+            namen.forEach(function (name, i) {
+                var zeile = document.createElement('span');
+                zeile.className = 'sz-beiwerk__zeile';
+                zeile.style.setProperty('--verzug', (i * 60) + 'ms');
+                zeile.textContent = name;
+                kasten.appendChild(zeile);
+            });
+
+            buehne.innerHTML = '';
+            buehne.appendChild(kasten);
+            /* Erst im naechsten Bild einblenden, sonst springt es. */
+            window.requestAnimationFrame(function () { kasten.classList.add('ist-da'); });
+        }
+
+        function zeichne(schluessel) {
+            var raum = freiraum();
+            if (!raum) { schliesse(); return; }
+
+            if (lauf) { window.cancelAnimationFrame(lauf); lauf = null; }
+            stelle(raum);
             buehne.classList.add('ist-offen');
-            hero.classList.add('ist-verschleiert');
+
+            /*
+             * Die Route braucht Platz: fuenf Orte nebeneinander plus die
+             * laengste Beschriftung. Unter 380px wuerde sie sich stapeln.
+             * Dann treten dieselben Orte als Liste an ihre Stelle —
+             * dieselbe Auskunft, nur ohne Gedraenge. Das faengt Fenster
+             * ab, in denen die Ueberschrift fast alles einnimmt.
+             */
+            if (schluessel === 'karte') {
+                if (raum.breite >= 380) zeichneRoute(raum);
+                else zeichneListe(TAL.concat([SEXTEN]).map(function (o) { return o.name; }));
+                return;
+            }
+
+            zeichneListe(LISTEN[schluessel] || []);
         }
 
         function schliesse() {
+            if (lauf) { window.cancelAnimationFrame(lauf); lauf = null; }
             buehne.classList.remove('ist-offen');
-            hero.classList.remove('ist-verschleiert');
+            buehne.innerHTML = '';
             offen = null;
         }
 
@@ -248,7 +492,7 @@
                 if (offen === schluessel) return;
                 offen = schluessel;
                 woerter.forEach(function (w) { w.setAttribute('aria-expanded', String(w === wort)); });
-                zeichne(schluessel, wort);
+                zeichne(schluessel);
             }
 
             wort.addEventListener('mouseenter', oeffne);
@@ -265,14 +509,20 @@
                 }
             });
         });
+
+        /* Beim Groessenwechsel stimmt der Rahmen nicht mehr. */
+        window.addEventListener('resize', function () {
+            if (offen) schliesse();
+        });
     }
+
 
     /* --------------------------------------------------------------- */
 
     function los() {
         tourAufsetzen();
         auftauchenAufsetzen();
-        mindmapAufsetzen();
+        heroBeiwerkAufsetzen();
     }
 
     if (document.readyState === 'loading') {

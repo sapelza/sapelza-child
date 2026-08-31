@@ -16,7 +16,16 @@ $sz_abteilungen = sz_abteilungen_gesamt();
 $sz_marken      = sz_marken_anzahl();
 
 ?>
-<section class="sz-hero" aria-labelledby="sz-hero-satz">
+<?php
+/*
+ * Die Bildadresse des Porters haengt am Abschnitt, damit das Skript sie
+ * nicht aus dem Fussbereich klauben muss. Der Fuss traegt denselben
+ * Wagen als Bildlaufanzeige — verlaesst man sich darauf, bricht das
+ * Beiwerk, sobald dort etwas anderes steht.
+ */
+?>
+<section class="sz-hero" aria-labelledby="sz-hero-satz"
+         data-sz-porter="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/porter-oben.webp'); ?>">
     <div class="wrap">
 
         <p class="kicker">
