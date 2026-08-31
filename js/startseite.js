@@ -57,19 +57,40 @@
              * Achse. Erst nach Westen, dann die Kehre, dann nach Osten.
              * Deshalb zwei Abschnitte statt einer geraden Fahrt.
              */
+            /*
+             * ANFANG: so lange steht der Wagen noch am Lager. Vorher fuhr
+             * er los, sobald der Abschnitt ins Bild kam — man sah ihn nie
+             * stehen, immer nur schon unterwegs.
+             *
+             * WEST: nicht ganz bis ans Ende der Achse. Der Wagen sitzt
+             * mittig auf seinem Punkt, also ragte am Westende die halbe
+             * Ladeflaeche ueber Welsberg hinaus und legte sich auf die
+             * Beschriftung von Taisten.
+             */
+            var ANFANG = 0.2;
+            var WEST   = 0.04;
+            var KEHRE  = 0.56;
+
             var t;      /* Position auf der Achse, 0 = West, 1 = Ost */
             var westwaerts;
 
-            if (p < 0.42) {
-                t = 0.5 - (p / 0.42) * 0.5;     /* Mitte -> West */
-                westwaerts = true;
+            if (p < ANFANG) {
+                t = 0.5;                         /* steht am Lager */
+                westwaerts = false;
             } else if (p < 0.5) {
-                t = 0;                           /* Kehre */
+                var q = (p - ANFANG) / (0.5 - ANFANG);
+                t = 0.5 - q * (0.5 - WEST);      /* Lager -> West */
+                westwaerts = true;
+            } else if (p < KEHRE) {
+                t = WEST;                        /* Kehre */
                 westwaerts = false;
             } else {
-                t = ((p - 0.5) / 0.5);           /* West -> Ost */
-                westwaerts = false;
+                t = WEST + ((p - KEHRE) / (1 - KEHRE)) * (1 - WEST);
+                westwaerts = false;              /* West -> Ost */
             }
+
+            if (t < 0) t = 0;
+            if (t > 1) t = 1;
 
             var punkt = strecke.getPointAtLength(t * laenge);
 
@@ -87,7 +108,7 @@
 
             /* Die drei Zusagen erscheinen, während der Wagen fährt. */
             for (var i = 0; i < zusagen.length; i++) {
-                var schwelle = 0.28 + i * 0.16;
+                var schwelle = 0.34 + i * 0.16;
                 zusagen[i].classList.toggle('ist-da', p >= schwelle);
             }
         }
