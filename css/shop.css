@@ -2420,3 +2420,33 @@ ul.products li.product .price small {
     text-transform: uppercase;
     color: var(--sz-ink-soft);
 }
+
+/* ===================================================================
+   Nicht vorraetige Artikel
+   ===================================================================
+
+   WooCommerce ersetzt bei nicht bestellbaren Artikeln den Warenkorbknopf
+   durch einen Link "Weiterlesen". Das ist Blogsprache; in einem Katalog
+   liest sich das falsch. Der Text steht jetzt in shop.php.
+
+   Und er soll auch nicht rot schreien: die Kachel traegt bereits das
+   Schild "Nicht vorraetig". Ein gefuellter Knopf daneben verspraeche
+   etwas, das gerade nicht geht. Also nur Umriss.
+
+   .outofstock setzt WooCommerce selbst an die Kachel \u2014 verlaesslicher,
+   als auf das Fehlen von .add_to_cart_button zu bauen, denn den setzt
+   das Mengen-Snippet ohnehin anders.
+*/
+
+.woocommerce ul.products li.product.outofstock .button,
+ul.products li.product.outofstock .button {
+    background: transparent !important;
+    border: 1px solid var(--sz-border-strong) !important;
+    color: var(--sz-ink-soft) !important;
+}
+
+.woocommerce ul.products li.product.outofstock .button:hover,
+ul.products li.product.outofstock .button:hover {
+    border-color: var(--sz-bordeaux) !important;
+    color: var(--sz-bordeaux-text) !important;
+}

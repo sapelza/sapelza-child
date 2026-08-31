@@ -702,3 +702,43 @@ ul.products li.product {
     .woocommerce ul.products li.product:focus-within,
     ul.products li.product:hover { transform: none; }
 }
+
+/* ===================================================================
+   Kapselknoepfe
+   ===================================================================
+
+   Alle Knoepfe sind Kapseln. Ausgenommen bleibt nur "In den Warenkorb"
+   an der Kachel und am Artikel selbst: der bleibt eckig. So hebt sich
+   die eine Handlung, auf die es ankommt, von allem uebrigen ab.
+
+   Mit !important, weil einige aeltere Regeln in shop.css die Ecken
+   selbst schon mit !important gesetzt haben \u2014 die haben sie gegen Astra
+   gebraucht. Die Ausnahme unten wiegt mehr und gewinnt trotzdem.
+*/
+
+button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+a.button,
+.button,
+.wp-element-button,
+.sz-chip,
+.sz-knopf,
+.woocommerce a.button,
+.woocommerce button.button,
+.woocommerce input.button,
+.woocommerce #respond input#submit,
+.woocommerce-checkout #place_order,
+.wc-block-components-button {
+    border-radius: 999px !important;
+}
+
+/* Die Ausnahme. */
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product .added_to_cart,
+.woocommerce ul.products li.product button[type="submit"],
+.single-product div.product form.cart .button,
+.single-product div.product .single_add_to_cart_button {
+    border-radius: var(--sz-radius) !important;
+}

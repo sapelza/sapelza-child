@@ -533,3 +533,17 @@ add_filter('body_class', function ($klassen) {
  * eigene Regel liefert vier Spalten.
  */
 add_filter('loop_shop_columns', static fn() => 4, 20);
+
+/*
+ * "Weiterlesen" an nicht bestellbaren Artikeln.
+ *
+ * WooCommerce nimmt dort den Text der Blog-Ansicht. In einem Katalog
+ * liest sich das falsch — man liest nichts weiter, man sieht sich den
+ * Artikel an. Der Link bleibt: dort steht, ob es einen Nachfolger gibt.
+ */
+add_filter('woocommerce_product_add_to_cart_text', static function ($text, $produkt) {
+    if (!$produkt instanceof WC_Product) return $text;
+    if ($produkt->is_purchasable() && $produkt->is_in_stock()) return $text;
+
+    return __('Artikel ansehen', 'sapelza-shop');
+}, 20, 2);
