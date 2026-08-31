@@ -35,9 +35,26 @@ $sz_punkte = [
         </p>
 
         <div class="sz-partner__kopf">
-            <h2 id="sz-partner-titel" class="sz-partner__titel">
-                <?php echo esc_html__('Danke, dass Sie seit Jahren bei uns kaufen', 'sapelza-shop'); ?>
-            </h2>
+            <?php
+            /*
+             * Ueberschrift und Logo stehen nebeneinander. Rechts neben dem
+             * Satz blieb ein leeres Feld — die Ueberschrift ist auf 20
+             * Zeichen Breite gesetzt, der Vorspann sitzt erst weiter
+             * rechts. Dort gehoert das Zeichen hin, das der Satz meint.
+             *
+             * Das ganze Logo, nicht die blasse Kontur des Wasserzeichens:
+             * an dieser Stelle ist es die Unterschrift unter einem Dank,
+             * kein Hintergrund.
+             */
+            ?>
+            <div class="sz-partner__marke">
+                <h2 id="sz-partner-titel" class="sz-partner__titel">
+                    <?php echo esc_html__('Danke, dass Sie seit Jahren bei uns kaufen', 'sapelza-shop'); ?>
+                </h2>
+                <img class="sz-partner__logo"
+                     src="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/logo.png'); ?>"
+                     width="219" height="141" alt="" decoding="async" loading="lazy">
+            </div>
             <p class="sz-partner__lead">
                 <?php echo esc_html__('Die meisten unserer Kunden kennen das Geschäft in der Graf-Künigl-Straße persönlich — Handwerksbetriebe, Hotels und Gastwirte aus dem Tal, manche seit zwei Generationen. Dieser Shop ändert daran nichts. Er soll Ihnen nur den Weg sparen, wenn Sie ohnehin wissen, was Sie brauchen.', 'sapelza-shop'); ?>
             </p>
@@ -55,22 +72,4 @@ $sz_punkte = [
 
     </div>
 
-        <?php
-        /*
-         * Das Zeichen am Ende des Abschnitts. Darunter kam bisher nichts
-         * mehr — eine leere Bahn vor dem Fuss. Dieselbe gezeichnete Marke
-         * wie das Wasserzeichen, hier aber als Schlusspunkt und deutlich
-         * genug, dass man sie als Zeichen liest.
-         */
-        ?>
-        <div class="sz-partner__zeichen" aria-hidden="true">
-            <svg viewBox="0 0 219 141" xmlns="http://www.w3.org/2000/svg">
-                <path d="M109 11 L216 70.5 L109 130 L2 70.5 Z" fill="none" stroke="currentColor" stroke-width="3.5"/>
-                <path d="M109 17 L206 70.5 L109 124 L12 70.5 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                <path d="M24 50 H44 V53 H174 V50 H194 V96 H174 V93 H44 V96 H24 Z" fill="none" stroke="currentColor" stroke-width="3"/>
-                <path d="M28 54 H48 V57 H170 V54 H190 V92 H170 V89 H48 V92 H28 Z" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                <text x="109" y="80" text-anchor="middle" fill="currentColor"
-                      font-family="Georgia, 'Times New Roman', serif" font-size="27" letter-spacing="2.4">SAPELZA</text>
-            </svg>
-        </div>
 </section>
