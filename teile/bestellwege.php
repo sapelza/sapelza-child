@@ -25,26 +25,50 @@ $sz_konto = function_exists('wc_get_page_permalink')
 $sz_erfassung = function_exists('sz_erfassung_url') ? sz_erfassung_url() : '';
 if (!$sz_erfassung) $sz_erfassung = $sz_konto;
 
+/*
+ * Jeder Weg in drei Schritten, mit dem, was man wirklich tippt und
+ * sieht. Der Satz darueber sagt, wofuer der Weg gut ist — mehr nicht.
+ *
+ * Vorher stand hier je ein Absatz aus vier Zeilen. Wer schon einmal so
+ * bestellt hat, liest darin sein Verfahren wieder; wer nicht, erfaehrt
+ * nicht, was er tun soll.
+ */
 $sz_wege = [
     [
-        'symbol' => 'tastatur',
-        't' => __('Schnellerfassung', 'sapelza-shop'),
-        'b' => __('Artikelnummer oder EAN eintippen; Bezeichnung, Bestand und Preis ergänzen sich von selbst, die Eingabe springt weiter in die nächste Zeile. Eine lange Bestellung entsteht in einem Zug, ohne einen einzigen Klick im Katalog.', 'sapelza-shop'),
-        'm' => __('Zur Erfassung', 'sapelza-shop'),
+        'symbol'   => 'tastatur',
+        't'        => __('Schnellerfassung', 'sapelza-shop'),
+        'b'        => __('Wenn Sie wissen, was Sie brauchen.', 'sapelza-shop'),
+        'anfang'   => true,
+        'schritte' => [
+            __('Artikelnummer tippen, etwa SP-K-10', 'sapelza-shop'),
+            __('Name, Bestand und Preis erscheinen von selbst', 'sapelza-shop'),
+            __('Menge dazu, Enter — die nächste Zeile öffnet sich', 'sapelza-shop'),
+        ],
+        'm'    => __('Zur Erfassung', 'sapelza-shop'),
         'href' => $sz_erfassung,
     ],
     [
-        'symbol' => 'scan',
-        't' => __('Scannen', 'sapelza-shop'),
-        'b' => __('Barcode mit der Kamera Ihres Mobilgeräts erfassen, ebenso über die QR-Etiketten an Ihrem Lagerplatz. Sie bestellen dort, wo Ihnen der Mangel auffällt — im Lager, nicht Stunden später am Schreibtisch.', 'sapelza-shop'),
-        'm' => __('Kamera öffnen', 'sapelza-shop'),
+        'symbol'   => 'scan',
+        't'        => __('Scannen', 'sapelza-shop'),
+        'b'        => __('Wenn Sie im Lager stehen.', 'sapelza-shop'),
+        'schritte' => [
+            __('Kamera auf den Barcode oder aufs Regaletikett halten', 'sapelza-shop'),
+            __('Der Artikel steht im Feld', 'sapelza-shop'),
+            __('Menge dazu — fertig', 'sapelza-shop'),
+        ],
+        'm'    => __('Kamera öffnen', 'sapelza-shop'),
         'href' => $sz_erfassung,
     ],
     [
-        'symbol' => 'wiederholen',
-        't' => __('Meine Artikel', 'sapelza-shop'),
-        'b' => __('Ihr eigener Katalog aus allem, was Sie bisher bezogen haben, auf Wunsch mit Ihren internen Bezeichnungen statt unseren. Was regelmäßig gebraucht wird, liegt in zwei Klicks wieder im Warenkorb.', 'sapelza-shop'),
-        'm' => __('Liste öffnen', 'sapelza-shop'),
+        'symbol'   => 'wiederholen',
+        't'        => __('Meine Artikel', 'sapelza-shop'),
+        'b'        => __('Wenn Sie dasselbe wieder brauchen.', 'sapelza-shop'),
+        'schritte' => [
+            __('Ihre Liste öffnen — alles, was Sie schon bezogen haben', 'sapelza-shop'),
+            __('Menge wählen', 'sapelza-shop'),
+            __('Auf das Plus tippen, liegt im Warenkorb', 'sapelza-shop'),
+        ],
+        'm'    => __('Liste öffnen', 'sapelza-shop'),
         'href' => home_url('/meine-artikel/'),
     ],
 ];
@@ -85,7 +109,7 @@ function sz_weg_symbol(string $name): string
                 <?php echo esc_html__('Ihr Weg zur Bestellung', 'sapelza-shop'); ?>
             </h2>
             <p class="sz-wege__lead">
-                <?php echo esc_html__('Sie sollen nicht suchen, sondern erfassen. Alle drei Wege führen ohne Umweg über den Katalog in den Warenkorb — eine Bestellung über vierzig Positionen ist damit in wenigen Minuten fertig statt in einer halben Stunde.', 'sapelza-shop'); ?>
+                <?php echo esc_html__('Noch nie hier bestellt? Nehmen Sie den ersten Weg: Artikelnummer tippen, Menge dazu, fertig. Die beiden anderen lohnen sich, sobald Sie ein paar Mal bestellt haben — sie sparen dann das Tippen. Alle drei führen ohne Umweg über den Katalog in den Warenkorb.', 'sapelza-shop'); ?>
             </p>
         </div>
     </div>
@@ -101,11 +125,24 @@ function sz_weg_symbol(string $name): string
                             <span class="sz-weg__index mono">
                                 <?php echo esc_html__('Bestellen', 'sapelza-shop'); ?> / <?php echo esc_html(str_pad((string) ($sz_i + 1), 2, '0', STR_PAD_LEFT)); ?>
                             </span>
-                            <span class="sz-weg__punkt" aria-hidden="true"></span>
+                            <?php if (!empty($sz_w['anfang'])) : ?>
+                                <span class="sz-weg__marke mono"><?php echo esc_html__('Für den Anfang', 'sapelza-shop'); ?></span>
+                            <?php else : ?>
+                                <span class="sz-weg__punkt" aria-hidden="true"></span>
+                            <?php endif; ?>
                         </span>
 
                         <h3 class="sz-weg__titel display"><?php echo esc_html($sz_w['t']); ?></h3>
                         <p class="sz-weg__text"><?php echo esc_html($sz_w['b']); ?></p>
+
+                        <span class="sz-weg__schritte">
+                            <?php foreach ($sz_w['schritte'] as $sz_n => $sz_s) : ?>
+                                <span class="sz-weg__schritt">
+                                    <span class="sz-weg__nr mono"><?php echo esc_html((string) ($sz_n + 1)); ?></span>
+                                    <span class="sz-weg__was"><?php echo esc_html($sz_s); ?></span>
+                                </span>
+                            <?php endforeach; ?>
+                        </span>
 
                         <span class="sz-weg__buehne">
                             <span class="sz-weg__halo" aria-hidden="true"></span>

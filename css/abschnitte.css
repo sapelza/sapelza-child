@@ -755,3 +755,63 @@ a.sz-beiwerk__zeile:hover { color: var(--sz-bordeaux-text); }
 @media (max-width: 640px) {
     .sz-partner__logo { width: 110px; }
 }
+
+
+/* ===================================================================
+   Die drei Bestellwege: Schritte statt Absatz
+   ===================================================================
+
+   Wer es noch nie gemacht hat, liest aus einem Absatz kein Verfahren
+   heraus. Drei nummerierte Zeilen mit dem, was man wirklich tippt und
+   sieht — das laesst sich abarbeiten.
+*/
+
+.sz-weg__text {
+    font-family: var(--sz-display);
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--sz-bordeaux-text);
+    margin-bottom: 1.5rem;
+}
+
+.sz-weg__schritte {
+    display: grid;
+    gap: 0.85rem;
+    margin-bottom: auto;
+}
+
+.sz-weg__schritt {
+    display: grid;
+    grid-template-columns: 1.4rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+}
+
+.sz-weg__nr {
+    display: grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 1px solid var(--sz-bordeaux);
+    border-radius: 50%;
+    font-size: 0.62rem;
+    color: var(--sz-bordeaux-text);
+}
+
+.sz-weg__was { font-size: 0.88rem; line-height: 1.5; color: var(--sz-ink); }
+
+/* Der erste Weg traegt eine Empfehlung statt eines Punktes. */
+.sz-weg__marke {
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-size: 0.56rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* Das Sinnbild wird kleiner: die Schritte tragen jetzt die Kachel. */
+.sz-weg__buehne { margin-top: 1.75rem; }
+.sz-weg__symbol { width: 42px; height: 42px; }
