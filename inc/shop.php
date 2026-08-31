@@ -337,6 +337,14 @@ add_action('wp_enqueue_scripts', function () {
         ['sapelza-child'],
         wp_get_theme()->get('Version')
     );
+
+    wp_enqueue_script(
+        'sapelza-menge',
+        get_stylesheet_directory_uri() . '/js/menge.js',
+        [],
+        wp_get_theme()->get('Version'),
+        true
+    );
 }, 30);
 
 /* ===================================================================

@@ -2715,3 +2715,57 @@ ul.products li.product.outofstock .button:hover {
 .sz-chip--stern { gap: 0.45rem; }
 .sz-chip--stern svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.7; }
 .sz-chip--stern[aria-current] svg { fill: currentColor; }
+
+
+/* --- Zwei Pfeile am Mengenfeld der Kachel --------------------------- */
+
+.sz-menge--kachel {
+    display: inline-flex;
+    align-items: stretch;
+    overflow: hidden;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+    background: var(--sz-surface);
+}
+
+.sz-menge--kachel button {
+    box-sizing: border-box;
+    width: 2rem;
+    height: 2.6rem;
+    padding: 0 !important;
+    min-width: 0;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: var(--sz-ink) !important;
+    font-family: var(--sz-body);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.sz-menge--kachel button:hover { color: var(--sz-bordeaux-text) !important; }
+
+/* Das Feld selbst verliert seinen eigenen Rahmen — die Kapsel traegt ihn. */
+.sz-menge--kachel input {
+    box-sizing: border-box;
+    width: 2.75rem !important;
+    max-width: 2.75rem !important;
+    height: 2.6rem;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    text-align: center;
+    font-family: var(--sz-mono);
+    font-size: 0.85rem;
+    color: var(--sz-ink);
+    -moz-appearance: textfield;
+}
+
+.sz-menge--kachel input::-webkit-outer-spin-button,
+.sz-menge--kachel input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Der Stern steht unter dem Preis, ueber dem Warenkorbknopf. */
+.sz-stern--zeile { margin: 0.75rem 0 0; }
