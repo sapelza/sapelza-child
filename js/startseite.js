@@ -58,35 +58,70 @@
              * Deshalb zwei Abschnitte statt einer geraden Fahrt.
              */
             /*
-             * ANFANG: so lange steht der Wagen noch am Lager. Vorher fuhr
-             * er los, sobald der Abschnitt ins Bild kam — man sah ihn nie
-             * stehen, immer nur schon unterwegs.
+             * Eine Runde, keine Durchfahrt.
              *
-             * WEST: nicht ganz bis ans Ende der Achse. Der Wagen sitzt
-             * mittig auf seinem Punkt, also ragte am Westende die halbe
-             * Ladeflaeche ueber Welsberg hinaus und legte sich auf die
-             * Beschriftung von Taisten.
+             * Vorher fuhr er vom Lager nach Westen und dann in einem Zug
+             * bis Winnebach — auf dem Schirm las sich das als eine einzige
+             * Fahrt nach rechts, und am Ende stand der Wagen irgendwo im
+             * Osten herum.
+             *
+             * So faehrt niemand aus. Eine Runde geht vom Lager weg und
+             * kommt zum Lager zurueck: erst das westliche Tal, dann quer
+             * hinueber ans oestliche Ende, dann heim. Zwei Kehren, und am
+             * Schluss steht er wieder in Toblach.
              */
-            var ANFANG = 0.2;
-            var WEST   = 0.04;
-            var KEHRE  = 0.56;
+            var ORTE = {
+                lager: 0.5,
+                west:  0.04,
+                ost:   0.96
+            };
 
-            var t;      /* Position auf der Achse, 0 = West, 1 = Ost */
-            var westwaerts;
+            /*
+             * Die Abschnitte der Runde.
+             *
+             * Die Anteile stehen im Verhaeltnis der Wegstrecken, sonst
+             * raste er quer durchs Tal und schliche die Zubringer: das
+             * Querstueck ist doppelt so lang wie jeder Zubringer, also
+             * bekommt es auch doppelt so viel Weg.
+             *
+             * Der letzte Abschnitt endet auf 1.0, nicht darueber — sonst
+             * kaeme der Wagen am Ende nicht ganz heim.
+             */
+            var FAHRT = [
+                { bis: 0.15, von: ORTE.lager, nach: ORTE.lager, blick: 0 },  /* steht noch */
+                { bis: 0.33, von: ORTE.lager, nach: ORTE.west,  blick: 1 },  /* westwaerts */
+                { bis: 0.39, von: ORTE.west,  nach: ORTE.west,  blick: 0 },  /* Kehre, schaut schon nach Osten */
+                { bis: 0.76, von: ORTE.west,  nach: ORTE.ost,   blick: 0 },  /* quer nach Ost */
+                { bis: 0.82, von: ORTE.ost,   nach: ORTE.ost,   blick: 1 },  /* Kehre, schaut schon heim */
+                { bis: 1.00, von: ORTE.ost,   nach: ORTE.lager, blick: 1 }   /* heim */
+            ];
 
-            if (p < ANFANG) {
-                t = 0.5;                         /* steht am Lager */
-                westwaerts = false;
-            } else if (p < 0.5) {
-                var q = (p - ANFANG) / (0.5 - ANFANG);
-                t = 0.5 - q * (0.5 - WEST);      /* Lager -> West */
-                westwaerts = true;
-            } else if (p < KEHRE) {
-                t = WEST;                        /* Kehre */
-                westwaerts = false;
-            } else {
-                t = WEST + ((p - KEHRE) / (1 - KEHRE)) * (1 - WEST);
-                westwaerts = false;              /* West -> Ost */
+            var t = ORTE.lager;
+            var westwaerts = false;
+            var anfang = 0;
+
+            for (var s = 0; s < FAHRT.length; s++) {
+                var teil = FAHRT[s];
+
+                if (p < teil.bis) {
+                    var spanne = teil.bis - anfang;
+                    var q = spanne > 0 ? (p - anfang) / spanne : 0;
+                    t = teil.von + (teil.nach - teil.von) * q;
+
+                    /*
+                     * Der Blick steht am Abschnitt, nicht an der Bewegung.
+                     * In den Kehren steht der Wagen still — wer nur die
+                     * Bewegung liest, laesst ihn dort in die alte Richtung
+                     * schauen und erst beim Anfahren umspringen. Er dreht
+                     * sich aber waehrend der Kehre, nicht danach.
+                     */
+                    westwaerts = teil.blick === 1;
+                    break;
+                }
+
+                anfang = teil.bis;
+                t = teil.nach;
+                westwaerts = teil.blick === 1;
             }
 
             if (t < 0) t = 0;
@@ -108,7 +143,8 @@
 
             /* Die drei Zusagen erscheinen, während der Wagen fährt. */
             for (var i = 0; i < zusagen.length; i++) {
-                var schwelle = 0.34 + i * 0.16;
+                /* Ueber die Fahrt verteilt, nicht alle am Anfang. */
+                var schwelle = 0.22 + i * 0.2;
                 zusagen[i].classList.toggle('ist-da', p >= schwelle);
             }
         }
