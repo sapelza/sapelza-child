@@ -196,10 +196,16 @@
         ];
         var SEXTEN = { name: 'Sexten', lat: 46.7005, lon: 12.3500, ab: 3 };
 
-        var LISTEN = {
-            bereiche: ['K\u00fcche', 'Reinigung', 'Hygiene', 'Hotelbedarf', 'Verbrauch', 'W\u00e4sche'],
-            marken:   ['Vileda', 'Papernet', 'Sutter', 'Fasana', 'Deiss']
-        };
+        /*
+         * Die Listen kamen bis 1.24.0 aus dem Skript und waren erfunden:
+         * "Kueche, Reinigung, Hygiene ..." steht so in keinem Katalog.
+         * Jetzt reicht der Hero die echten Abteilungen und Marken durch,
+         * mit ihren Artikelzahlen und ihren Adressen. Was der Shop nicht
+         * fuehrt, erscheint nicht.
+         */
+        var LISTEN = {};
+        try { LISTEN = JSON.parse(hero.getAttribute('data-sz-listen') || '{}'); }
+        catch (x) { LISTEN = {}; }
 
         var offen = null;
         var schliessZeit = null;
@@ -399,7 +405,13 @@
             function stelleWagen(s) {
                 var q = weg.getPointAtLength(s);
                 var vorn = weg.getPointAtLength(Math.min(laenge, s + 6));
-                var winkel = Math.atan2(vorn.y - q.y, vorn.x - q.x) * 180 / Math.PI + 90;
+                /*
+                 * Das Bild zeigt nach unten — als Bildlaufanzeige im Fuss
+                 * faehrt der Wagen nach unten, dort braucht es keine
+                 * Drehung. Also minus 90 Grad, nicht plus: mit plus stand
+                 * er genau verkehrt und fuhr rueckwaerts durchs Tal.
+                 */
+                var winkel = Math.atan2(vorn.y - q.y, vorn.x - q.x) * 180 / Math.PI - 90;
                 wagen.setAttribute('x', (q.x - 15).toFixed(1));
                 wagen.setAttribute('y', (q.y - 24).toFixed(1));
                 wagen.setAttribute('transform', 'rotate(' + winkel.toFixed(1) + ' ' + q.x.toFixed(1) + ' ' + q.y.toFixed(1) + ')');
@@ -431,15 +443,33 @@
         }
 
         /* --- Die Liste ---------------------------------------------- */
-        function zeichneListe(namen) {
+        function zeichneListe(eintraege) {
             var kasten = document.createElement('div');
             kasten.className = 'sz-beiwerk__liste';
 
-            namen.forEach(function (name, i) {
-                var zeile = document.createElement('span');
+            eintraege.forEach(function (e, i) {
+                /* Ein Eintrag ist entweder nur ein Name (die Orte) oder
+                   ein Gegenstand mit Zahl und Adresse (Katalog). */
+                var name = typeof e === 'string' ? e : e.name;
+                var zahl = typeof e === 'string' ? null : e.zahl;
+                var weg  = typeof e === 'string' ? null : e.weg;
+
+                var zeile = document.createElement(weg ? 'a' : 'span');
                 zeile.className = 'sz-beiwerk__zeile';
                 zeile.style.setProperty('--verzug', (i * 60) + 'ms');
-                zeile.textContent = name;
+                if (weg) zeile.href = weg;
+
+                var wort = document.createElement('span');
+                wort.textContent = name;
+                zeile.appendChild(wort);
+
+                if (zahl !== null && zahl !== undefined) {
+                    var z = document.createElement('span');
+                    z.className = 'sz-beiwerk__zahl';
+                    z.textContent = zahl;
+                    zeile.appendChild(z);
+                }
+
                 kasten.appendChild(zeile);
             });
 
@@ -464,6 +494,8 @@
              * dieselbe Auskunft, nur ohne Gedraenge. Das faengt Fenster
              * ab, in denen die Ueberschrift fast alles einnimmt.
              */
+            buehne.style.pointerEvents = (schluessel === 'karte') ? 'none' : 'auto';
+
             if (schluessel === 'karte') {
                 if (raum.breite >= 380) zeichneRoute(raum);
                 else zeichneListe(TAL.concat([SEXTEN]).map(function (o) { return o.name; }));

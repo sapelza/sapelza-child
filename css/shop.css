@@ -2450,3 +2450,220 @@ ul.products li.product.outofstock .button:hover {
     border-color: var(--sz-bordeaux) !important;
     color: var(--sz-bordeaux-text) !important;
 }
+
+
+/* ===================================================================
+   Das B2B-Konto
+   =================================================================== */
+
+.sz-konto__name {
+    margin: 1.25rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 4.2rem);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+}
+
+.sz-konto__lage { margin: 0.9rem 0 0; font-size: 0.92rem; color: var(--sz-ink-soft); }
+.sz-konto__lead { margin: 0 0 1.5rem; max-width: 46rem; font-size: 0.92rem; line-height: 1.7; color: var(--sz-ink-soft); }
+.sz-konto__fein { margin-top: 0.75rem; font-size: 0.72rem; color: var(--sz-ink-soft); }
+.sz-konto__trenner { margin-block: 3rem; }
+
+.sz-konto__zahlen { display: grid; gap: 1rem; margin-top: 2.5rem; }
+
+@media (min-width: 640px) { .sz-konto__zahlen { grid-template-columns: repeat(3, 1fr); } }
+
+.sz-kennzahl {
+    padding: 1.5rem;
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+}
+
+.sz-kennzahl__wert {
+    margin: 0.5rem 0 0;
+    font-family: var(--sz-mono);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.7rem;
+    letter-spacing: -0.02em;
+}
+
+.sz-konto__kopfzeile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 3rem 0 1rem;
+}
+
+.sz-konto__titel {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+}
+
+.sz-konto__titel--klein { font-size: 1.5rem; margin: 3rem 0 1rem; }
+.sz-konto__weiter { font-size: 0.82rem; color: var(--sz-bordeaux-text); text-decoration: none; }
+.sz-konto__spanne { font-size: 0.78rem; color: var(--sz-ink-soft); }
+
+/* --- Reihen: Bestellungen, Belege, Zugaenge, Favoriten --- */
+
+.sz-reihen {
+    display: grid;
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    background: var(--sz-border);
+}
+
+.sz-reihe {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--sz-bg);
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .sz-reihe { grid-template-columns: 1.5fr 1fr 1fr auto; gap: 1rem; }
+    .sz-reihe--favorit { grid-template-columns: 1.8fr auto auto auto; }
+}
+
+.sz-reihe__name { font-size: 0.92rem; color: inherit; text-decoration: none; }
+.sz-reihe__name:hover { color: var(--sz-bordeaux-text); }
+.sz-reihe__mono { display: block; font-family: var(--sz-mono); font-size: 0.76rem; color: var(--sz-ink-soft); }
+.sz-reihe__preis { font-family: var(--sz-mono); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.sz-reihe__weg { white-space: nowrap; font-size: 0.8rem; color: var(--sz-bordeaux-text); text-decoration: none; }
+
+/* --- Die Ausgaben --- */
+
+.sz-konto__summe {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 2rem;
+    margin: 0 0 2rem;
+}
+
+.sz-konto__summe .price {
+    font-family: var(--sz-mono);
+    font-weight: 500;
+    font-size: 2rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.sz-konto__vorjahr { font-size: 0.9rem; color: var(--sz-ink-soft); }
+.sz-konto__wandel { color: var(--sz-bordeaux-text); }
+
+.sz-saeulen {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.4rem;
+    height: 190px;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+}
+
+@media (min-width: 768px) { .sz-saeulen { gap: 0.75rem; } }
+
+.sz-saeule {
+    display: flex;
+    flex: 1;
+    min-width: 2.1rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.sz-saeule__paar { display: flex; width: 100%; height: 100%; align-items: flex-end; justify-content: center; gap: 3px; }
+
+/* Vorjahr blass, dieses Jahr bordeaux. Ein Balken allein sagt nichts
+   ueber die Richtung, erst das Paar tut es. */
+.sz-saeule__vorher { width: 38%; background: color-mix(in srgb, var(--sz-ink) 14%, transparent); }
+.sz-saeule__jetzt  { width: 38%; background: var(--sz-bordeaux); }
+.sz-saeule__marke  { font-size: 0.6rem; color: var(--sz-ink-soft); white-space: nowrap; }
+
+.sz-konto__anteile { margin-top: 2.5rem; }
+.sz-anteile { display: grid; gap: 0.9rem; margin-top: 1rem; }
+.sz-anteil__zeile { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-size: 0.92rem; }
+.sz-anteil__zeile .price { font-family: var(--sz-mono); font-size: 0.86rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sz-anteil__prozent { margin-left: 0.5rem; font-size: 0.7rem; color: var(--sz-ink-soft); }
+
+.sz-anteil__balken {
+    display: block;
+    height: 3px;
+    width: 100%;
+    margin-top: 0.4rem;
+    background: color-mix(in srgb, var(--sz-ink) 10%, transparent);
+}
+
+.sz-anteil__balken > span { display: block; height: 100%; background: var(--sz-bordeaux); }
+
+.sz-konto__schluss { display: flex; align-items: center; gap: 1.5rem; margin-top: 3.5rem; }
+.sz-konto__schluss-linie { height: 1px; width: 3rem; flex: none; background: var(--sz-bordeaux); }
+
+@media (min-width: 768px) { .sz-konto__schluss-linie { width: 6rem; } }
+
+.sz-konto__schluss-satz {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--sz-bordeaux-text);
+}
+
+@media (min-width: 768px) { .sz-konto__schluss-satz { font-size: 1.875rem; } }
+
+/* ===================================================================
+   Das Herz
+   ===================================================================
+
+   An der Kachel oben rechts im Bildkasten, am Artikel neben dem
+   Warenkorbknopf. Umriss heisst nicht gemerkt, gefuellt heisst gemerkt.
+*/
+
+.sz-herz {
+    box-sizing: border-box;
+    display: inline-grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0 !important;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--sz-ink-soft);
+    cursor: pointer;
+    transition: color 200ms ease, transform 200ms ease;
+}
+
+.sz-herz svg { width: 1.15rem; height: 1.15rem; fill: none; }
+.sz-herz:hover { color: var(--sz-bordeaux-text); transform: scale(1.1); }
+
+.sz-herz.ist-gemerkt { color: var(--sz-bordeaux); }
+.sz-herz.ist-gemerkt svg { fill: currentColor; }
+
+@media (prefers-reduced-motion: reduce) { .sz-herz:hover { transform: none; } }
+
+.woocommerce ul.products li.product { position: relative; }
+
+.sz-herz--kachel {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 2;
+    background: color-mix(in srgb, var(--sz-bg) 78%, transparent);
+    border-radius: 50% !important;
+}
+
+.sz-herz--artikel { vertical-align: middle; margin-left: 0.5rem; }

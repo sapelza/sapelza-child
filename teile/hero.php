@@ -25,7 +25,8 @@ $sz_marken      = sz_marken_anzahl();
  */
 ?>
 <section class="sz-hero" aria-labelledby="sz-hero-satz"
-         data-sz-porter="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/porter-oben.webp'); ?>">
+         data-sz-porter="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/porter-oben.webp'); ?>"
+         data-sz-listen="<?php echo esc_attr(wp_json_encode(sz_hero_listen())); ?>">
     <div class="wrap">
 
         <p class="kicker">

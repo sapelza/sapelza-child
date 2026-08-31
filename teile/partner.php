@@ -54,4 +54,23 @@ $sz_punkte = [
         </ul>
 
     </div>
+
+        <?php
+        /*
+         * Das Zeichen am Ende des Abschnitts. Darunter kam bisher nichts
+         * mehr — eine leere Bahn vor dem Fuss. Dieselbe gezeichnete Marke
+         * wie das Wasserzeichen, hier aber als Schlusspunkt und deutlich
+         * genug, dass man sie als Zeichen liest.
+         */
+        ?>
+        <div class="sz-partner__zeichen" aria-hidden="true">
+            <svg viewBox="0 0 219 141" xmlns="http://www.w3.org/2000/svg">
+                <path d="M109 11 L216 70.5 L109 130 L2 70.5 Z" fill="none" stroke="currentColor" stroke-width="3.5"/>
+                <path d="M109 17 L206 70.5 L109 124 L12 70.5 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M24 50 H44 V53 H174 V50 H194 V96 H174 V93 H44 V96 H24 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+                <path d="M28 54 H48 V57 H170 V54 H190 V92 H170 V89 H48 V92 H28 Z" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                <text x="109" y="80" text-anchor="middle" fill="currentColor"
+                      font-family="Georgia, 'Times New Roman', serif" font-size="27" letter-spacing="2.4">SAPELZA</text>
+            </svg>
+        </div>
 </section>

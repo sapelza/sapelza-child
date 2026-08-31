@@ -142,3 +142,42 @@ function sz_als_wort(int $n): string
     ];
     return $woerter[$n] ?? (string) $n;
 }
+
+/**
+ * Die Listen fuer den Hero: Abteilungen und Marken mit Zahl und Weg.
+ *
+ * Bis 1.24.0 standen im Skript erfundene Namen. Hier kommen die echten
+ * her — und was der Shop nicht fuehrt, bleibt leer statt behauptet.
+ *
+ * @return array{bereiche:array,marken:array}
+ */
+function sz_hero_listen(): array
+{
+    $abteilungen = [];
+
+    foreach (sz_bereiche() as $bereich) {
+        foreach (sz_abteilungen((int) $bereich->term_id) as $a) {
+            $abteilungen[] = [
+                'name' => $a->name,
+                'zahl' => (int) $a->count,
+                'weg'  => get_term_link($a),
+            ];
+        }
+    }
+
+    usort($abteilungen, static fn($x, $y) => $y['zahl'] <=> $x['zahl']);
+
+    $marken = [];
+    foreach (sz_marken_liste(8) as $m) {
+        $marken[] = [
+            'name' => $m->name,
+            'zahl' => (int) $m->count,
+            'weg'  => get_term_link($m),
+        ];
+    }
+
+    return [
+        'bereiche' => array_slice($abteilungen, 0, 8),
+        'marken'   => $marken,
+    ];
+}

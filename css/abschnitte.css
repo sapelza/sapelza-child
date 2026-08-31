@@ -706,3 +706,40 @@
     .sz-zusage  { opacity: 1; transform: none; transition: none; }
     .sz-route__weg, .sz-route__ort, .sz-beiwerk__zeile { animation: none; transition: none; }
 }
+
+
+/* --- Die Hero-Liste traegt jetzt Zahlen und Wege ------------------- */
+
+.sz-beiwerk__zeile {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    text-decoration: none;
+    color: var(--sz-ink);
+    transition: color 200ms ease;
+}
+
+a.sz-beiwerk__zeile:hover { color: var(--sz-bordeaux-text); }
+
+.sz-beiwerk__zahl {
+    font-size: 0.7rem;
+    color: var(--sz-ink-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ===================================================================
+   Das Zeichen am Schluss des Partnerteils
+   ===================================================================
+
+   Darunter kam bisher nichts mehr, nur eine leere Bahn vor dem Fuss.
+*/
+
+.sz-partner__zeichen {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(3rem, 8vh, 6rem);
+    color: color-mix(in srgb, var(--sz-ink) 16%, transparent);
+}
+
+.sz-partner__zeichen svg { display: block; width: min(38vw, 320px); height: auto; }
