@@ -206,6 +206,28 @@ add_action('woocommerce_before_shop_loop', function () {
                         </a>
                     <?php endforeach; ?>
                 </nav>
+                <?php
+                /*
+                 * Der Favoritenfilter steht bei der Bereichswahl, nicht bei
+                 * den Kategorien: er schneidet quer durch alle Kategorien,
+                 * genau wie der Bereich.
+                 */
+                if (function_exists('sz_favoriten') && is_user_logged_in()) :
+                    $sz_gemerkt = sz_favoriten();
+                    $sz_an      = function_exists('sz_favoritenfilter') && sz_favoritenfilter();
+                    if ($sz_gemerkt || $sz_an) : ?>
+                        <a class="sz-chip sz-chip--stern"
+                           href="<?php echo esc_url(sz_favoriten_adresse(!$sz_an)); ?>"
+                           <?php echo $sz_an ? 'aria-current="page"' : ''; ?>>
+                            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 2.6l2.9 5.88 6.49.94-4.7 4.58 1.11 6.46L12 17.4l-5.8 3.06 1.1-6.46-4.69-4.58 6.49-.94z"></path>
+                            </svg>
+                            <?php echo esc_html__('Favoriten', 'sapelza-shop'); ?>
+                            <span class="sz-chip__zahl mono"><?php echo esc_html(number_format_i18n(count($sz_gemerkt))); ?></span>
+                        </a>
+                    <?php endif;
+                endif; ?>
+
                 <?php if ($bereich) : ?>
                     <span class="sz-band__notiz">
                         <?php printf(

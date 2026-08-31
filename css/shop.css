@@ -2632,7 +2632,7 @@ ul.products li.product.outofstock .button:hover {
    Warenkorbknopf. Umriss heisst nicht gemerkt, gefuellt heisst gemerkt.
 */
 
-.sz-herz {
+.sz-stern {
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
@@ -2653,19 +2653,65 @@ ul.products li.product.outofstock .button:hover {
     transition: color 200ms ease;
 }
 
-.sz-herz svg {
+.sz-stern svg {
     width: 0.95rem;
     height: 0.95rem;
     flex: none;
     fill: none;
 }
 
-.sz-herz:hover { color: var(--sz-bordeaux-text); }
+.sz-stern:hover { color: var(--sz-bordeaux-text); }
 
-.sz-herz.ist-gemerkt { color: var(--sz-bordeaux); }
-.sz-herz.ist-gemerkt svg { fill: currentColor; }
+.sz-stern.ist-gemerkt { color: var(--sz-bordeaux); }
+.sz-stern.ist-gemerkt svg { fill: currentColor; }
 
 /* In der Kachel steht es unter dem Preis, mit etwas Luft davor. */
-.sz-herz--zeile { margin-top: 0.6rem; }
+.sz-stern--zeile { margin-top: 0.6rem; }
 
-.sz-herz--artikel { margin-left: 1rem; vertical-align: middle; }
+.sz-stern--artikel { margin-left: 1rem; vertical-align: middle; }
+
+
+/* --- Der Stern in der Tabelle und die Filterreihe ------------------- */
+
+.sz-artikeltabelle th.sz-z-stern,
+.sz-artikeltabelle td.sz-z-stern { width: 2rem; padding-inline: 0.25rem; }
+
+.sz-stern--zelle { gap: 0; }
+
+.sz-artikelfilter { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+
+.sz-wahlreihe {
+    display: inline-flex;
+    padding: 0.25rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: 999px;
+}
+
+.sz-wahl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    padding: 0.5rem 1.25rem !important;
+    min-width: 0;
+    border: 0;
+    border-radius: 999px !important;
+    background: transparent;
+    color: var(--sz-ink-soft);
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.sz-wahl[aria-pressed="true"] { background: var(--sz-bordeaux); color: var(--sz-bordeaux-fg); }
+.sz-wahl__zahl { font-size: 0.66rem; opacity: 0.75; }
+
+/* --- Der Favoritenchip im Katalogkopf ------------------------------- */
+
+.sz-chip--stern { gap: 0.45rem; }
+.sz-chip--stern svg { width: 0.9rem; height: 0.9rem; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.sz-chip--stern[aria-current] svg { fill: currentColor; }
