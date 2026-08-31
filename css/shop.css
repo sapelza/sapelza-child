@@ -2769,3 +2769,75 @@ ul.products li.product.outofstock .button:hover {
 
 /* Der Stern steht unter dem Preis, ueber dem Warenkorbknopf. */
 .sz-stern--zeile { margin: 0.75rem 0 0; }
+
+
+/* ===================================================================
+   Der Stern in der Kachel, lesbar
+   ===================================================================
+
+   Beim Zeigen legt sich das Bordeaux-Licht ueber die Kachel. Auf dem
+   roten Grund war "Merken" in Bordeaux kaum noch zu lesen — rot auf
+   rot. Der Knopf traegt jetzt die Tintenfarbe und liegt ueber dem
+   Licht, nicht darunter.
+*/
+
+.woocommerce ul.products li.product .sz-stern--zeile,
+ul.products li.product .sz-stern--zeile {
+    position: relative;
+    z-index: 3;
+    color: var(--sz-ink);
+}
+
+.woocommerce ul.products li.product .sz-stern--zeile:hover,
+ul.products li.product .sz-stern--zeile:hover { color: var(--sz-bordeaux-text); }
+
+/* Gemerkt bleibt Bordeaux — gefuellt ist es auch auf rotem Grund
+   erkennbar, weil die Form voll ist und nicht nur eine Linie. */
+.woocommerce ul.products li.product .sz-stern--zeile.ist-gemerkt,
+ul.products li.product .sz-stern--zeile.ist-gemerkt { color: var(--sz-bordeaux); }
+
+/* ===================================================================
+   Das Konto, in voller Breite
+   ===================================================================
+
+   Astra deckelt jedes direkte Kind von .entry-content auf 1200px und
+   zentriert es; auf der Kontoseite kam dazu, dass die zwei Spalten in
+   einem so schmalen Feld nichts mehr uebrig liessen — der Fliesstext
+   brach nach zwei Woertern um.
+*/
+
+.entry-content[data-ast-blocks-layout] > .woocommerce {
+    max-width: none;
+    margin-inline: 0;
+}
+
+/* minmax(0, …) statt blossem fr: sonst sprengt ein langer Preis oder
+   eine breite Tabelle die Spalte und drueckt die andere zusammen. */
+@media (min-width: 900px) {
+    .woocommerce-account .woocommerce {
+        grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    }
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation,
+.woocommerce-account .woocommerce-MyAccount-content { min-width: 0; }
+
+/* Die Plaetze ausdruecklich zuweisen.
+ *
+ * Mit blossem grid-template-columns landet das erste Kind in Spalte 1,
+ * das zweite in Spalte 2, das dritte wieder in Spalte 1 — und
+ * WooCommerce setzt vor die Navigation gern einen Meldungsblock. Dann
+ * rutschte der Inhalt in die 15rem schmale Spalte, und der Fliesstext
+ * brach nach zwei Woertern um. Genau so sah es aus.
+ */
+@media (min-width: 900px) {
+    .woocommerce-account .woocommerce { align-items: start; }
+
+    .woocommerce-account .woocommerce > .woocommerce-notices-wrapper {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    .woocommerce-account .woocommerce-MyAccount-navigation { grid-column: 1; grid-row: 2; }
+    .woocommerce-account .woocommerce-MyAccount-content    { grid-column: 2; grid-row: 2; }
+}
