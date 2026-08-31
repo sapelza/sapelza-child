@@ -2841,3 +2841,34 @@ ul.products li.product .sz-stern--zeile.ist-gemerkt { color: var(--sz-bordeaux);
     .woocommerce-account .woocommerce-MyAccount-navigation { grid-column: 1; grid-row: 2; }
     .woocommerce-account .woocommerce-MyAccount-content    { grid-column: 2; grid-row: 2; }
 }
+
+/* ===================================================================
+   Die Kontonavigation, lesbar
+   ===================================================================
+
+   WooCommerces eigenes Stylesheet setzt
+
+       .woocommerce-account .woocommerce-MyAccount-navigation
+           { float: left; width: 30%; }
+
+   Innerhalb unserer Rasterspalte wurden daraus 30% von 240px, also
+   gut sechzig Pixel. In sechzig Pixel passt "BESTELLUNGEN" in
+   gesperrten Grossbuchstaben nicht, also brach es mitten im Wort:
+   BESTE / LLUNGEN.
+
+   Die Spalte gibt die Breite vor, nicht der Prozentsatz.
+*/
+
+.woocommerce-account .woocommerce-MyAccount-navigation,
+.woocommerce-account .woocommerce-MyAccount-content {
+    float: none;
+    width: 100%;
+    margin: 0;
+}
+
+/* Und nie mitten im Wort trennen: lieber eine Zeile mehr. */
+.woocommerce-account .woocommerce-MyAccount-navigation li a {
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+}
