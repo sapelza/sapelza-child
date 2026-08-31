@@ -377,6 +377,14 @@ add_action('wp_enqueue_scripts', function () {
         wp_get_theme()->get('Version'),
         true
     );
+
+    wp_enqueue_script(
+        'sapelza-sortierung',
+        get_stylesheet_directory_uri() . '/js/sortierung.js',
+        [],
+        wp_get_theme()->get('Version'),
+        true
+    );
 }, 30);
 
 /* ===================================================================
