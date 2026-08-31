@@ -742,3 +742,23 @@ a.button,
 .single-product div.product .single_add_to_cart_button {
     border-radius: var(--sz-radius) !important;
 }
+
+/* ===================================================================
+   Unsere Suchfelder sind Kapseln
+   ===================================================================
+
+   In style.css steht seit Langem
+
+       .button, .wp-element-button, input, select, textarea, …
+           { border-radius: var(--sz-radius) !important; }
+
+   Das war gegen Astra gerichtet und trifft seither jedes Eingabefeld.
+   Ohne !important kommt an unseren Suchfeldern keine Kapsel an — die
+   Regel gewinnt gegen jede Spezifitaet.
+*/
+
+.sz-hero__feld input[type="search"],
+.sz-suchfeld input[type="search"],
+.sz-artikelsuche input[type="search"] {
+    border-radius: 999px !important;
+}

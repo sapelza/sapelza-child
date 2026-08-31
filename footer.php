@@ -36,7 +36,7 @@ $sz_konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('my
             </div>
 
             <div class="sz-fuss__spalte">
-                <h2 class="sz-fuss__titel mono"><?php echo esc_html__('Sortiment', 'sapelza-shop'); ?></h2>
+                <h2 class="sz-fuss__titel mono"><?php echo esc_html__('Produkte', 'sapelza-shop'); ?></h2>
                 <ul class="sz-fuss__liste">
                     <?php
                     $sz_bereiche = function_exists('sz_bereiche') ? sz_bereiche() : [];

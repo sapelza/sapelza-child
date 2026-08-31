@@ -61,7 +61,7 @@ add_action('woocommerce_before_shop_loop', function () {
     $begriff = is_product_taxonomy() ? get_queried_object() : null;
     if (!$begriff instanceof WP_Term) $begriff = null;
 
-    $titel = $begriff ? $begriff->name : __('Sortiment', 'sapelza-shop');
+    $titel = $begriff ? $begriff->name : __('Produkte', 'sapelza-shop');
     $text  = $begriff ? term_description($begriff) : '';
 
     /* --- Die Kette vom Shop bis hierher ------------------------------ */
@@ -152,7 +152,24 @@ add_action('woocommerce_before_shop_loop', function () {
         $geschwister = array_slice($unter, 0, 14);
     }
 
-    $marken = function_exists('sz_marken_liste') ? sz_marken_liste(12) : [];
+    /*
+     * Steht man in einer Kategorie, zeigen wir die Marken dieser
+     * Kategorie mit ihren Zahlen — nicht die des ganzen Hauses. Wer in
+     * Reinigungsmitteln steht, sucht keine Marke, die es nur bei den
+     * Handschuhen gibt.
+     */
+    $marken = [];
+    if ($begriff && function_exists('sz_marken_in')) {
+        foreach (sz_marken_in((int) $begriff->term_id) as $eintrag) {
+            $m = $eintrag['begriff'];
+            $m->count = (int) $eintrag['anzahl'];
+            $marken[] = $m;
+        }
+    }
+
+    if (!$marken) {
+        $marken = function_exists('sz_marken_liste') ? sz_marken_liste(12) : [];
+    }
     $marken_name = __('Marke', 'sapelza-shop');
     if ($marken && function_exists('sz_marken_taxonomie')) {
         $tx = get_taxonomy(sz_marken_taxonomie());
@@ -163,7 +180,7 @@ add_action('woocommerce_before_shop_loop', function () {
     <header class="sz-katalog__kopf">
         <?php if ($pfad) : ?>
             <nav class="sz-krumen" aria-label="<?php echo esc_attr__('Brotkrumen', 'sapelza-shop'); ?>">
-                <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"><?php echo esc_html__('Sortiment', 'sapelza-shop'); ?></a>
+                <a href="<?php echo esc_url(wc_get_page_permalink('shop')); ?>"><?php echo esc_html__('Produkte', 'sapelza-shop'); ?></a>
                 <?php foreach ($pfad as $i => $t) :
                     $letzter = ($i === count($pfad) - 1); ?>
                     <span class="sz-krumen__strich" aria-hidden="true">/</span>
@@ -262,9 +279,24 @@ add_action('woocommerce_before_shop_loop', function () {
         <div class="sz-band sz-band--marken">
             <div class="sz-band__innen sz-band__innen--stapel">
                 <p class="sz-kicker-klein"><?php echo esc_html($marken_name); ?></p>
+                <?php
+                /*
+                 * Der Chip filtert innerhalb der Kategorie, statt ins
+                 * Markenarchiv zu springen. Wer in Reinigungsmitteln
+                 * steht und "Sutter" waehlt, will die Sutter-Reiniger —
+                 * nicht alles von Sutter im ganzen Haus.
+                 */
+                $sz_marke_jetzt = isset($_GET['marke']) ? sanitize_title(wp_unslash($_GET['marke'])) : '';
+                ?>
                 <nav class="sz-chips" aria-label="<?php echo esc_attr($marken_name); ?>">
-                    <?php foreach ($marken as $m) : ?>
-                        <a class="sz-chip" href="<?php echo esc_url(get_term_link($m)); ?>">
+                    <?php foreach ($marken as $m) :
+                        $sz_ist = ($sz_marke_jetzt === $m->slug);
+                        $sz_weg = $begriff
+                            ? esc_url($sz_ist ? remove_query_arg('marke') : add_query_arg('marke', $m->slug, remove_query_arg('marke')))
+                            : esc_url(get_term_link($m));
+                        ?>
+                        <a class="sz-chip" href="<?php echo $sz_weg; // phpcs:ignore ?>"
+                           <?php echo $sz_ist ? 'aria-current="page"' : ''; ?>>
                             <?php echo esc_html($m->name); ?>
                             <span class="sz-chip__zahl mono"><?php echo esc_html(number_format_i18n((int) $m->count)); ?></span>
                         </a>

@@ -38,7 +38,7 @@ $sz_abteilungen = $sz_aktiver_begriff
 
     <div class="wrap" style="position: relative; z-index: 1;">
 
-        <p class="kicker"><?php echo esc_html__('Sortiment', 'sapelza-shop'); ?></p>
+        <p class="kicker"><?php echo esc_html__('Produkte', 'sapelza-shop'); ?></p>
 
         <div class="sz-sortiment__kopf">
             <h2 id="sz-sortiment-titel" class="sz-sortiment__titel">

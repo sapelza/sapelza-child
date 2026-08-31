@@ -181,3 +181,59 @@ function sz_hero_listen(): array
         'marken'   => $marken,
     ];
 }
+
+/**
+ * Die Marken, die in einer Kategorie tatsächlich vorkommen.
+ *
+ * sz_marken_liste() nennt die Marken des ganzen Hauses. Steht man in
+ * "Reinigungsmittel", hilft das wenig — dort will man die Marken sehen,
+ * die es in Reinigungsmitteln gibt, mit den Zahlen dieser Kategorie.
+ *
+ * Ein Durchgang über die Artikel der Kategorie, dann gezählt. Bei
+ * einigen hundert Artikeln ist das eine Abfrage; das Ergebnis liegt
+ * eine Stunde im Zwischenspeicher.
+ *
+ * @return array<int, array{begriff: WP_Term, anzahl: int}>
+ */
+function sz_marken_in(int $kategorie): array
+{
+    $taxonomie = sz_marken_taxonomie();
+    if ($taxonomie === '' || $kategorie <= 0) return [];
+
+    $schluessel = 'sz_marken_' . $kategorie;
+    $fertig = get_transient($schluessel);
+    if (is_array($fertig)) return $fertig;
+
+    $artikel = get_posts([
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => 600,
+        'fields'         => 'ids',
+        'tax_query'      => [[
+            'taxonomy'         => 'product_cat',
+            'field'            => 'term_id',
+            'terms'            => $kategorie,
+            'include_children' => true,
+        ]],
+    ]);
+
+    if (!$artikel) return [];
+
+    $begriffe = wp_get_object_terms($artikel, $taxonomie, ['fields' => 'all_with_object_id']);
+    if (is_wp_error($begriffe) || !$begriffe) return [];
+
+    $gezaehlt = [];
+    foreach ($begriffe as $b) {
+        if (!isset($gezaehlt[$b->term_id])) {
+            $gezaehlt[$b->term_id] = ['begriff' => $b, 'anzahl' => 0];
+        }
+        $gezaehlt[$b->term_id]['anzahl']++;
+    }
+
+    usort($gezaehlt, static fn($x, $y) => $y['anzahl'] <=> $x['anzahl']);
+    $gezaehlt = array_slice($gezaehlt, 0, 12);
+
+    set_transient($schluessel, $gezaehlt, HOUR_IN_SECONDS);
+
+    return $gezaehlt;
+}

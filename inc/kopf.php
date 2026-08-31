@@ -35,7 +35,7 @@ function sz_kopf_menue_rueckfall(): void
     $konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : home_url('/my-account/');
 
     $punkte = [
-        ['t' => __('Sortiment', 'sapelza-shop'), 'u' => $shop],
+        ['t' => __('Produkte', 'sapelza-shop'), 'u' => $shop],
     ];
 
     /* Nur zeigen, wenn die Seite auch existiert — ein Menuepunkt ins Leere

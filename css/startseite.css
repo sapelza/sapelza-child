@@ -330,3 +330,40 @@
     }
     .sz-abteilung::before { opacity: 1; transform: none; }
 }
+
+
+/* ===================================================================
+   Das Suchfeld im Hero
+   ===================================================================
+
+   Es stand als schmale Zeile unter einer sehr grossen Ueberschrift und
+   ging darin unter. Es ist aber der Weg, den die meisten nehmen: wer
+   weiss, was er braucht, tippt es. Also traegt es jetzt Gewicht —
+   hoeher, groesser gesetzt, mit deutlicher Kante.
+*/
+
+/* Die Kante sitzt am Feld, nicht an der Huelle — border-width allein
+   greift ohnehin nicht, solange kein Stil gesetzt ist. */
+.sz-hero__feld input[type="search"] {
+    height: 3.6rem;
+    padding-block: 0;
+    padding-left: 3.6rem;
+    border-width: 2px;
+    border-radius: 999px;
+    font-size: 1.1rem;
+}
+
+.sz-hero__suche .sz-knopf,
+.sz-hero__suche button[type="submit"] {
+    height: 3.6rem;
+    padding-inline: 2.25rem !important;
+    font-size: 0.92rem;
+}
+
+.sz-hero__lupe { width: 20px; height: 20px; }
+
+@media (max-width: 640px) {
+    .sz-hero__feld input[type="search"] { height: 3.1rem; font-size: 1rem; }
+    .sz-hero__suche .sz-knopf,
+    .sz-hero__suche button[type="submit"] { height: 3.1rem; padding-inline: 1.5rem !important; }
+}
