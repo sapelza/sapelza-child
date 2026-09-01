@@ -1224,10 +1224,40 @@ html[data-sz="dark"] .single-product .woocommerce-product-gallery__image img { m
 
 .sz-scan__kasten:empty { display: none; }
 
+/* ===================================================================
+   Die Erfassungszeile auf dem Telefon
+   ===================================================================
+
+   Die leere erste Zeile sah aus wie eine gefuellte: Mengenwaehler,
+   Entfernen-Kreuz und zwei Striche standen da, bevor irgendetwas
+   eingegeben war. Wer das zum ersten Mal sieht, haelt es fuer eine
+   Bestellung, die schon drinsteht.
+
+   Solange nichts erfasst ist, bleibt nur das Eingabefeld und der
+   Hinweis daneben. Alles Uebrige erscheint mit dem Artikel.
+*/
+
 @media (max-width: 700px) {
+    .sz-erfassung__tabelle,
+    .sz-erfassung__tabelle tbody { display: block; }
+
     .sz-erfassung__tabelle thead { display: none; }
-    .sz-erfassung__tabelle tr { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; padding-block: 0.75rem; border-bottom: 1px solid var(--sz-border); }
-    .sz-erfassung__tabelle td { border: 0; padding: 0.25rem 0; }
+
+    .sz-erfassung__tabelle tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.5rem 0.75rem;
+        padding-block: 0.9rem;
+        border-bottom: 1px solid var(--sz-border);
+        align-items: center;
+    }
+
+    .sz-erfassung__tabelle td { display: block; border: 0; padding: 0.15rem 0; }
+
+    /* Die Zeile ohne Artikel zeigt nur das Feld. */
+    .sz-erfassung__zeile.ist-leer td:not(.sz-erfassung__nummer):not(.sz-erfassung__was) { display: none; }
+    .sz-erfassung__zeile.ist-leer { grid-template-columns: 1fr; }
+    .sz-erfassung__zeile.ist-leer .sz-erfassung__was { color: var(--sz-ink-soft); font-size: 0.85rem; }
 }
 
 /* ===================================================================
@@ -1983,8 +2013,64 @@ ul.products li.product .price small {
 /* Auf schmalen Schirmen darf die Tabelle waagrecht rollen — sie in
    Kaertchen umzubauen wuerde die Spaltenkoepfe kosten, und ohne die
    weiss niemand, ob 186 ein Bestand oder ein Preis ist. */
+/* ===================================================================
+   Meine Artikel auf dem Telefon
+   ===================================================================
+
+   Hier stand: die Tabelle darf waagrecht rollen, min-width 44rem. Das
+   war falsch gedacht. Genau dort — im Lager, mit dem Telefon in der
+   Hand — soll das Nachbestellen am einfachsten sein, und stattdessen
+   lag der Mengenwaehler ausserhalb des Bildschirms. Man musste erst
+   zur Seite schieben, um bestellen zu koennen.
+
+   Also keine Tabelle mehr, sondern gestapelte Karten. Menge und
+   Bestellknopf stehen in der letzten Zeile jeder Karte, mit dem Daumen
+   erreichbar.
+*/
+
 @media (max-width: 780px) {
-    .sz-artikeltabelle { min-width: 44rem; }
+    .sz-artikeltafel { overflow: visible; }
+
+    .sz-artikeltabelle,
+    .sz-artikeltabelle tbody { display: block; min-width: 0; }
+
+    .sz-artikeltabelle thead { display: none; }
+
+    .sz-artikelzeile {
+        display: grid;
+        grid-template-columns: 1.6rem 1fr auto;
+        gap: 0.35rem 0.75rem;
+        padding: 1.1rem 0;
+        border-bottom: 1px solid var(--sz-border);
+    }
+
+    .sz-artikeltabelle td {
+        display: block;
+        padding: 0;
+        border: 0;
+        text-align: left;
+    }
+
+    .sz-artikelwahl { grid-column: 1; grid-row: 1; }
+    .sz-z-stern     { grid-column: 1; grid-row: 2; }
+    .sz-z-name      { grid-column: 2 / -1; grid-row: 1; min-width: 0; }
+    .sz-z-artikel   { grid-column: 2 / -1; grid-row: 2; min-width: 0; }
+
+    .sz-artikeltabelle td.sz-z-bestand { grid-column: 2; grid-row: 3; }
+    .sz-artikeltabelle td.sz-z-preis   { grid-column: 3; grid-row: 3; text-align: right; }
+    .sz-artikeltabelle td.sz-z-menge   { grid-column: 2; grid-row: 4; }
+    .sz-artikeltabelle td.sz-z-korb    { grid-column: 3; grid-row: 4; text-align: right; }
+
+    /* Die letzte Zeile bekommt Luft nach oben: dort wird gehandelt. */
+    .sz-artikeltabelle td.sz-z-menge,
+    .sz-artikeltabelle td.sz-z-korb { padding-top: 0.5rem; }
+
+    /* Der Korbknopf wird groesser — Daumen, nicht Mauszeiger. */
+    .sz-artikelzeile .sz-inkorb { width: 44px; height: 44px; }
+    .sz-artikelzeile .sz-inkorb svg { width: 18px; height: 18px; }
+
+    .sz-artikeltabelle .sz-menge button { width: 2.4rem; height: 2.6rem; }
+    .sz-artikeltabelle .sz-menge input { width: 3rem; }
 }
 
 /* ===================================================================
@@ -2965,4 +3051,158 @@ ul.products li.product .sz-stern--zeile.ist-gemerkt { color: var(--sz-bordeaux);
     background: var(--sz-bordeaux-soft);
     color: var(--sz-bordeaux-text);
     font-weight: 600;
+}
+
+
+/* ===================================================================
+   Die Kachel auf dem Telefon
+   ===================================================================
+
+   Ohne Anmeldung steht statt des Preises "Anmelden und Preis sehen".
+   Der Satz ist laenger als jeder Preis, und der Knopf darunter traegt
+   gesperrte Grossbuchstaben — beides lief aus der Kachel hinaus und
+   wurde am Rand abgeschnitten.
+
+   Also: umbrechen duerfen, und auf schmalen Schirmen kleiner setzen.
+*/
+
+.woocommerce ul.products li.product .price,
+ul.products li.product .price {
+    display: block;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product .added_to_cart {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+    .woocommerce ul.products li.product .price,
+    ul.products li.product .price { font-size: 0.86rem; }
+
+    .woocommerce ul.products li.product .button,
+    .woocommerce ul.products li.product .added_to_cart {
+        padding: 0.7rem 0.6rem !important;
+        font-size: 0.68rem !important;
+        letter-spacing: 0.02em;
+    }
+
+    .woocommerce ul.products li.product .woocommerce-loop-product__title,
+    ul.products li.product .woocommerce-loop-product__title { font-size: 0.95rem; }
+}
+
+/* ===================================================================
+   Die Sortierliste auf dem Telefon
+   ===================================================================
+
+   Sie haengt am rechten Rand des Knopfes. Steht der Knopf links, laeuft
+   die Liste nach links aus dem Bild — auf dem Telefon war der halbe
+   Text abgeschnitten.
+
+   Und sie liess sich nicht wegdruecken: iOS Safari schickt keinen
+   click an document, wenn man auf eine Flaeche ohne eigenen Zweck
+   tippt. Das Schliessen haengt jetzt an pointerdown, das kommt.
+*/
+
+@media (max-width: 700px) {
+    .sz-sortierung { display: block; }
+
+    .sz-sortierung__liste {
+        left: 0;
+        right: auto;
+        min-width: 0;
+        width: min(20rem, calc(100vw - 3rem));
+    }
+}
+
+/* ===================================================================
+   Adressen im Konto, im Dunkeln lesbar
+   ===================================================================
+
+   WooCommerce setzt den Titel einer Adresskarte in derselben Farbe wie
+   den uebrigen Text — hell. Astra legt der Karte aber eine helle
+   Flaeche unter, auch im dunklen Thema. Cremefarben auf Weiss ist
+   nicht zu lesen.
+
+   Die Karte bekommt unsere Flaeche und der Titel unsere Tinte.
+*/
+
+.woocommerce-account .woocommerce-Address,
+.woocommerce-account .woocommerce-Address-title,
+.woocommerce-account .addresses .col-1,
+.woocommerce-account .addresses .col-2 {
+    background: var(--sz-surface) !important;
+}
+
+.woocommerce-account .woocommerce-Address-title h2,
+.woocommerce-account .woocommerce-Address-title h3,
+.woocommerce-account .woocommerce-Address address {
+    color: var(--sz-ink) !important;
+}
+
+.woocommerce-account .woocommerce-Address {
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    padding: 1.25rem 1.5rem;
+}
+
+.woocommerce-account .woocommerce-Address-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0;
+    border: 0;
+}
+
+.woocommerce-account .woocommerce-Address-title h2,
+.woocommerce-account .woocommerce-Address-title h3 {
+    margin: 0;
+    font-family: var(--sz-display);
+    font-size: 1.35rem;
+    line-height: 1.2;
+}
+
+.woocommerce-account .woocommerce-Address-title a { font-size: 0.82rem; color: var(--sz-bordeaux-text); }
+.woocommerce-account .woocommerce-Address address { font-style: normal; line-height: 1.7; }
+
+/* ===================================================================
+   Kacheln ohne Bild
+   ===================================================================
+
+   Vierundzwanzig gleiche Platzhalter nebeneinander sehen nach kaputtem
+   Katalog aus. Ohne Bildflaeche sieht dieselbe Kachel nach Liste aus —
+   und das ist sie dann auch. Ehrlicher, solange die Bilder fehlen.
+
+   Sobald ein Artikel ein Bild bekommt, faellt die Klasse weg und er hat
+   wieder seinen cremefarbenen Kasten.
+*/
+
+.woocommerce ul.products li.product.sz-ohne-bild .sz-kachel__bild,
+ul.products li.product.sz-ohne-bild .sz-kachel__bild { display: none; }
+
+.woocommerce ul.products li.product.sz-ohne-bild,
+ul.products li.product.sz-ohne-bild {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--sz-border-strong);
+}
+
+.woocommerce ul.products li.product.sz-ohne-bild .sz-kachel__marke,
+ul.products li.product.sz-ohne-bild .sz-kachel__marke { margin-top: 0; }
+
+/* Die Erklaerung, wo sonst der Kamerarahmen stuende. */
+.sz-scan__kasten--oben {
+    margin: 0 0 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--sz-border-strong);
+    border-left: 2px solid var(--sz-bordeaux);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+    font-size: 0.92rem;
+    line-height: 1.7;
 }

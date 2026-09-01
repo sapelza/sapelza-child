@@ -89,9 +89,19 @@
             auf( liste.hidden );
         } );
 
-        /* Klick daneben schliesst. */
-        document.addEventListener( 'click', function ( e ) {
-            if ( ! huelle.contains( e.target ) ) auf( false );
+        /*
+         * Tippen daneben schliesst.
+         *
+         * click allein genuegt nicht: iOS Safari schickt keinen click an
+         * document, wenn man auf eine Flaeche ohne eigenen Zweck tippt.
+         * Auf dem Telefon blieb die Liste dadurch offen stehen, und man
+         * kam nicht mehr an sie heran. pointerdown kommt in beiden
+         * Faellen.
+         */
+        [ 'pointerdown', 'click' ].forEach( function ( art ) {
+            document.addEventListener( art, function ( e ) {
+                if ( ! huelle.contains( e.target ) ) auf( false );
+            } );
         } );
 
         /* Tastatur: Escape schliesst, Pfeile wandern. */

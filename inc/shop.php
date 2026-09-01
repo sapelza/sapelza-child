@@ -617,3 +617,24 @@ add_filter('woocommerce_product_add_to_cart_text', static function ($text, $prod
 
     return __('Artikel ansehen', 'sapelza-shop');
 }, 20, 2);
+
+/*
+ * Kacheln ohne Bild.
+ *
+ * Solange die Artikel keine Bilder haben, zeigt jede Kachel denselben
+ * grauen Platzhalter. Vierundzwanzig gleiche Platzhalter nebeneinander
+ * sehen nach kaputtem Katalog aus — eine Liste ohne Bildflaeche sieht
+ * nach Liste aus. Das ist ehrlicher, solange die Bilder fehlen.
+ *
+ * Die Klasse haengt am einzelnen Artikel: sobald einer ein Bild
+ * bekommt, hat er wieder seinen Kasten, ohne dass hier etwas
+ * umgestellt werden muss.
+ */
+add_filter('woocommerce_post_class', static function ($klassen, $produkt) {
+    if (!$produkt instanceof WC_Product) return $klassen;
+
+    $bild = $produkt->get_image_id();
+    if (!$bild) $klassen[] = 'sz-ohne-bild';
+
+    return $klassen;
+}, 10, 2);
