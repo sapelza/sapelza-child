@@ -2448,30 +2448,100 @@ ul.products li.product .price small {
 
 .sz-band__innen--stapel .sz-kicker-klein { margin: 0 0 1rem; }
 
-/* Der Bereichsschalter: zwei Wege in einer Kapsel, der aktuelle gefuellt. */
+/* ===================================================================
+   Der Bereich — die erste Entscheidung
+   ===================================================================
+
+   Ein Hotelier und ein Reinigungsbetrieb brauchen zwei verschiedene
+   Haelften des Hauses. Das ist die Weiche, an der alles Weitere haengt,
+   und sie stand als blasse Kapsel neben einem winzigen Wort. Auf dem
+   Telefon brachen die beiden Namen innerhalb der Kapsel um — es sah
+   nicht nach einer Wahl aus, sondern nach einem Fehler.
+
+   Jetzt zwei Felder nebeneinander, jedes mit seiner Artikelzahl, das
+   gewaehlte gefuellt. Auf dem Telefon untereinander und ueber die ganze
+   Breite: dort ist eine Zeile, die man antippt, klarer als zwei halbe.
+*/
+
+.sz-band--bereich { padding-block: 0.5rem; }
+
+.sz-band__innen--wahl {
+    display: block;
+    padding-block: 1.75rem;
+}
+
+.sz-kicker-klein--stark {
+    margin: 0 0 0.9rem;
+    font-size: 0.72rem;
+    color: var(--sz-bordeaux-text);
+}
+
 .sz-schalter {
-    display: inline-flex;
-    flex-wrap: wrap;
-    overflow: hidden;
-    border: 1px solid var(--sz-border-strong);
-    border-radius: 999px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 0.75rem;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
 }
 
 .sz-schalter__weg {
-    padding: 0.65rem 1.5rem;
-    font-size: 0.86rem;
-    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.6rem;
+    padding: 0.85rem 1.4rem;
+    border: 1px solid var(--sz-border-strong);
+    border-radius: var(--sz-radius);
+    background: var(--sz-surface);
+    font-family: var(--sz-body);
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.25;
     text-decoration: none;
-    color: var(--sz-ink-soft);
-    white-space: nowrap;
-    transition: background 200ms ease, color 200ms ease;
+    color: var(--sz-ink);
+    white-space: normal;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
 }
 
-.sz-schalter__weg:hover { color: var(--sz-ink); }
+.sz-schalter__zahl {
+    flex: none;
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--sz-ink-soft);
+}
+
+.sz-schalter__weg:hover {
+    border-color: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-text);
+}
 
 .sz-schalter__weg[aria-current] {
     background: var(--sz-bordeaux);
+    border-color: var(--sz-bordeaux);
     color: var(--sz-bordeaux-fg);
+}
+
+.sz-schalter__weg[aria-current] .sz-schalter__zahl { color: var(--sz-bordeaux-fg); opacity: 0.75; }
+
+/* Favoritenfilter und Artikelzahl standen in der Flexzeile neben dem
+   Schalter. Die Leiste ist jetzt gestapelt — sie brauchen wieder Luft
+   und eine eigene Zeile darunter. */
+.sz-band__innen--wahl .sz-chip { margin-top: 1rem; }
+
+.sz-band__innen--wahl .sz-band__notiz {
+    display: inline-block;
+    margin-top: 1rem;
+    margin-left: 0;
+}
+
+.sz-band__innen--wahl .sz-chip + .sz-band__notiz { margin-left: 0.9rem; }
+
+@media (max-width: 700px) {
+    .sz-band__innen--wahl { padding-block: 1.4rem; }
+    .sz-schalter { grid-template-columns: 1fr; gap: 0.6rem; }
+    .sz-schalter__weg { min-height: 3.3rem; font-size: 0.98rem; }
 }
 
 /* In der Leiste braucht die Chipreihe keinen eigenen Abstand mehr. */
@@ -3013,11 +3083,29 @@ ul.products li.product .sz-stern--zeile.ist-gemerkt { color: var(--sz-bordeaux);
     .sz-sortierung__knopf svg { transition: none; }
 }
 
+/* --- Der Grund unter der Liste ---------------------------------------
+ *
+ * Eine Flaeche ueber dem ganzen Fenster, die jeden Druck abfaengt, der
+ * nicht der Liste gilt. Vorher haing die Liste an einem Lauscher am
+ * Dokument — und blieb auf dem Telefon offen ueber den Waren stehen.
+ *
+ * Am Schreibtisch bleibt sie durchsichtig: dort ist die Liste ein
+ * kleines Aufklappmenue, kein Vorhang. Auf dem Telefon ist sie ein
+ * Blatt, und dann gehoert ein Schleier dazu.
+ */
+
+.sz-sortierung__grund {
+    position: fixed;
+    inset: 0;
+    z-index: 69;
+    background: transparent;
+}
+
+.sz-sortierung__grund[hidden] { display: none; }
+
 .sz-sortierung__liste {
-    position: absolute;
-    right: 0;
-    top: calc(100% + 0.4rem);
-    z-index: 20;
+    position: fixed;
+    z-index: 70;
     min-width: 16rem;
     display: grid;
     overflow: hidden;
@@ -3025,6 +3113,17 @@ ul.products li.product .sz-stern--zeile.ist-gemerkt { color: var(--sz-bordeaux);
     border-radius: var(--sz-radius);
     background: var(--sz-surface);
     box-shadow: var(--sz-hebung);
+}
+
+.sz-sortierung__titel {
+    margin: 0;
+    padding: 0.9rem 1.1rem 0.5rem;
+    font-family: var(--sz-mono);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
 }
 
 .sz-sortierung__wahl {
@@ -3097,24 +3196,17 @@ ul.products li.product .price {
    Die Sortierliste auf dem Telefon
    ===================================================================
 
-   Sie haengt am rechten Rand des Knopfes. Steht der Knopf links, laeuft
-   die Liste nach links aus dem Bild — auf dem Telefon war der halbe
-   Text abgeschnitten.
+   Hier stand der Versuch aus 1.37.0, die haengende Liste zu retten:
+   nach links haengen, schmal halten. Das kurierte am Symptom — die
+   Liste blieb ein Aufklappmenue, das ueber den Waren stehenblieb.
 
-   Und sie liess sich nicht wegdruecken: iOS Safari schickt keinen
-   click an document, wenn man auf eine Flaeche ohne eigenen Zweck
-   tippt. Das Schliessen haengt jetzt an pointerdown, das kommt.
+   Sie ist jetzt ein Blatt von unten, ueber die ganze Breite, mit einem
+   Schleier dahinter. Die Regeln dafuer stehen weiter unten. Geblieben
+   ist nur, dass der Knopf eine eigene Zeile bekommt.
 */
 
 @media (max-width: 700px) {
     .sz-sortierung { display: block; }
-
-    .sz-sortierung__liste {
-        left: 0;
-        right: auto;
-        min-width: 0;
-        width: min(20rem, calc(100vw - 3rem));
-    }
 }
 
 /* ===================================================================
@@ -3314,4 +3406,158 @@ ul.products li.product.sz-ohne-bild .sz-kachel__marke { margin-top: 0; }
 @media (max-width: 560px) {
     .sz-termin__abschluss { flex-direction: column; align-items: stretch; }
     .sz-termin__weiter { justify-content: center; }
+}
+
+
+/* ===================================================================
+   Die Chips: Symbol, kleiner, mit Schalter
+   ===================================================================
+
+   Zehn Kategorien untereinander sind auf dem Telefon eine
+   Bildschirmlaenge. Kommen weitere dazu, scrollt man an den Waren
+   vorbei statt zu ihnen. Drei Sachen dagegen:
+
+   Ein Symbol je Gruppe — gezeichnet, in der Farbe der Zeile. Wer den
+   Katalog kennt, findet die Rolle schneller als das Wort.
+
+   Kleinere Chips auf schmalen Schirmen, sodass zwei nebeneinander
+   passen statt einer allein.
+
+   Und ab dem neunten ein Schalter. Ein Kaestchen mit Beschriftung
+   statt eines Skripts: keine weitere Datei, keine Wartezeit, und es
+   geht auch, wenn ein Skript nicht laedt.
+*/
+
+.sz-chip__symbol {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: none;
+    align-self: center;
+    opacity: 0.7;
+}
+
+.sz-chip[aria-current] .sz-chip__symbol { opacity: 1; }
+
+/* --- Der Schalter fuer den Rest -------------------------------------- */
+
+.sz-chips__schalter {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sz-chip--mehr {
+    cursor: pointer;
+    border-style: dashed;
+    color: var(--sz-bordeaux-text);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.sz-chip--mehr:hover { border-color: var(--sz-bordeaux); }
+
+/* Der Fokus liegt am unsichtbaren Kaestchen — sichtbar wird er am
+   Schild daneben, sonst sieht man beim Tabben nichts. */
+.sz-chips__schalter:focus-visible ~ .sz-chip--mehr {
+    outline: 2px solid var(--sz-bordeaux);
+    outline-offset: 2px;
+}
+
+.sz-mehr--zu { display: none; }
+
+.sz-chips__schalter:checked ~ .sz-chip--mehr .sz-mehr--auf { display: none; }
+.sz-chips__schalter:checked ~ .sz-chip--mehr .sz-mehr--zu  { display: inline; }
+
+@media (max-width: 899px) {
+    .sz-chip--rest { display: none; }
+    .sz-chips__schalter:checked ~ .sz-chip--rest { display: inline-flex; }
+
+    .sz-band .sz-chips { gap: 0.4rem; }
+
+    .sz-chip {
+        gap: 0.4rem;
+        padding: 0.42rem 0.72rem;
+        font-size: 0.79rem;
+    }
+
+    .sz-chip__symbol { width: 0.95rem; height: 0.95rem; }
+    .sz-chip__zahl { font-size: 0.64rem; }
+}
+
+/* Am Schreibtisch ist Platz — dort steht alles offen und der Schalter
+   waere nur ein Klick ohne Zweck. */
+@media (min-width: 900px) {
+    .sz-chip--mehr { display: none; }
+}
+
+
+/* ===================================================================
+   Die Sortierung als Blatt von unten
+   ===================================================================
+
+   Auf dem Telefon war die Liste ein kleines Aufklappmenue, das ueber
+   den Waren haengen blieb und sich nicht wegdruecken liess. Jetzt
+   kommt sie als Blatt von unten — dieselbe Geste wie beim Menue, mit
+   einem Schleier dahinter, den man antippt, um sie zu schliessen.
+*/
+
+@keyframes sz-blatt-hoch {
+    from { transform: translateY(100%); }
+    to   { transform: none; }
+}
+
+@media (max-width: 899px) {
+    .sz-sortierung__grund { background: rgba(0, 0, 0, 0.45); }
+
+    .sz-sortierung__liste.ist-blatt {
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0;
+        min-width: 0;
+        max-height: 76vh;
+        overflow-y: auto;
+        border-inline: 0;
+        border-bottom: 0;
+        border-radius: 1.25rem 1.25rem 0 0;
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+        box-shadow: 0 -18px 44px rgba(0, 0, 0, 0.28);
+        animation: sz-blatt-hoch 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Der Griff, den jedes Telefon fuer "das laesst sich ziehen" nimmt. */
+    .sz-sortierung__liste.ist-blatt .sz-sortierung__titel {
+        position: relative;
+        padding-top: 1.6rem;
+        text-align: center;
+    }
+
+    .sz-sortierung__liste.ist-blatt .sz-sortierung__titel::before {
+        content: "";
+        position: absolute;
+        top: 0.7rem;
+        left: 50%;
+        width: 2.5rem;
+        height: 4px;
+        transform: translateX(-50%);
+        border-radius: 999px;
+        background: var(--sz-border-strong);
+    }
+
+    /* Getippt wird mit dem Daumen, nicht gezielt. */
+    .sz-sortierung__liste.ist-blatt .sz-sortierung__wahl {
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem;
+        white-space: normal;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-sortierung__liste.ist-blatt { animation: none; }
 }

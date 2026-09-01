@@ -454,12 +454,34 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
        sich also richtig auf das Fenster.
        --------------------------------------------------------------- */
 
+    /* ---------------------------------------------------------------
+       Suchen und Menue stehen nebeneinander unten links.
+
+       Die Suche zuerst, weil sie eine feste Breite hat: der Menueknopf
+       waechst beim Oeffnen von "Menue" auf "Schliessen", und stuende er
+       links, spraenge die Suche jedes Mal mit.
+       --------------------------------------------------------------- */
+
+    .sz-werkzeuge .sz-suche__auf {
+        position: fixed;
+        left: 1rem;
+        bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+        z-index: 60;
+        width: 3.1rem;
+        height: 3.1rem;
+        border: 1px solid var(--sz-border-strong);
+        background: var(--sz-surface);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .sz-werkzeuge .sz-suche__auf svg { width: 20px; height: 20px; }
+
     .sz-kopf__auf {
         display: inline-flex;
         align-items: center;
         gap: 0.6rem;
         position: fixed;
-        left: 1rem;
+        left: 4.85rem;
         bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
         z-index: 60;
         width: auto;
@@ -533,10 +555,57 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 
     .sz-nav__liste .sub-menu { position: static; display: block; border: 0; padding-left: 1rem; background: none; }
 
-    /* Der Knopf schwebt ueber der Seite. Am Seitenende darf er nichts
-       verdecken — der Fuss bekommt deshalb Platz unter seiner letzten
-       Zeile. Sonst liegt der Knopf auf dem Impressum. */
+    /* Die Knoepfe schweben ueber der Seite. Am Seitenende duerfen sie
+       nichts verdecken — der Fuss bekommt deshalb Platz unter seiner
+       letzten Zeile. Sonst liegen sie auf dem Impressum. */
     .sz-fuss { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+
+    /* ---------------------------------------------------------------
+       Das Suchfeld kommt ebenfalls von unten.
+
+       Es fiel bisher unter die Kopfleiste — also ans obere Ende, waehrend
+       man unten getippt hat. Wer mit dem Daumen sucht, soll dort lesen,
+       wo er getippt hat, und die Tastatur schiebt das Feld ohnehin nach
+       oben ins Bild.
+       --------------------------------------------------------------- */
+
+    .sz-suchfeld {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 59;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 1.5rem 1.25rem calc(5.6rem + env(safe-area-inset-bottom, 0px));
+        background: var(--sz-bg);
+        border-top: 1px solid var(--sz-border-strong);
+        border-bottom: 0;
+        border-radius: 1.25rem 1.25rem 0 0;
+        box-shadow: 0 -18px 44px rgba(0, 0, 0, 0.2);
+        animation: sz-blatt-hoch 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sz-suchfeld::before {
+        content: "";
+        display: block;
+        width: 2.5rem;
+        height: 4px;
+        margin: -0.6rem auto 0.4rem;
+        border-radius: 999px;
+        background: var(--sz-border-strong);
+    }
+
+    .sz-suchfeld input[type="search"] { max-width: none; }
+
+    /* Dieselbe Bewegung wie bei der Sortierung; die Regel steht dort,
+       shop.css laedt aber nur im Laden. Deshalb hier noch einmal. */
+    @keyframes sz-blatt-hoch {
+        from { transform: translateY(100%); }
+        to   { transform: none; }
+    }
 
     @media (prefers-reduced-motion: reduce) {
         .sz-nav { transition: visibility 0s; }
@@ -899,4 +968,9 @@ a.button,
 .sz-suchfeld input[type="search"],
 .sz-artikelsuche input[type="search"] {
     border-radius: 999px !important;
+}
+
+
+@media (max-width: 979px) and (prefers-reduced-motion: reduce) {
+    .sz-suchfeld { animation: none; }
 }

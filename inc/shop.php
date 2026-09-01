@@ -205,14 +205,30 @@ add_action('woocommerce_before_shop_loop', function () {
 
     <?php if (count($bereiche) > 1) : ?>
         <div class="sz-band sz-band--bereich">
-            <div class="sz-band__innen">
-                <span class="sz-kicker-klein"><?php echo esc_html__('Bereich', 'sapelza-shop'); ?></span>
+            <div class="sz-band__innen sz-band__innen--wahl">
+                <?php
+                /*
+                 * Hier faellt die erste Entscheidung.
+                 *
+                 * Ein Hotelier und ein Reinigungsbetrieb brauchen zwei
+                 * verschiedene Haelften des Hauses. Bisher stand das als
+                 * blasse Kapsel neben einem winzigen Wort; auf dem Telefon
+                 * brachen die beiden Namen innerhalb der Kapsel um und es
+                 * sah aus wie ein Fehler.
+                 *
+                 * Jetzt zwei grosse Felder mit der Artikelzahl, das
+                 * gewaehlte gefuellt. Auf dem Telefon untereinander und
+                 * ueber die ganze Breite — eine Wahl, keine Beschriftung.
+                 */
+                ?>
+                <p class="sz-kicker-klein sz-kicker-klein--stark"><?php echo esc_html__('Bereich', 'sapelza-shop'); ?></p>
                 <nav class="sz-schalter" aria-label="<?php echo esc_attr__('Bereich', 'sapelza-shop'); ?>">
                     <?php foreach ($bereiche as $b) :
                         $ist = ($bereich && (int) $b->term_id === (int) $bereich->term_id); ?>
                         <a class="sz-schalter__weg" href="<?php echo esc_url(get_term_link($b)); ?>"
                            <?php echo $ist ? 'aria-current="page"' : ''; ?>>
-                            <?php echo esc_html($b->name); ?>
+                            <span class="sz-schalter__wort"><?php echo esc_html($b->name); ?></span>
+                            <span class="sz-schalter__zahl mono"><?php echo esc_html(number_format_i18n((int) $b->count)); ?></span>
                         </a>
                     <?php endforeach; ?>
                 </nav>
@@ -254,15 +270,69 @@ add_action('woocommerce_before_shop_loop', function () {
         <div class="sz-band sz-band--kategorien">
             <div class="sz-band__innen sz-band__innen--stapel">
                 <p class="sz-kicker-klein"><?php echo esc_html__('Unterkategorien', 'sapelza-shop'); ?></p>
+                <?php
+                /*
+                 * Ab dem neunten Eintrag hinter einem Schalter.
+                 *
+                 * Zehn Chips untereinander sind auf dem Telefon schon eine
+                 * Bildschirmlaenge; kommen weitere dazu, scrollt man an
+                 * den Waren vorbei, statt zu ihnen. Die ersten acht stehen
+                 * offen, der Rest kommt auf Druck.
+                 *
+                 * Ein Kaestchen mit Beschriftung statt eines Skripts: das
+                 * geht ohne eine weitere Datei, ohne Wartezeit und auch
+                 * dann, wenn ein Skript nicht laedt. Am Schreibtisch ist
+                 * ohnehin Platz — dort blendet die Gestaltung den Schalter
+                 * aus und zeigt alles.
+                 *
+                 * Die gewaehlte Kategorie kommt immer nach vorn, sonst
+                 * stuende sie versteckt hinter dem Schalter.
+                 */
+                $sz_offen = 8;
+                $sz_liste = $geschwister;
+
+                if ($begriff) {
+                    usort($sz_liste, static function ($a, $b) use ($begriff) {
+                        $x = ((int) $a->term_id === (int) $begriff->term_id) ? 0 : 1;
+                        $y = ((int) $b->term_id === (int) $begriff->term_id) ? 0 : 1;
+                        return $x <=> $y;
+                    });
+                }
+
+                $sz_rest = max(0, count($sz_liste) - $sz_offen);
+                $sz_id   = 'sz-mehr-kategorien';
+                ?>
                 <nav class="sz-chips" aria-label="<?php echo esc_attr__('Unterkategorien', 'sapelza-shop'); ?>">
-                    <?php foreach ($geschwister as $g) :
+                    <?php if ($sz_rest > 0) : ?>
+                        <input type="checkbox" class="sz-chips__schalter" id="<?php echo esc_attr($sz_id); ?>">
+                    <?php endif; ?>
+
+                    <?php foreach ($sz_liste as $sz_i => $g) :
                         $aktiv = ($begriff && (int) $g->term_id === (int) $begriff->term_id); ?>
-                        <a class="sz-chip" href="<?php echo esc_url(get_term_link($g)); ?>"
+                        <a class="sz-chip<?php echo $sz_i >= $sz_offen ? ' sz-chip--rest' : ''; ?>"
+                           href="<?php echo esc_url(get_term_link($g)); ?>"
                            <?php echo $aktiv ? 'aria-current="page"' : ''; ?>>
-                            <?php echo esc_html($g->name); ?>
+                            <?php
+                            // Fest zusammengesetzt im Theme, keine Nutzereingabe.
+                            echo sz_kategorie_symbol_svg($g->name); // phpcs:ignore WordPress.Security.EscapeOutput
+                            ?>
+                            <span class="sz-chip__wort"><?php echo esc_html($g->name); ?></span>
                             <span class="sz-chip__zahl mono"><?php echo esc_html(number_format_i18n((int) $g->count)); ?></span>
                         </a>
                     <?php endforeach; ?>
+
+                    <?php if ($sz_rest > 0) : ?>
+                        <label class="sz-chip sz-chip--mehr" for="<?php echo esc_attr($sz_id); ?>">
+                            <span class="sz-mehr--auf">
+                                <?php printf(
+                                    /* translators: %s ist die Zahl der weiteren Kategorien. */
+                                    esc_html(_n('+ %s weitere', '+ %s weitere', $sz_rest, 'sapelza-shop')),
+                                    esc_html(number_format_i18n($sz_rest))
+                                ); ?>
+                            </span>
+                            <span class="sz-mehr--zu"><?php echo esc_html__('weniger zeigen', 'sapelza-shop'); ?></span>
+                        </label>
+                    <?php endif; ?>
                 </nav>
             </div>
         </div>
@@ -290,7 +360,7 @@ add_action('woocommerce_before_shop_loop', function () {
                         ?>
                         <a class="sz-chip" href="<?php echo $sz_weg; // phpcs:ignore ?>"
                            <?php echo $sz_ist ? 'aria-current="page"' : ''; ?>>
-                            <?php echo esc_html($m->name); ?>
+                            <span class="sz-chip__wort"><?php echo esc_html($m->name); ?></span>
                             <span class="sz-chip__zahl mono"><?php echo esc_html(number_format_i18n((int) $m->count)); ?></span>
                         </a>
                     <?php endforeach; ?>

@@ -126,7 +126,13 @@
         function zu() {
             if (knopf.getAttribute("aria-expanded") !== "true") return false;
             knopf.setAttribute("aria-expanded", "false");
-            ziel.classList.remove(klasse);
+
+            /* Mit Klasse arbeitet die Navigation, ohne Klasse das
+               Suchfeld — dort haelt das hidden-Attribut den Zustand,
+               damit Vorlesegeraete es geschlossen gar nicht finden. */
+            if (klasse) ziel.classList.remove(klasse);
+            else ziel.setAttribute("hidden", "");
+
             return true;
         }
 
@@ -156,6 +162,43 @@
             document.getElementById('sz-nav'),
             'ist-offen'
         );
+
+        danebenSchliessen(
+            document.querySelector('.sz-suche__auf'),
+            document.getElementById('sz-suchfeld'),
+            null
+        );
+
+        /*
+         * Eines zur Zeit.
+         *
+         * Menue und Suche liegen auf dem Telefon beide als Blatt unten;
+         * zwei uebereinander waeren ein Stapel, aus dem man nicht mehr
+         * herausfindet. Wer das eine oeffnet, schliesst das andere.
+         *
+         * Der Lauscher wird vor umschalten() gesetzt und laeuft deshalb
+         * zuerst — sonst schloesse er das gerade Geoeffnete wieder.
+         */
+        (function () {
+            var navKnopf = document.querySelector('.sz-kopf__auf');
+            var suchKnopf = document.querySelector('.sz-suche__auf');
+            var nav = document.getElementById('sz-nav');
+            var suche = document.getElementById('sz-suchfeld');
+
+            if (navKnopf && suche && suchKnopf) {
+                navKnopf.addEventListener('click', function () {
+                    suche.setAttribute('hidden', '');
+                    suchKnopf.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            if (suchKnopf && nav && navKnopf) {
+                suchKnopf.addEventListener('click', function () {
+                    nav.classList.remove('ist-offen');
+                    navKnopf.setAttribute('aria-expanded', 'false');
+                });
+            }
+        })();
 
         umschalten(
             document.querySelector('.sz-kopf__auf'),
