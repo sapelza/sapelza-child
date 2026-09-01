@@ -72,6 +72,7 @@
         if (!bahn || !porter) return;
 
         var wartet = false;
+        var ruht = null;
 
         function setzen() {
             var hoehe = document.documentElement.scrollHeight - window.innerHeight;
@@ -81,7 +82,24 @@
             porter.style.top = (p * 100) + "%";
         }
 
+        /*
+         * Auf dem Telefon zeigt sich die Anzeige nur, waehrend gescrollt
+         * wird — die Gestaltung blendet sie an ist-faehrt ein. Am
+         * Schreibtisch aendert die Klasse nichts, dort steht sie ohnehin.
+         *
+         * Eine knappe Sekunde Nachlauf: kuerzer, und sie flackert
+         * zwischen zwei Wischern; laenger, und sie steht im Weg.
+         */
+        function faehrt() {
+            bahn.classList.add("ist-faehrt");
+            if (ruht) window.clearTimeout(ruht);
+            ruht = window.setTimeout(function () {
+                bahn.classList.remove("ist-faehrt");
+            }, 900);
+        }
+
         window.addEventListener("scroll", function () {
+            faehrt();
             if (wartet) return;
             wartet = true;
             window.requestAnimationFrame(function () { wartet = false; setzen(); });
@@ -91,9 +109,54 @@
         setzen();
     }
 
+    /*
+     * Daneben tippen schliesst, Escape auch.
+     *
+     * Das Menue ist auf dem Telefon ein Blatt, das ueber der Seite liegt.
+     * Wer daneben tippt, meint damit "weg" — vorher blieb es stehen und
+     * verdeckte, wonach man greifen wollte.
+     *
+     * pointerdown zusaetzlich zu click: iOS Safari schickt keinen click
+     * an document, wenn man auf eine Flaeche ohne eigenen Zweck tippt.
+     * Denselben Fehler hatte die Sortierliste.
+     */
+    function danebenSchliessen(knopf, ziel, klasse) {
+        if (!knopf || !ziel) return;
+
+        function zu() {
+            if (knopf.getAttribute("aria-expanded") !== "true") return false;
+            knopf.setAttribute("aria-expanded", "false");
+            ziel.classList.remove(klasse);
+            return true;
+        }
+
+        ["pointerdown", "click"].forEach(function (art) {
+            document.addEventListener(art, function (e) {
+                if (ziel.contains(e.target) || knopf.contains(e.target)) return;
+                zu();
+            });
+        });
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && zu()) knopf.focus();
+        });
+
+        /* Ein angetippter Menuepunkt fuehrt fort — das Blatt darf nicht
+           offen zurueckbleiben, wenn die naechste Seite dieselbe ist. */
+        ziel.addEventListener("click", function (e) {
+            if (e.target.closest("a")) zu();
+        });
+    }
+
     function los() {
         schrumpfenAufsetzen();
         laufAufsetzen();
+        danebenSchliessen(
+            document.querySelector('.sz-kopf__auf'),
+            document.getElementById('sz-nav'),
+            'ist-offen'
+        );
+
         umschalten(
             document.querySelector('.sz-kopf__auf'),
             document.getElementById('sz-nav'),

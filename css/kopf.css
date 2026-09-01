@@ -397,44 +397,150 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
     flex-shrink: 0;
 }
 
-.sz-kopf__auf span,
-.sz-kopf__auf span::before,
-.sz-kopf__auf span::after {
-    position: absolute;
-    left: 50%;
-    width: 1rem;
+.sz-kopf__strich {
+    position: relative;
+    display: block;
+    flex: none;
+    width: 1.05rem;
     height: 1px;
     background: var(--sz-ink);
-    transform: translateX(-50%);
 }
 
-.sz-kopf__auf span { top: 50%; }
-.sz-kopf__auf span::before { content: ""; top: -5px; }
-.sz-kopf__auf span::after  { content: ""; top: 5px; }
+.sz-kopf__strich::before,
+.sz-kopf__strich::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--sz-ink);
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), top 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sz-kopf__strich::before { top: -5px; }
+.sz-kopf__strich::after  { top: 5px; }
+
+/* Offen wird aus den drei Strichen ein Kreuz. */
+.sz-kopf__auf[aria-expanded="true"] .sz-kopf__strich { background: transparent; }
+.sz-kopf__auf[aria-expanded="true"] .sz-kopf__strich::before { top: 0; transform: rotate(45deg); }
+.sz-kopf__auf[aria-expanded="true"] .sz-kopf__strich::after  { top: 0; transform: rotate(-45deg); }
+
+/* Beide Woerter stehen im Text; gezeigt wird jeweils das passende.
+   display: none nimmt das andere auch aus dem Vorlesebaum. */
+.sz-kopf__wort {
+    font-family: var(--sz-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sz-ink);
+}
+
+.sz-kopf__wort--zu { display: none; }
+.sz-kopf__auf[aria-expanded="true"] .sz-kopf__wort--auf { display: none; }
+.sz-kopf__auf[aria-expanded="true"] .sz-kopf__wort--zu  { display: inline; }
 
 @media (max-width: 979px) {
     :root { --sz-kopf-hoch: 4.75rem; --sz-kopf-klein: 4rem; }
 
-    .sz-kopf__auf { display: block; }
-    .sz-kopf__innen { gap: 0.75rem; }
+    /* ---------------------------------------------------------------
+       Der Menueknopf steht unten links, nicht oben rechts.
 
-    /* Auf schmalen Fenstern klappt die Navigation unter die Leiste,
-       genau wie das Suchfeld — der Kopf selbst bleibt flach. */
-    .sz-nav {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        display: none;
-        background: var(--sz-bg);
-        border-top: 1px solid var(--sz-border);
-        border-bottom: 1px solid var(--sz-border);
-        padding: 1.25rem 1.5rem;
+       Auf einem Telefon ist die obere rechte Ecke die unbequemste
+       Stelle des Bildschirms: man muss das Geraet umgreifen, um sie zu
+       treffen. Unten links liegt der Daumen ohnehin.
+
+       Er sitzt fest im Fenster, nicht in der Leiste. Der Kopf ist
+       position: fixed und ohne transform — ein fixes Kind darin bezieht
+       sich also richtig auf das Fenster.
+       --------------------------------------------------------------- */
+
+    .sz-kopf__auf {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        position: fixed;
+        left: 1rem;
+        bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+        z-index: 60;
+        width: auto;
+        height: 3.1rem;
+        padding: 0 1.2rem;
+        border: 1px solid var(--sz-border-strong);
+        border-radius: 999px;
+        background: var(--sz-surface);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
     }
 
-    .sz-nav.ist-offen { display: block; }
-    .sz-nav__liste { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .sz-kopf__innen { gap: 0.75rem; }
+
+    /* ---------------------------------------------------------------
+       Das Menue kommt von unten, nicht von oben.
+
+       Wenn der Knopf unten steht, muss auch das Menue dort aufgehen —
+       sonst tippt man unten und muss oben lesen. Es faehrt als Blatt
+       herein und laesst unten Platz fuer den Knopf, der es geoeffnet hat.
+       --------------------------------------------------------------- */
+
+    .sz-nav {
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 55;
+        display: block;
+        max-height: min(72vh, 34rem);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        background: var(--sz-bg);
+        border-top: 1px solid var(--sz-border-strong);
+        border-radius: 1.25rem 1.25rem 0 0;
+        box-shadow: 0 -18px 44px rgba(0, 0, 0, 0.2);
+        padding: 1.5rem 1.5rem calc(5.5rem + env(safe-area-inset-bottom, 0px));
+        transform: translateY(102%);
+        visibility: hidden;
+        transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+                    visibility 0s linear 320ms;
+    }
+
+    .sz-nav.ist-offen {
+        transform: none;
+        visibility: visible;
+        transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+    }
+
+    /* Der Griff oben am Blatt — dasselbe Zeichen, das jedes Telefon
+       fuer "das laesst sich herunterziehen" verwendet. */
+    .sz-nav::before {
+        content: "";
+        display: block;
+        width: 2.5rem;
+        height: 4px;
+        margin: -0.5rem auto 1.25rem;
+        border-radius: 999px;
+        background: var(--sz-border-strong);
+    }
+
+    .sz-nav__liste { flex-direction: column; align-items: stretch; gap: 0; }
+
+    /* Grosszuegige Zeilen: getippt wird mit dem Daumen, nicht gezielt. */
+    .sz-nav__liste > li > a {
+        display: block;
+        padding: 0.95rem 0.25rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid var(--sz-border);
+    }
+
     .sz-nav__liste .sub-menu { position: static; display: block; border: 0; padding-left: 1rem; background: none; }
+
+    /* Der Knopf schwebt ueber der Seite. Am Seitenende darf er nichts
+       verdecken — der Fuss bekommt deshalb Platz unter seiner letzten
+       Zeile. Sonst liegt der Knopf auf dem Impressum. */
+    .sz-fuss { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+
+    @media (prefers-reduced-motion: reduce) {
+        .sz-nav { transition: visibility 0s; }
+    }
 }
 
 /* ===================================================================
@@ -566,9 +672,41 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
     filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
 }
 
-/* Unter 900px nimmt sie nur Platz weg. */
-@media (max-width: 900px) {
-    .sz-lauf { display: none; }
+/* -------------------------------------------------------------------
+   Auf dem Telefon: dieselbe Ecke wie der Menueknopf
+
+   Bisher war sie unter 900px einfach abgeschaltet — am rechten Rand
+   nahm sie nur Platz weg. Links ueber dem Menueknopf hat sie einen
+   Platz, an dem sie nichts verdeckt.
+
+   Und sie zeigt sich nur, solange wirklich gescrollt wird. Eine
+   Anzeige, die dauernd dasteht, ist Zierrat; eine, die kommt, wenn man
+   sie braucht, ist eine Auskunft. Das Skript setzt ist-faehrt und
+   nimmt es nach einer knappen Sekunde Stillstand wieder weg.
+   ------------------------------------------------------------------- */
+
+@media (max-width: 979px) {
+    .sz-lauf {
+        right: auto;
+        left: 1.55rem;
+        top: auto;
+        bottom: calc(5.1rem + env(safe-area-inset-bottom, 0px));
+        height: min(34vh, 13rem);
+        width: 30px;
+        opacity: 0;
+        transition: opacity 320ms ease;
+    }
+
+    .sz-lauf.ist-faehrt { opacity: 1; }
+
+    .sz-lauf__porter { width: 26px; }
+    .sz-lauf__route { opacity: 0.22; }
+}
+
+/* Wer keine Bewegung will, bekommt sie auch nicht ein- und
+   ausgeblendet: dann steht sie still da, wo sie steht. */
+@media (max-width: 979px) and (prefers-reduced-motion: reduce) {
+    .sz-lauf { transition: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

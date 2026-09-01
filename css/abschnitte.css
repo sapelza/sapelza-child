@@ -669,6 +669,53 @@
     opacity: 0.92;
 }
 
+/* --- Toblach ---------------------------------------------------------
+ *
+ * Der Hauptort bekommt die Zeichnung: die Pfarrkirche mit der
+ * Zwiebelhaube und daneben das Haus am Dorfplatz. Beide im Umriss, in
+ * Bordeaux — so tragen sie die Farbe der Seite mit und stehen im dunklen
+ * Thema nicht als heller Fleck da, wie es ein Foto taete.
+ */
+
+.sz-route__haupt .sz-haupt { color: var(--sz-bordeaux-text); }
+
+.sz-route__haupt .sz-haupt__punkt { color: var(--sz-bordeaux); }
+
+.sz-route__haupt .sz-haupt__strich {
+    stroke: color-mix(in srgb, var(--sz-bordeaux) 55%, transparent);
+    stroke-width: 1.2;
+    fill: none;
+}
+
+/* Der Name traegt die Anzeigeschrift der Seite und ist deutlich groesser
+   als die uebrigen Orte — genau darum geht es. */
+.sz-route__haupt .sz-haupt__name {
+    font-family: var(--sz-display);
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    fill: var(--sz-ink);
+}
+
+.sz-route__haupt .sz-haupt__unter {
+    font-family: var(--sz-mono);
+    font-size: 7.2px;
+    letter-spacing: 0.12em;
+    fill: var(--sz-ink-soft);
+}
+
+/* Er kommt etwas spaeter als die Strasse und faehrt dabei ein Stueck
+   herauf — so liest man ihn als Ziel und nicht als Beschriftung. */
+.sz-route__haupt {
+    transform: translateY(7px);
+    transition: opacity 520ms ease 120ms, transform 620ms cubic-bezier(0.22, 1, 0.36, 1) 120ms;
+}
+
+.sz-route__haupt.ist-da { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-route__haupt { transform: none; transition: none; }
+}
+
 /* --- Die Liste für Abteilungen und Marken --------------------------- */
 
 .sz-beiwerk__liste {
@@ -690,6 +737,26 @@
 }
 
 .sz-beiwerk__liste.ist-da .sz-beiwerk__zeile { opacity: 1; transform: none; }
+
+/* Wo die Karte nicht hinpasst, tritt die Liste an ihre Stelle. Auch dort
+   ist Toblach der Ort, an dem das Haus steht. */
+.sz-beiwerk__zeile.ist-haupt {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-family: var(--sz-display);
+    font-size: 1.15rem;
+    letter-spacing: 0;
+    color: var(--sz-ink);
+}
+
+.sz-beiwerk__hier {
+    font-family: var(--sz-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sz-bordeaux-text);
+}
 
 /* Auf schmalen Fenstern gibt es keinen freien Raum — das Skript zeichnet
    dort ohnehin nichts, die Regel hält die Bühne trotzdem außen vor. */

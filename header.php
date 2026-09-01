@@ -35,9 +35,25 @@ if (!defined('ABSPATH')) exit;
             echo sz_logo(); // phpcs:ignore WordPress.Security.EscapeOutput
             ?>
 
-            <button type="button" class="sz-kopf__auf" aria-expanded="false" aria-controls="sz-nav"
-                    aria-label="<?php echo esc_attr__('Menü', 'sapelza-shop'); ?>">
-                <span aria-hidden="true"></span>
+            <?php
+            /*
+             * Der Menueknopf.
+             *
+             * Auf schmalen Fenstern steht er nicht mehr in der Leiste,
+             * sondern fest unten links — dort, wo der Daumen ohnehin
+             * liegt. Oben rechts muss man auf einem Telefon umgreifen.
+             *
+             * Mit Wort, nicht nur mit drei Strichen: ein blosses Zeichen
+             * an einer neuen Stelle liest sich als Zierrat. Das Wort
+             * wechselt beim Oeffnen, damit klar ist, was der zweite
+             * Druck tut — beide stehen im Text, die Gestaltung zeigt
+             * jeweils eines.
+             */
+            ?>
+            <button type="button" class="sz-kopf__auf" aria-expanded="false" aria-controls="sz-nav">
+                <span class="sz-kopf__strich" aria-hidden="true"></span>
+                <span class="sz-kopf__wort sz-kopf__wort--auf"><?php echo esc_html__('Menü', 'sapelza-shop'); ?></span>
+                <span class="sz-kopf__wort sz-kopf__wort--zu"><?php echo esc_html__('Schließen', 'sapelza-shop'); ?></span>
             </button>
 
             <nav id="sz-nav" class="sz-nav" role="navigation"

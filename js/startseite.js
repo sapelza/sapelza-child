@@ -260,6 +260,157 @@
          * mit ihren Artikelzahlen und ihren Adressen. Was der Shop nicht
          * fuehrt, erscheint nicht.
          */
+        /* --- Die Zeichnung von Toblach ------------------------------
+         *
+         * Zwei Haeuser im Umriss, gezeichnet nach den Fotos vom Ort: die
+         * Pfarrkirche mit Turm, Uhr und Zwiebelhaube, daneben das Haus am
+         * Dorfplatz — flaches Satteldach mit weitem Vorsprung, drei
+         * Reihen Balkone, unten der Laubengang mit dem Schriftband.
+         *
+         * Alles in einem Koordinatenfeld 120 x 80, Boden bei y = 76. So
+         * laesst sich die ganze Gruppe mit einem Faktor skalieren, ohne
+         * dass etwas verrutscht.
+         * ------------------------------------------------------------ */
+
+        var NS = 'http://www.w3.org/2000/svg';
+
+        function teil(name, attr) {
+            var e = document.createElementNS(NS, name);
+            for (var k in attr) e.setAttribute(k, attr[k]);
+            return e;
+        }
+
+        function kirche() {
+            var g = teil('g', { fill: 'none', stroke: 'currentColor',
+                                'stroke-width': 1.4, 'stroke-linejoin': 'round' });
+
+            /* Das Schiff: erst der Kasten, dann der Giebel obendrauf. Als
+               eine einzige geschwungene Form gezeichnet wurde daraus ein
+               Schluesselloch — der Barockgiebel ist breit und flach. */
+            g.appendChild(teil('path', { d: 'M19.5 76 V46 H41 V76' }));
+            g.appendChild(teil('path', { d: 'M18.6 46 H41.9', 'stroke-width': 1 }));
+
+            /* Der Schweifgiebel: zwei Voluten, dazwischen der Aufsatz */
+            g.appendChild(teil('path', { d:
+                'M20.6 46 V43.6 Q20.6 41.4 23.4 41 Q26 40.6 26.6 38.6 '
+              + 'Q27.6 35.8 30.3 35.8 Q33 35.8 34 38.6 '
+              + 'Q34.6 40.6 37.2 41 Q40 41.4 40 43.6 V46' }));
+
+            /* Die Nische mit der Figur im Giebel */
+            g.appendChild(teil('path', { d: 'M29 45.6 V41.4 Q29 39.6 30.3 39.6 Q31.6 39.6 31.6 41.4 V45.6',
+                                         'stroke-width': 0.7 }));
+
+            g.appendChild(teil('circle', { cx: 30.3, cy: 56, r: 3.1 }));
+            g.appendChild(teil('path', { d: 'M27.3 76 V69.5 Q27.3 66.2 30.3 66.2 Q33.3 66.2 33.3 69.5 V76' }));
+            g.appendChild(teil('path', { d: 'M23.4 76 V46 M37.2 76 V46', 'stroke-width': 0.7 }));
+
+            /* Der Turm: Schaft, Gesims, Uhr, Glockengeschoss */
+            g.appendChild(teil('path', { d: 'M8.5 76 V36 M19.5 76 V36' }));
+            g.appendChild(teil('path', { d: 'M6.6 36 H21.4' }));
+            g.appendChild(teil('circle', { cx: 14, cy: 31.5, r: 2.6 }));
+            g.appendChild(teil('path', { d: 'M14 31.5 V29.7 M14 31.5 L15.6 32.4', 'stroke-width': 0.7 }));
+            g.appendChild(teil('path', { d: 'M9.4 36 V27 H18.6 V36' }));
+            g.appendChild(teil('path', { d: 'M11.6 27 V23.4 Q11.6 21.4 14 21.4 Q16.4 21.4 16.4 23.4 V27',
+                                         'stroke-width': 0.9 }));
+            g.appendChild(teil('path', { d: 'M7.2 21.4 H20.8' }));
+
+            /* Die Zwiebelhaube — daran erkennt man sie von weitem */
+            g.appendChild(teil('path', { d:
+                'M8 21.4 Q4.8 16.4 10.6 13.2 Q13.4 11.8 14 10.2 '
+              + 'Q14.6 11.8 17.4 13.2 Q23.2 16.4 20 21.4 Z' }));
+
+            /* Laterne, kleine Haube, Kugel, Kreuz */
+            g.appendChild(teil('path', { d: 'M12.2 10.2 V7.4 H15.8 V10.2', 'stroke-width': 0.9 }));
+            g.appendChild(teil('path', { d: 'M12.2 7.4 Q12.2 4.8 14 4.4 Q15.8 4.8 15.8 7.4 Z',
+                                         'stroke-width': 0.9 }));
+            g.appendChild(teil('circle', { cx: 14, cy: 3.4, r: 0.9, fill: 'currentColor', stroke: 'none' }));
+            g.appendChild(teil('path', { d: 'M14 2.5 V0.4 M12.9 1.3 H15.1', 'stroke-width': 0.8 }));
+
+            return g;
+        }
+
+        function haus() {
+            var g = teil('g', { fill: 'none', stroke: 'currentColor',
+                                'stroke-width': 1.4, 'stroke-linejoin': 'round' });
+
+            /* Das Dach: zwei Linien, damit der weite Vorsprung als Balken
+               liest und nicht als Strich. */
+            g.appendChild(teil('path', { d: 'M43 47.5 L80 28.5 L117 47.5' }));
+            g.appendChild(teil('path', { d: 'M46.6 49.6 L80 32.5 L113.4 49.6', 'stroke-width': 0.9 }));
+            g.appendChild(teil('path', { d: 'M51 46.6 V49.6 M62 41 V44 M98 41 V44 M109 46.6 V49.6',
+                                         'stroke-width': 0.8 }));
+
+            g.appendChild(teil('path', { d: 'M51 48.6 V76 H109 V48.6' }));
+
+            /* Drei Balkonbaender. Die Bruestung als Linie mit Staeben —
+               bei kleiner Groesse verschwimmt sie zu einem Band, und das
+               ist richtig so. */
+            [55.5, 63.5].forEach(function (y) {
+                g.appendChild(teil('path', { d: 'M52.5 ' + y + ' H107.5', 'stroke-width': 1 }));
+                var d = '';
+                for (var x = 54.5; x < 107; x += 4) d += 'M' + x + ' ' + (y - 2.6) + ' V' + y;
+                g.appendChild(teil('path', { d: d, 'stroke-width': 0.5 }));
+            });
+
+            /* Fenster mit Laden */
+            [51.6, 59.6].forEach(function (y) {
+                var d = '';
+                for (var x = 56; x < 105; x += 8) d += 'M' + x + ' ' + y + ' h3.4 v3.2 h-3.4 Z';
+                g.appendChild(teil('path', { d: d, 'stroke-width': 0.6 }));
+            });
+
+            /* Der Laubengang: das Schriftband auf den Saeulen */
+            g.appendChild(teil('rect', { x: 51, y: 66.4, width: 58, height: 4.4,
+                                         fill: 'currentColor', stroke: 'none' }));
+
+            var saeulen = '';
+            for (var x = 54; x <= 106; x += 6.5) saeulen += 'M' + x + ' 70.8 V76 ';
+            g.appendChild(teil('path', { d: saeulen, 'stroke-width': 1.1 }));
+
+            return g;
+        }
+
+        /* Die Raute des Logos, frei setzbar. */
+        function raute(cx, cy, halb) {
+            var h = halb / 1.8;
+            return teil('path', {
+                d: 'M' + cx + ' ' + (cy - h) + ' L' + (cx + halb) + ' ' + cy
+                 + ' L' + cx + ' ' + (cy + h) + ' L' + (cx - halb) + ' ' + cy + ' Z',
+                fill: 'none', stroke: 'currentColor', 'stroke-width': 1.2
+            });
+        }
+
+        /*
+         * Die ganze Ortsmarke: die beiden Haeuser, darunter Raute und
+         * Name, darunter die Zeile, die sagt, was hier steht.
+         * Feld 130 x 106.
+         */
+        function ortsmarke() {
+            var g = teil('g', { class: 'sz-haupt' });
+
+            var v = teil('g', { transform: 'translate(5 0)' });
+            v.appendChild(kirche());
+            v.appendChild(haus());
+            v.appendChild(teil('path', { d: 'M2 76.6 H118', stroke: 'currentColor',
+                                         'stroke-width': 0.8, opacity: 0.45, fill: 'none' }));
+            g.appendChild(v);
+
+            /* Raute und Name in einer Zeile, die Erklaerung darunter —
+               links buendig mit der Raute. Rechts neben dem Namen lief
+               sie sonst ueber den Rand des Feldes hinaus. */
+            g.appendChild(raute(15, 90, 7));
+
+            var t = teil('text', { class: 'sz-haupt__name', x: 28, y: 95 });
+            t.textContent = 'Toblach';
+            g.appendChild(t);
+
+            var u = teil('text', { class: 'sz-haupt__unter', x: 8, y: 104.5 });
+            u.textContent = 'UNSER HAUS AM DORFPLATZ';
+            g.appendChild(u);
+
+            return g;
+        }
+
         var LISTEN = {};
         try { LISTEN = JSON.parse(hero.getAttribute('data-sz-listen') || '{}'); }
         catch (x) { LISTEN = {}; }
@@ -314,7 +465,15 @@
             var schrift = 96;
             var faktor = (raum.breite - 2 * rand - schrift) / (x1 - x0 || 1);
 
-            var hoehe = (y1 - y0) * faktor + 2 * rand;
+            /*
+             * Platz ueber der Strasse fuer die Ortsmarke von Toblach.
+             *
+             * Sie ist rund 88px hoch und steht ueber ihrem Punkt. Das Tal
+             * selbst ist flach — ohne diesen Kopfraum stiesse sie oben an,
+             * und der Turm waere abgeschnitten.
+             */
+            var kopfraum = 118;
+            var hoehe = (y1 - y0) * faktor + 2 * rand + kopfraum;
 
             return {
                 hoehe: hoehe,
@@ -322,7 +481,7 @@
                     return {
                         name: p.name,
                         x: rand + (p.x - x0) * faktor,
-                        y: rand + (p.y - y0) * faktor
+                        y: rand + kopfraum + (p.y - y0) * faktor
                     };
                 })
             };
@@ -396,15 +555,75 @@
                 var g = document.createElementNS(ns, 'g');
                 g.setAttribute('class', 'sz-route__ort');
 
+                /*
+                 * Toblach ist nicht einer von sechs Punkten.
+                 *
+                 * Hier steht das Haus. Bisher sah man das der Karte nicht
+                 * an — sechs gleiche Punkte, sechs gleiche Namen, und der
+                 * Hauptort ging darin unter. Er bekommt deshalb die
+                 * Zeichnung ueber der Strasse, mit Raute und Name; sein
+                 * gewoehnlicher Namenszug entfaellt dafuer, sonst stuende
+                 * er zweimal da.
+                 */
+                if (p.name === 'Toblach') {
+                    g.setAttribute('class', 'sz-route__ort sz-route__haupt');
+
+                    /*
+                     * Die Marke waechst mit der Karte, aber nur bis zu
+                     * einem Punkt. Fest bei 112px war sie in einer breiten
+                     * Karte ein Beiwerk; ohne Grenze wuerde sie in einer
+                     * schmalen alles zudecken.
+                     */
+                    var breit = Math.max(124, Math.min(172, raum.breite * 0.25));
+                    var mass = breit / 130;
+                    var luft = 24;
+
+                    var marke = ortsmarke();
+                    marke.setAttribute('transform',
+                        'translate(' + (p.x - breit / 2).toFixed(1) + ' '
+                                     + (p.y - luft - 106 * mass).toFixed(1) + ') '
+                      + 'scale(' + mass.toFixed(4) + ')');
+                    g.appendChild(marke);
+
+                    /* Der Strich von der Strasse hinauf zur Marke, damit
+                       die Zeichnung nicht ueber dem Tal schwebt. */
+                    g.appendChild(teil('path', {
+                        class: 'sz-haupt__strich',
+                        d: 'M' + p.x.toFixed(1) + ' ' + (p.y - 4).toFixed(1)
+                         + ' V' + (p.y - luft).toFixed(1)
+                    }));
+
+                    /* Der Ortspunkt selbst als Raute, nicht als Kreis:
+                       die Regel .sz-route__ort circle setzt r fest und
+                       wuerde ihn den anderen gleichmachen. Gefuellt, damit
+                       er auf der Strasse als Ziel liest und nicht als
+                       weiterer Halt. */
+                    var punkt = raute(p.x, p.y, 6);
+                    punkt.setAttribute('fill', 'currentColor');
+                    punkt.setAttribute('class', 'sz-haupt__punkt');
+                    g.appendChild(punkt);
+
+                    svg.appendChild(g);
+                    return g;
+                }
+
                 var kreis = document.createElementNS(ns, 'circle');
                 kreis.setAttribute('cx', p.x.toFixed(1));
                 kreis.setAttribute('cy', p.y.toFixed(1));
                 kreis.setAttribute('r', '3.5');
                 g.appendChild(kreis);
 
+                /*
+                 * Die Namen stehen unter der Strasse, nicht daneben.
+                 *
+                 * Auf der Hoehe der Strasse lief "Niederdorf" waagrecht in
+                 * die Ortsmarke von Toblach hinein — die Abstaende der
+                 * Orte sind kleiner als die Namen lang sind. Unterhalb
+                 * kreuzt nichts mehr: Toblach steht als einziges darueber.
+                 */
                 var text = document.createElementNS(ns, 'text');
-                text.setAttribute('x', (p.x + 10).toFixed(1));
-                text.setAttribute('y', (p.y + 4).toFixed(1));
+                text.setAttribute('x', (p.x + 8).toFixed(1));
+                text.setAttribute('y', (p.y + 17).toFixed(1));
                 text.textContent = p.name;
                 g.appendChild(text);
 
@@ -512,13 +731,21 @@
                 var weg  = typeof e === 'string' ? null : e.weg;
 
                 var zeile = document.createElement(weg ? 'a' : 'span');
-                zeile.className = 'sz-beiwerk__zeile';
+                zeile.className = 'sz-beiwerk__zeile'
+                    + (typeof e === 'object' && e && e.haupt ? ' ist-haupt' : '');
                 zeile.style.setProperty('--verzug', (i * 60) + 'ms');
                 if (weg) zeile.href = weg;
 
                 var wort = document.createElement('span');
                 wort.textContent = name;
                 zeile.appendChild(wort);
+
+                if (typeof e === 'object' && e && e.haupt) {
+                    var hier = document.createElement('span');
+                    hier.className = 'sz-beiwerk__hier';
+                    hier.textContent = 'unser Haus';
+                    zeile.appendChild(hier);
+                }
 
                 if (zahl !== null && zahl !== undefined) {
                     var z = document.createElement('span');
@@ -555,7 +782,11 @@
 
             if (schluessel === 'karte') {
                 if (raum.breite >= 380) zeichneRoute(raum);
-                else zeichneListe(TAL.concat([SEXTEN]).map(function (o) { return o.name; }));
+                else zeichneListe(TAL.concat([SEXTEN]).map(function (o) {
+                    /* Auch ohne Platz fuer die Karte bleibt Toblach der
+                       Hauptort — dieselbe Auskunft, nur als Zeile. */
+                    return { name: o.name, haupt: o.name === 'Toblach' };
+                }));
                 return;
             }
 
