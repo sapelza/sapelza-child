@@ -51,12 +51,57 @@ $sz_punkte = [
                 <h2 id="sz-partner-titel" class="sz-partner__titel">
                     <?php echo esc_html__('Danke, dass Sie seit Jahren bei uns kaufen', 'sapelza-shop'); ?>
                 </h2>
-                <img class="sz-partner__logo"
-                     src="<?php echo esc_url(get_stylesheet_directory_uri() . '/bilder/logo.png'); ?>"
-                     width="219" height="141" alt="" decoding="async" loading="lazy">
+                <?php
+                /*
+                 * Ein Siegel, kein Logo.
+                 *
+                 * Das Logo stand hier ein zweites Mal auf derselben Seite.
+                 * Ein Siegel sagt etwas anderes: nicht "das sind wir",
+                 * sondern "dafuer stehen wir gerade" — was der Satz
+                 * daneben meint. Es nimmt die Raute des Logos auf und legt
+                 * sie in einen Ring mit dem Ort.
+                 *
+                 * Kein Jahr darin: ich weiss nicht, seit wann es das Haus
+                 * gibt, und eine erfundene Jahreszahl auf einem Siegel
+                 * waere das Gegenteil dessen, wofuer ein Siegel steht.
+                 * Wenn Sie mir das Gruendungsjahr sagen, setze ich es
+                 * unten in den Ring.
+                 */
+                ?>
+                <svg class="sz-partner__siegel" viewBox="0 0 200 200" role="img"
+                     aria-label="<?php echo esc_attr__('Siegel: Kaufhaus Sapelza, Toblach im Hochpustertal', 'sapelza-shop'); ?>">
+                    <defs>
+                        <?php /* Oben im Uhrzeigersinn, unten dagegen — so steht beides aufrecht. */ ?>
+                        <path id="sz-siegel-oben"  fill="none" d="M28 100 A72 72 0 0 1 172 100"/>
+                        <path id="sz-siegel-unten" fill="none" d="M30 100 A70 70 0 0 0 170 100"/>
+                    </defs>
+
+                    <circle class="sz-siegel__ring" cx="100" cy="100" r="94" stroke-width="1"/>
+                    <circle class="sz-siegel__ring" cx="100" cy="100" r="88" stroke-width="2.5"/>
+                    <circle class="sz-siegel__ring" cx="100" cy="100" r="56" stroke-width="1"/>
+
+                    <text font-size="13" letter-spacing="2.6">
+                        <textPath href="#sz-siegel-oben" xlink:href="#sz-siegel-oben"
+                                  startOffset="50%" text-anchor="middle">KAUFHAUS SAPELZA</textPath>
+                    </text>
+
+                    <text font-size="9.5" letter-spacing="1.8">
+                        <textPath href="#sz-siegel-unten" xlink:href="#sz-siegel-unten"
+                                  startOffset="50%" text-anchor="middle">TOBLACH · HOCHPUSTERTAL</textPath>
+                    </text>
+
+                    <?php /* Zwei kleine Rauten an den Seiten, wo die beiden Boegen sich treffen. */ ?>
+                    <path class="sz-siegel__mark" d="M29 100 L33 96 L37 100 L33 104 Z"/>
+                    <path class="sz-siegel__mark" d="M163 100 L167 96 L171 100 L167 104 Z"/>
+
+                    <?php /* Die Raute des Logos, im selben Verhaeltnis 1,8 : 1. */ ?>
+                    <path class="sz-siegel__ring" d="M100 74 L146 100 L100 126 L54 100 Z" stroke-width="2.4"/>
+                    <path class="sz-siegel__ring" d="M100 80 L139 100 L100 120 L61 100 Z" stroke-width="1"/>
+                    <text class="sz-siegel__wort" x="100" y="105" text-anchor="middle" font-size="13">SAPELZA</text>
+                </svg>
             </div>
             <p class="sz-partner__lead">
-                <?php echo esc_html__('Die meisten unserer Kunden kennen das Geschäft in der Graf-Künigl-Straße persönlich — Handwerksbetriebe, Hotels und Gastwirte aus dem Tal, manche seit zwei Generationen. Dieser Shop ändert daran nichts. Er soll Ihnen nur den Weg sparen, wenn Sie ohnehin wissen, was Sie brauchen.', 'sapelza-shop'); ?>
+                <?php echo esc_html__('Die meisten unserer Kunden kennen das Geschäft am Dorfplatz in Toblach persönlich — Handwerksbetriebe, Hotels und Gastwirte aus dem Tal, manche seit zwei Generationen. Dieser Shop ändert daran nichts. Er soll Ihnen nur den Weg sparen, wenn Sie ohnehin wissen, was Sie brauchen.', 'sapelza-shop'); ?>
             </p>
         </div>
 

@@ -101,26 +101,19 @@ add_action('woocommerce_before_shop_loop', function () {
         if ($erster !== '' && mb_strlen($erster) <= 90) $slogan = $erster;
     }
 
-    if ($slogan === '' && !$begriff) {
-        /*
-         * Auf der Wurzel eine Zeile aus echten Zahlen statt einer
-         * Behauptung: so viele Abteilungen, so viele Artikel.
-         */
-        $abteilungen = 0;
-        foreach ($bereiche as $b) {
-            $abteilungen += count(function_exists('sz_abteilungen') ? sz_abteilungen((int) $b->term_id) : []);
-        }
-        $artikel = (int) wp_count_posts('product')->publish;
-
-        if ($abteilungen > 0 && $artikel > 0) {
-            $slogan = sprintf(
-                /* translators: 1: Zahl der Abteilungen als Wort, 2: Zahl der Artikel. */
-                __('%1$s Abteilungen, %2$s Artikel, geliefert im Hochpustertal.', 'sapelza-shop'),
-                function_exists('sz_als_wort') ? sz_als_wort($abteilungen) : (string) $abteilungen,
-                number_format_i18n($artikel)
-            );
-        }
-    }
+    /*
+     * Auf der Wurzel steht kein Slogan.
+     *
+     * Dort stand "Zehn Abteilungen, 290 Artikel, geliefert im
+     * Hochpustertal" — gross gesetzt, in derselben Zeile, die auf jeder
+     * Kategorie den ersten Satz ihrer Beschreibung traegt. Auf der
+     * Uebersichtsseite war das eine Behauptung ueber die Groesse des
+     * Hauses an einer Stelle, an der man einen Katalog aufschlaegt.
+     *
+     * Die Zahl selbst bleibt — klein, in der Trefferzeile darunter:
+     * "1 – 24 von 288 Artikeln". Sie sagt dort mehr, weil sie mitzaehlt,
+     * was ein Filter gerade uebrig laesst.
+     */
 
     /* --- Die Kategorien der Leiste ------------------------------------ */
     $eltern = 0;

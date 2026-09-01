@@ -745,15 +745,39 @@ a.sz-beiwerk__zeile:hover { color: var(--sz-bordeaux-text); }
     gap: 2rem;
 }
 
-.sz-partner__logo {
+/* --- Das Siegel ------------------------------------------------------
+ *
+ * Hier stand das Logo. Es war eine Wiederholung des Kopfes: dasselbe
+ * Zeichen, zweimal auf einer Seite. Ein Siegel sagt etwas anderes als
+ * ein Logo — nicht "das sind wir", sondern "dafuer stehen wir gerade".
+ * Genau das meint der Satz daneben.
+ *
+ * Es nimmt die Raute des Logos auf und legt sie in einen Ring mit dem
+ * Ort. Gezeichnet statt Bild: es traegt die Farbe der Seite mit, auch
+ * im dunklen Thema, und bleibt bei jeder Groesse scharf.
+ */
+
+.sz-partner__siegel {
     display: block;
-    width: clamp(120px, 14vw, 190px);
+    width: clamp(140px, 15vw, 200px);
     height: auto;
     flex: none;
+    color: var(--sz-bordeaux-text);
 }
 
+.sz-partner__siegel .sz-siegel__ring { fill: none; stroke: currentColor; }
+.sz-partner__siegel .sz-siegel__mark { fill: currentColor; }
+
+.sz-partner__siegel text {
+    fill: currentColor;
+    font-family: var(--sz-mono);
+    font-weight: 500;
+}
+
+.sz-partner__siegel .sz-siegel__wort { font-family: var(--sz-display); letter-spacing: 0.06em; }
+
 @media (max-width: 640px) {
-    .sz-partner__logo { width: 110px; }
+    .sz-partner__siegel { width: 128px; }
 }
 
 
