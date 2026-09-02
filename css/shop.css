@@ -3561,3 +3561,151 @@ ul.products li.product.sz-ohne-bild .sz-kachel__marke { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) {
     .sz-sortierung__liste.ist-blatt { animation: none; }
 }
+
+
+/* ===================================================================
+   Die App-Karte im Konto
+   ===================================================================
+
+   Sie steht unter den Kennzahlen, nicht darüber: wer sein Konto
+   aufmacht, will zuerst wissen, was offen ist. Das Ablegen auf dem
+   Startbildschirm tut man einmal.
+
+   Abgesetzt durch eine eigene Fläche — es ist der einzige Abschnitt
+   dort, der nicht von Bestellungen handelt, sondern vom Gerät.
+*/
+
+.sz-appkarte {
+    margin-top: 3rem;
+    padding: 1.75rem;
+    border: 1px solid var(--sz-border);
+    border-radius: var(--sz-radius);
+    background: var(--sz-muted);
+}
+
+.sz-appkarte__titel {
+    margin: 0.75rem 0 0;
+    font-family: var(--sz-display);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.1;
+}
+
+.sz-appkarte__lead {
+    margin: 0.75rem 0 0;
+    max-width: 46ch;
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+}
+
+.sz-appkarte__gemerkt {
+    margin: 1rem 0 0;
+    padding: 0.7rem 1rem;
+    border-left: 3px solid var(--sz-bordeaux);
+    background: var(--sz-bordeaux-soft);
+    color: var(--sz-bordeaux-text);
+    font-size: 0.88rem;
+}
+
+.sz-appkarte__form { margin-top: 1.75rem; }
+
+.sz-appkarte__frage {
+    display: block;
+    font-family: var(--sz-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sz-ink-soft);
+}
+
+.sz-appkarte__zeile {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* Das Feld darf nicht über die Karte hinauswachsen, aber auch nicht so
+   schmal werden, dass "Schnellerfassung" abgeschnitten dasteht. */
+.sz-appkarte__zeile select {
+    box-sizing: border-box;
+    flex: 1 1 14rem;
+    min-width: 0;
+    max-width: 22rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--sz-border-strong);
+    background: var(--sz-surface);
+    color: var(--sz-ink);
+    font-family: var(--sz-body);
+    font-size: 0.95rem;
+}
+
+.sz-appkarte__knopf {
+    box-sizing: border-box;
+    flex: none;
+    padding: 0.7rem 1.6rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--sz-bordeaux);
+    color: var(--sz-bordeaux-fg);
+    font-family: var(--sz-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sz-appkarte__knopf:hover { filter: brightness(1.08); }
+
+.sz-appkarte__fein {
+    margin: 0.9rem 0 0;
+    max-width: 52ch;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--sz-ink-soft);
+}
+
+/* --- Die zwei Wege ---------------------------------------------------
+ *
+ * Nebeneinander, weil niemand beide braucht: man hat entweder ein
+ * iPhone oder ein Android-Gerät und überliest die andere Spalte.
+ */
+
+.sz-appkarte__wege {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--sz-border);
+}
+
+@media (min-width: 720px) {
+    .sz-appkarte__wege { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+}
+
+.sz-appkarte__wegtitel {
+    margin: 0;
+    font-family: var(--sz-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sz-ink);
+}
+
+.sz-appkarte__schritte {
+    margin: 0.75rem 0 0;
+    padding-left: 1.2rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--sz-ink-soft);
+}
+
+.sz-appkarte__schritte li { margin-bottom: 0.35rem; }
+
+@media (max-width: 700px) {
+    .sz-appkarte { padding: 1.25rem; }
+    .sz-appkarte__zeile select { flex-basis: 100%; max-width: none; }
+    .sz-appkarte__knopf { width: 100%; }
+}
