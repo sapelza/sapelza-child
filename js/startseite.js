@@ -333,39 +333,62 @@
             var g = teil('g', { fill: 'none', stroke: 'currentColor',
                                 'stroke-width': 1.4, 'stroke-linejoin': 'round' });
 
+            /*
+             * Das Haus am Dorfplatz — Entwurf D.
+             *
+             * Die erste Fassung reichte bis y=28,5, die Kirche bis y=0:
+             * das Haus war fast zwei Drittel so hoch wie ein Kirchturm.
+             * In Toblach ist der Turm gut zweieinhalbmal so hoch. Und der
+             * Giebel war leer, obwohl dort Balkon und Fenster sind.
+             *
+             * D ist der Kompromiss, den wir gewaehlt haben: halb so hoch
+             * wie die Kirche statt zwei Fuenftel — also etwas zu hoch,
+             * dafuer tragen Giebel und zwei Stockwerke Fenster, die man
+             * auch bei 110px noch als Fenster erkennt. Bei der wahren
+             * Hoehe waeren drei Reihen Brei geworden.
+             */
+
             /* Das Dach: zwei Linien, damit der weite Vorsprung als Balken
                liest und nicht als Strich. */
-            g.appendChild(teil('path', { d: 'M43 47.5 L80 28.5 L117 47.5' }));
-            g.appendChild(teil('path', { d: 'M46.6 49.6 L80 32.5 L113.4 49.6', 'stroke-width': 0.9 }));
-            g.appendChild(teil('path', { d: 'M51 46.6 V49.6 M62 41 V44 M98 41 V44 M109 46.6 V49.6',
-                                         'stroke-width': 0.8 }));
+            g.appendChild(teil('path', { d: 'M43 55 L81 39 L119 55' }));
+            g.appendChild(teil('path', { d: 'M46.4 57.1 L81 41.3 L115.6 57.1', 'stroke-width': 0.9 }));
 
-            g.appendChild(teil('path', { d: 'M51 48.6 V76 H109 V48.6' }));
+            /* Die Pfetten, die unter dem Vorsprung herausschauen. */
+            g.appendChild(teil('path', { d: 'M51 53.5 V56.8 M63 46.5 V49.8 M99 46.5 V49.8 M111 53.5 V56.8', 'stroke-width': 0.8 }));
 
-            /* Drei Balkonbaender. Die Bruestung als Linie mit Staeben —
-               bei kleiner Groesse verschwimmt sie zu einem Band, und das
-               ist richtig so. */
-            [55.5, 63.5].forEach(function (y) {
-                g.appendChild(teil('path', { d: 'M52.5 ' + y + ' H107.5', 'stroke-width': 1 }));
-                var d = '';
-                for (var x = 54.5; x < 107; x += 4) d += 'M' + x + ' ' + (y - 2.6) + ' V' + y;
-                g.appendChild(teil('path', { d: d, 'stroke-width': 0.5 }));
-            });
+            g.appendChild(teil('path', { d: 'M50 54.4 V76 H112 V54.4' }));
 
-            /* Fenster mit Laden */
-            [51.6, 59.6].forEach(function (y) {
-                var d = '';
-                for (var x = 56; x < 105; x += 8) d += 'M' + x + ' ' + y + ' h3.4 v3.2 h-3.4 Z';
-                g.appendChild(teil('path', { d: d, 'stroke-width': 0.6 }));
-            });
+            /*
+             * Drei Balkonreihen — die oberste im Giebel.
+             *
+             * Der Handlauf oben, die Staebe darunter. Andersherum
+             * gezeichnet — kraeftige Linie unten, Striche nach oben —
+             * verschmolz die Bruestung mit den Fenstern dahinter zu einem
+             * Gitter.
+             */
 
-            /* Der Laubengang: das Schriftband auf den Saeulen */
-            g.appendChild(teil('rect', { x: 51, y: 66.4, width: 58, height: 4.4,
+            /* Giebelgeschoss */
+            g.appendChild(teil('path', { d: 'M71.0 45.6 h3.4 v3.4 h-3.4 Z M70.0 45.6 v3.4 M75.4 45.6 v3.4 M78.0 45.6 h3.4 v3.4 h-3.4 Z M77.0 45.6 v3.4 M82.4 45.6 v3.4 M85.0 45.6 h3.4 v3.4 h-3.4 Z M84.0 45.6 v3.4 M89.4 45.6 v3.4', 'stroke-width': 0.55 }));
+            g.appendChild(teil('path', { d: 'M66 48.7 H96', 'stroke-width': 1.05 }));
+            g.appendChild(teil('path', { d: 'M67.6 48.7 V51 M70.8 48.7 V51 M74.0 48.7 V51 M77.2 48.7 V51 M80.4 48.7 V51 M83.6 48.7 V51 M86.8 48.7 V51 M90.0 48.7 V51 M93.2 48.7 V51', 'stroke-width': 0.4 }));
+            g.appendChild(teil('path', { d: 'M66 51 H96', 'stroke-width': 0.5 }));
+
+            /* Erstes Obergeschoss */
+            g.appendChild(teil('path', { d: 'M54.0 56.6 h3.6 v3.4 h-3.6 Z M53.0 56.6 v3.4 M58.6 56.6 v3.4 M61.5 56.6 h3.6 v3.4 h-3.6 Z M60.5 56.6 v3.4 M66.1 56.6 v3.4 M69.0 56.6 h3.6 v3.4 h-3.6 Z M68.0 56.6 v3.4 M73.6 56.6 v3.4 M76.5 56.6 h3.6 v3.4 h-3.6 Z M75.5 56.6 v3.4 M81.1 56.6 v3.4 M84.0 56.6 h3.6 v3.4 h-3.6 Z M83.0 56.6 v3.4 M88.6 56.6 v3.4 M91.5 56.6 h3.6 v3.4 h-3.6 Z M90.5 56.6 v3.4 M96.1 56.6 v3.4 M99.0 56.6 h3.6 v3.4 h-3.6 Z M98.0 56.6 v3.4 M103.6 56.6 v3.4', 'stroke-width': 0.55 }));
+            g.appendChild(teil('path', { d: 'M51.5 59.3 H110.5', 'stroke-width': 1.05 }));
+            g.appendChild(teil('path', { d: 'M53.1 59.3 V61.6 M56.3 59.3 V61.6 M59.5 59.3 V61.6 M62.7 59.3 V61.6 M65.9 59.3 V61.6 M69.1 59.3 V61.6 M72.3 59.3 V61.6 M75.5 59.3 V61.6 M78.7 59.3 V61.6 M81.9 59.3 V61.6 M85.1 59.3 V61.6 M88.3 59.3 V61.6 M91.5 59.3 V61.6 M94.7 59.3 V61.6 M97.9 59.3 V61.6 M101.1 59.3 V61.6 M104.3 59.3 V61.6 M107.5 59.3 V61.6', 'stroke-width': 0.4 }));
+            g.appendChild(teil('path', { d: 'M51.5 61.6 H110.5', 'stroke-width': 0.5 }));
+
+            /* Zweites Obergeschoss */
+            g.appendChild(teil('path', { d: 'M54.0 63.2 h3.6 v3.4 h-3.6 Z M53.0 63.2 v3.4 M58.6 63.2 v3.4 M61.5 63.2 h3.6 v3.4 h-3.6 Z M60.5 63.2 v3.4 M66.1 63.2 v3.4 M69.0 63.2 h3.6 v3.4 h-3.6 Z M68.0 63.2 v3.4 M73.6 63.2 v3.4 M76.5 63.2 h3.6 v3.4 h-3.6 Z M75.5 63.2 v3.4 M81.1 63.2 v3.4 M84.0 63.2 h3.6 v3.4 h-3.6 Z M83.0 63.2 v3.4 M88.6 63.2 v3.4 M91.5 63.2 h3.6 v3.4 h-3.6 Z M90.5 63.2 v3.4 M96.1 63.2 v3.4 M99.0 63.2 h3.6 v3.4 h-3.6 Z M98.0 63.2 v3.4 M103.6 63.2 v3.4', 'stroke-width': 0.55 }));
+            g.appendChild(teil('path', { d: 'M51.5 65.9 H110.5', 'stroke-width': 1.05 }));
+            g.appendChild(teil('path', { d: 'M53.1 65.9 V68.2 M56.3 65.9 V68.2 M59.5 65.9 V68.2 M62.7 65.9 V68.2 M65.9 65.9 V68.2 M69.1 65.9 V68.2 M72.3 65.9 V68.2 M75.5 65.9 V68.2 M78.7 65.9 V68.2 M81.9 65.9 V68.2 M85.1 65.9 V68.2 M88.3 65.9 V68.2 M91.5 65.9 V68.2 M94.7 65.9 V68.2 M97.9 65.9 V68.2 M101.1 65.9 V68.2 M104.3 65.9 V68.2 M107.5 65.9 V68.2', 'stroke-width': 0.4 }));
+            g.appendChild(teil('path', { d: 'M51.5 68.2 H110.5', 'stroke-width': 0.5 }));
+
+            /* Der Laubengang: das Schriftband auf den Saeulen. */
+            g.appendChild(teil('rect', { x: 50, y: 69.6, width: 62, height: 3.2,
                                          fill: 'currentColor', stroke: 'none' }));
-
-            var saeulen = '';
-            for (var x = 54; x <= 106; x += 6.5) saeulen += 'M' + x + ' 70.8 V76 ';
-            g.appendChild(teil('path', { d: saeulen, 'stroke-width': 1.1 }));
+            g.appendChild(teil('path', { d: 'M53.0 72.8 V76 M59.6 72.8 V76 M66.2 72.8 V76 M72.8 72.8 V76 M79.4 72.8 V76 M86.0 72.8 V76 M92.6 72.8 V76 M99.2 72.8 V76 M105.8 72.8 V76', 'stroke-width': 1.05 }));
 
             return g;
         }
