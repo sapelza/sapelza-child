@@ -538,11 +538,34 @@
    05 Partnerbetriebe
    =================================================================== */
 
-.sz-partner__kopf { display: grid; gap: 2rem; margin-top: 2.5rem; }
+.sz-partner__kopf { display: grid; gap: 2rem; margin-top: 2.5rem; justify-items: center; }
 
+/*
+ * Drei Spalten: Ueberschrift, Siegel, Vorspann.
+ *
+ * Vorher waren es zwei, und das Siegel sass in derselben Zelle wie die
+ * Ueberschrift — in einer Flexzeile mit space-between, also auf breiten
+ * Schirmen ganz am rechten Rand dieser Zelle und damit unmittelbar am
+ * Vorspann. Es sah aus, als klebte es daran.
+ *
+ * Als eigene Spalte steht es dort, wo es hingehoert: zwischen den
+ * beiden Texten, auf halber Hoehe.
+ */
 @media (min-width: 1024px) {
-    .sz-partner__kopf { grid-template-columns: 1.25fr 0.75fr; align-items: end; }
+    .sz-partner__kopf {
+        grid-template-columns: minmax(0, 1.05fr) auto minmax(0, 0.85fr);
+        align-items: center;
+        justify-items: stretch;
+        gap: 3rem;
+    }
 }
+
+/* Auf schmalen Schirmen stehen die drei untereinander; dort gehoert das
+   Siegel mittig zwischen die beiden Texte, nicht an den linken Rand. */
+.sz-partner__siegel { justify-self: center; }
+
+.sz-partner__titel { justify-self: start; }
+.sz-partner__lead { justify-self: start; }
 
 .sz-partner__titel {
     font-family: var(--sz-display);
@@ -823,16 +846,6 @@ a.sz-beiwerk__zeile:hover { color: var(--sz-bordeaux-text); }
    Darunter kam bisher nichts mehr, nur eine leere Bahn vor dem Fuss.
 */
 
-/* Ueberschrift und Logo nebeneinander: der Satz ist auf 20 Zeichen
-   gesetzt, rechts davon blieb sonst ein leeres Feld. */
-.sz-partner__marke {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 2rem;
-}
-
 /* --- Das Siegel ------------------------------------------------------
  *
  * Hier stand das Logo. Es war eine Wiederholung des Kopfes: dasselbe
@@ -878,10 +891,22 @@ a.sz-beiwerk__zeile:hover { color: var(--sz-bordeaux-text); }
    sieht — das laesst sich abarbeiten.
 */
 
+/*
+ * Die Zeile unter dem Titel eines Bestellwegs.
+ *
+ * Hier stand die Serifenschrift, kursiv — als Beiseitesprechen gedacht,
+ * gelesen wurde es als falsche Schrift. Sie ist es auch: der Titel
+ * darueber traegt schon die Serife, und zwei Serifenschnitte
+ * uebereinander sehen nach Versehen aus.
+ *
+ * Jetzt die Grundschrift, aufrecht. Abgesetzt bleibt die Zeile durch
+ * Farbe und Groesse, nicht durch einen zweiten Schriftschnitt.
+ */
 .sz-weg__text {
-    font-family: var(--sz-display);
-    font-size: 1.05rem;
-    font-style: italic;
+    font-family: var(--sz-body);
+    font-size: 1.02rem;
+    font-style: normal;
+    line-height: 1.55;
     color: var(--sz-bordeaux-text);
     margin-bottom: 1.5rem;
 }

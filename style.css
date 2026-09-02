@@ -5,7 +5,7 @@ GitHub Theme URI: https://github.com/sapelza/sapelza-child
 Description:  Child-Theme für Astra – übernimmt die Gestaltung der SAPELZA-Homepage. Das Verhalten liegt im Plugin „SAPELZA Shop“.
 Author:       SAPELZA
 Template:     astra
-Version:      1.46.0
+Version:      1.47.0
 Text Domain:  sapelza-shop
 */
 
@@ -123,6 +123,22 @@ h1, h2, h3, h4,
     font-weight: 500;
     letter-spacing: -0.01em;
     color: var(--sz-ink);
+}
+
+/*
+ * Die Ausnahme: mono an einer Überschrift meint mono.
+ *
+ * Das !important oben musste Astra schlagen, das Überschriften aus dem
+ * Customizer heraus setzt. Der Preis war, dass es auch die Klasse mono
+ * mitschlug — und zwar unbemerkt: die drei Spaltentitel im Fuß standen
+ * seit der ersten Fassung in der Serifenschrift, obwohl mono dransteht,
+ * und im App-Kapitel dann auch "iPhone und iPad" und "Android".
+ *
+ * Höhere Spezifität schlägt gleiches !important. h2.mono ist 0-1-1 und
+ * gewinnt gegen h2 mit 0-0-1.
+ */
+h1.mono, h2.mono, h3.mono, h4.mono {
+    font-family: var(--sz-mono) !important;
 }
 
 ::selection {

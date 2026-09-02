@@ -37,20 +37,23 @@ $sz_punkte = [
         <div class="sz-partner__kopf">
             <?php
             /*
-             * Ueberschrift und Logo stehen nebeneinander. Rechts neben dem
-             * Satz blieb ein leeres Feld — die Ueberschrift ist auf 20
-             * Zeichen Breite gesetzt, der Vorspann sitzt erst weiter
-             * rechts. Dort gehoert das Zeichen hin, das der Satz meint.
+             * Das Siegel steht zwischen den beiden Texten, als eigene
+             * Spalte des Rasters.
+             *
+             * Vorher sass es in derselben Zelle wie die Ueberschrift, in
+             * einer Flexzeile mit space-between — auf breiten Schirmen
+             * also ganz am rechten Rand dieser Zelle und damit direkt am
+             * Vorspann. Es sah aus, als klebte es daran.
              *
              * Das ganze Logo, nicht die blasse Kontur des Wasserzeichens:
              * an dieser Stelle ist es die Unterschrift unter einem Dank,
              * kein Hintergrund.
              */
             ?>
-            <div class="sz-partner__marke">
-                <h2 id="sz-partner-titel" class="sz-partner__titel">
-                    <?php echo esc_html__('Danke, dass Sie seit Jahren bei uns kaufen', 'sapelza-shop'); ?>
-                </h2>
+            <h2 id="sz-partner-titel" class="sz-partner__titel">
+                <?php echo esc_html__('Danke, dass Sie seit Jahren bei uns kaufen', 'sapelza-shop'); ?>
+            </h2>
+
                 <?php
                 /*
                  * Ein Siegel, kein Logo.
@@ -98,8 +101,7 @@ $sz_punkte = [
                     <path class="sz-siegel__ring" d="M100 74 L146 100 L100 126 L54 100 Z" stroke-width="2.4"/>
                     <path class="sz-siegel__ring" d="M100 80 L139 100 L100 120 L61 100 Z" stroke-width="1"/>
                     <text class="sz-siegel__wort" x="100" y="105" text-anchor="middle" font-size="13">SAPELZA</text>
-                </svg>
-            </div>
+            </svg>
             <p class="sz-partner__lead">
                 <?php echo esc_html__('Die meisten unserer Kunden kennen das Geschäft am Dorfplatz in Toblach persönlich — Handwerksbetriebe, Hotels und Gastwirte aus dem Tal, manche seit zwei Generationen. Dieser Shop ändert daran nichts. Er soll Ihnen nur den Weg sparen, wenn Sie ohnehin wissen, was Sie brauchen.', 'sapelza-shop'); ?>
             </p>
