@@ -69,6 +69,19 @@ $sz_abteilungen = $sz_aktiver_begriff
                 <?php foreach ($sz_abteilungen as $sz_i => $sz_abt) : ?>
                     <a class="sz-abteilung" href="<?php echo esc_url(get_term_link($sz_abt)); ?>">
                         <span class="sz-abteilung__index"><?php echo esc_html(str_pad((string) ($sz_i + 1), 2, '0', STR_PAD_LEFT)); ?></span>
+                        <?php
+                        /*
+                         * Dasselbe Symbol wie an den Chips im Katalog — hier
+                         * ist die Stelle, an der man es zuerst sieht. Wer sich
+                         * die Rolle einmal gemerkt hat, findet sie drinnen
+                         * schneller als das Wort.
+                         *
+                         * Fest zusammengesetzt im Theme, keine Nutzereingabe.
+                         */
+                        if (function_exists('sz_kategorie_symbol_svg')) {
+                            echo sz_kategorie_symbol_svg($sz_abt->name, 'sz-abteilung__symbol'); // phpcs:ignore WordPress.Security.EscapeOutput
+                        }
+                        ?>
                         <h3 class="sz-abteilung__name"><?php echo esc_html($sz_abt->name); ?></h3>
                         <p class="sz-abteilung__zahl">
                             <?php

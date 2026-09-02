@@ -369,9 +369,9 @@ function sz_kategorie_symbol(string $name): string
  * und macht aus viewBox ein viewbox, das kein Browser liest. Die
  * Auszeichnung stammt hier vollstaendig aus dem Theme.
  */
-function sz_kategorie_symbol_svg(string $name): string
+function sz_kategorie_symbol_svg(string $name, string $klasse = 'sz-chip__symbol'): string
 {
-    return '<svg class="sz-chip__symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+    return '<svg class="' . esc_attr($klasse) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
          . ' stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
          . sz_kategorie_symbol($name) . '</svg>';
 }

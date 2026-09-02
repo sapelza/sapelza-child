@@ -793,15 +793,26 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
    Ein zweites, eigens gezeichnetes Logo waere ein zweites Logo.
 */
 
+/*
+ * Ganz im Bild, nicht angeschnitten.
+ *
+ * Vorher hing es mit right: -6vw ueber den Rand. Gemeint war ein
+ * Anschnitt — gelesen wird es als abgeschnitten, also als Fehler:
+ * am Rand stand ein halbes "ZA" und zwei Diagonalen, die ins Nichts
+ * liefen. Ein Wasserzeichen darf blass sein, aber nicht kaputt.
+ *
+ * Kleiner, damit die ganze Raute samt Schriftzug hineinpasst, ohne
+ * ueber den Text zu wandern.
+ */
 .sz-wasserzeichen {
     position: fixed;
-    right: -6vw;
+    right: clamp(0.75rem, 2.5vw, 3rem);
     top: 50%;
     transform: translateY(-50%);
     z-index: 0;
     pointer-events: none;
     user-select: none;
-    width: min(72vw, 900px);
+    width: min(38vw, 460px);
 }
 
 /*
