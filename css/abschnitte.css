@@ -453,6 +453,27 @@
 .sz-tour__ort circle { fill: color-mix(in srgb, var(--sz-bg) 82%, transparent); }
 .sz-tour__lager circle { fill: var(--sz-bordeaux); }
 
+/* Die Zeichnung von Toblach auf der Karte.
+   Heller als die uebrigen Beschriftungen, weil hier das Haus steht —
+   aber nicht rot: das Rot gehoert dem Punkt darunter, sonst haette die
+   Karte zwei Betonungen an derselben Stelle. */
+.sz-tour__haus { color: color-mix(in srgb, var(--sz-bg) 88%, transparent); }
+
+.sz-tour__strich {
+    fill: none;
+    stroke: color-mix(in srgb, var(--sz-bg) 40%, transparent);
+    stroke-width: 1.2;
+}
+
+/* Die Quelle selbst wird nie gezeigt. Nicht display:none — das nimmt in
+   manchen Browsern auch die Verweise mit. */
+.sz-toblach-quelle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
 .sz-tour__ort text,
 .sz-tour__lager text {
     font-family: var(--sz-mono);

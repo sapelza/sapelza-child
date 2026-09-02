@@ -375,3 +375,108 @@ function sz_kategorie_symbol_svg(string $name, string $klasse = 'sz-chip__symbol
          . ' stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
          . sz_kategorie_symbol($name) . '</svg>';
 }
+
+/**
+ * Kirche und Haus von Toblach — die eine Quelle.
+ *
+ * Die Pfarrkirche mit Turm, Uhr und Zwiebelhaube, daneben das Haus am
+ * Dorfplatz: flaches Satteldach mit weitem Vorsprung, drei Reihen
+ * Balkone bis in den Giebel, unten der Laubengang mit dem Schriftband.
+ * Die beiden stehen im Ort tatsaechlich nebeneinander.
+ *
+ * Gezeichnet statt fotografiert: so traegt es die Farbe der Stelle mit,
+ * an der es steht, und bleibt bei jeder Groesse scharf. currentColor
+ * loest am verweisenden <use> auf — auf der Tourkarte hell, in der
+ * Hero-Route bordeaux.
+ *
+ * Feld 120 x 80, Boden bei y = 76. Wer die Groesse aendert, aendert nur
+ * den Faktor am <use>.
+ *
+ * Das Haus ist bewusst etwas zu hoch: halb so hoch wie die Kirche statt
+ * der wahren zwei Fuenftel. Bei der wahren Hoehe waeren drei
+ * Fensterreihen bei 110px Brei geworden — das war die Abwaegung.
+ *
+ * @return string Die Gruppe, ohne umgebendes svg.
+ */
+function sz_toblach_haeuser(): string
+{
+    $k = '<g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round">'
+
+        /* --- Die Kirche ---------------------------------------- */
+        . '<path d="M19.5 76 V46 H41 V76"/>'
+        . '<path d="M18.6 46 H41.9" stroke-width="1"/>'
+        . '<path d="M20.6 46 V43.6 Q20.6 41.4 23.4 41 Q26 40.6 26.6 38.6 Q27.6 35.8 30.3 35.8 '
+        .          'Q33 35.8 34 38.6 Q34.6 40.6 37.2 41 Q40 41.4 40 43.6 V46"/>'
+        . '<path d="M29 45.6 V41.4 Q29 39.6 30.3 39.6 Q31.6 39.6 31.6 41.4 V45.6" stroke-width="0.7"/>'
+        . '<circle cx="30.3" cy="56" r="3.1"/>'
+        . '<path d="M27.3 76 V69.5 Q27.3 66.2 30.3 66.2 Q33.3 66.2 33.3 69.5 V76"/>'
+        . '<path d="M23.4 76 V46 M37.2 76 V46" stroke-width="0.7"/>'
+        . '<path d="M8.5 76 V36 M19.5 76 V36"/>'
+        . '<path d="M6.6 36 H21.4"/>'
+        . '<circle cx="14" cy="31.5" r="2.6"/>'
+        . '<path d="M14 31.5 V29.7 M14 31.5 L15.6 32.4" stroke-width="0.7"/>'
+        . '<path d="M9.4 36 V27 H18.6 V36"/>'
+        . '<path d="M11.6 27 V23.4 Q11.6 21.4 14 21.4 Q16.4 21.4 16.4 23.4 V27" stroke-width="0.9"/>'
+        . '<path d="M7.2 21.4 H20.8"/>'
+        /* Die Zwiebelhaube — daran erkennt man sie von weitem. */
+        . '<path d="M8 21.4 Q4.8 16.4 10.6 13.2 Q13.4 11.8 14 10.2 Q14.6 11.8 17.4 13.2 Q23.2 16.4 20 21.4 Z"/>'
+        . '<path d="M12.2 10.2 V7.4 H15.8 V10.2" stroke-width="0.9"/>'
+        . '<path d="M12.2 7.4 Q12.2 4.8 14 4.4 Q15.8 4.8 15.8 7.4 Z" stroke-width="0.9"/>'
+        . '<circle cx="14" cy="3.4" r="0.9" fill="currentColor" stroke="none"/>'
+        . '<path d="M14 2.5 V0.4 M12.9 1.3 H15.1" stroke-width="0.8"/>'
+
+        /* --- Das Haus: Dach mit Vorsprung ---------------------- */
+        . '<path d="M43 55 L81 39 L119 55"/>'
+        . '<path d="M46.4 57.1 L81 41.3 L115.6 57.1" stroke-width="0.9"/>'
+        . '<path d="M51 53.5 V56.8 M63 46.5 V49.8 M99 46.5 V49.8 M111 53.5 V56.8" stroke-width="0.8"/>'
+        . '<path d="M50 54.4 V76 H112 V54.4"/>'
+
+        /* --- Drei Balkonreihen, die oberste im Giebel ----------
+           Handlauf oben, Staebe darunter. Andersherum verschmolz die
+           Bruestung mit den Fenstern dahinter zu einem Gitter. */
+        . '<path d="M71.0 45.6 h3.4 v3.4 h-3.4 Z M70.0 45.6 v3.4 M75.4 45.6 v3.4 M78.0 45.6 h3.4 v3.4 h-3.4 Z M77.0 45.6 v3.4 M82.4 45.6 v3.4 M85.0 45.6 h3.4 v3.4 h-3.4 Z M84.0 45.6 v3.4 M89.4 45.6 v3.4" stroke-width="0.55"/>'
+        . '<path d="M66 48.7 H96" stroke-width="1.05"/>'
+        . '<path d="M67.6 48.7 V51 M70.8 48.7 V51 M74.0 48.7 V51 M77.2 48.7 V51 M80.4 48.7 V51 M83.6 48.7 V51 M86.8 48.7 V51 M90.0 48.7 V51 M93.2 48.7 V51" stroke-width="0.4"/>'
+        . '<path d="M66 51 H96" stroke-width="0.5"/>'
+
+        . '<path d="M54.0 56.6 h3.6 v3.4 h-3.6 Z M53.0 56.6 v3.4 M58.6 56.6 v3.4 M61.5 56.6 h3.6 v3.4 h-3.6 Z M60.5 56.6 v3.4 M66.1 56.6 v3.4 M69.0 56.6 h3.6 v3.4 h-3.6 Z M68.0 56.6 v3.4 M73.6 56.6 v3.4 M76.5 56.6 h3.6 v3.4 h-3.6 Z M75.5 56.6 v3.4 M81.1 56.6 v3.4 M84.0 56.6 h3.6 v3.4 h-3.6 Z M83.0 56.6 v3.4 M88.6 56.6 v3.4 M91.5 56.6 h3.6 v3.4 h-3.6 Z M90.5 56.6 v3.4 M96.1 56.6 v3.4 M99.0 56.6 h3.6 v3.4 h-3.6 Z M98.0 56.6 v3.4 M103.6 56.6 v3.4" stroke-width="0.55"/>'
+        . '<path d="M51.5 59.3 H110.5" stroke-width="1.05"/>'
+        . '<path d="M53.1 59.3 V61.6 M56.3 59.3 V61.6 M59.5 59.3 V61.6 M62.7 59.3 V61.6 M65.9 59.3 V61.6 M69.1 59.3 V61.6 M72.3 59.3 V61.6 M75.5 59.3 V61.6 M78.7 59.3 V61.6 M81.9 59.3 V61.6 M85.1 59.3 V61.6 M88.3 59.3 V61.6 M91.5 59.3 V61.6 M94.7 59.3 V61.6 M97.9 59.3 V61.6 M101.1 59.3 V61.6 M104.3 59.3 V61.6 M107.5 59.3 V61.6" stroke-width="0.4"/>'
+        . '<path d="M51.5 61.6 H110.5" stroke-width="0.5"/>'
+
+        . '<path d="M54.0 63.2 h3.6 v3.4 h-3.6 Z M53.0 63.2 v3.4 M58.6 63.2 v3.4 M61.5 63.2 h3.6 v3.4 h-3.6 Z M60.5 63.2 v3.4 M66.1 63.2 v3.4 M69.0 63.2 h3.6 v3.4 h-3.6 Z M68.0 63.2 v3.4 M73.6 63.2 v3.4 M76.5 63.2 h3.6 v3.4 h-3.6 Z M75.5 63.2 v3.4 M81.1 63.2 v3.4 M84.0 63.2 h3.6 v3.4 h-3.6 Z M83.0 63.2 v3.4 M88.6 63.2 v3.4 M91.5 63.2 h3.6 v3.4 h-3.6 Z M90.5 63.2 v3.4 M96.1 63.2 v3.4 M99.0 63.2 h3.6 v3.4 h-3.6 Z M98.0 63.2 v3.4 M103.6 63.2 v3.4" stroke-width="0.55"/>'
+        . '<path d="M51.5 65.9 H110.5" stroke-width="1.05"/>'
+        . '<path d="M53.1 65.9 V68.2 M56.3 65.9 V68.2 M59.5 65.9 V68.2 M62.7 65.9 V68.2 M65.9 65.9 V68.2 M69.1 65.9 V68.2 M72.3 65.9 V68.2 M75.5 65.9 V68.2 M78.7 65.9 V68.2 M81.9 65.9 V68.2 M85.1 65.9 V68.2 M88.3 65.9 V68.2 M91.5 65.9 V68.2 M94.7 65.9 V68.2 M97.9 65.9 V68.2 M101.1 65.9 V68.2 M104.3 65.9 V68.2 M107.5 65.9 V68.2" stroke-width="0.4"/>'
+        . '<path d="M51.5 68.2 H110.5" stroke-width="0.5"/>'
+
+        /* --- Der Laubengang: Schriftband auf Saeulen ------------ */
+        . '<rect x="50" y="69.6" width="62" height="3.2" fill="currentColor" stroke="none"/>'
+        . '<path d="M53.0 72.8 V76 M59.6 72.8 V76 M66.2 72.8 V76 M72.8 72.8 V76 M79.4 72.8 V76 M86.0 72.8 V76 M92.6 72.8 V76 M99.2 72.8 V76 M105.8 72.8 V76" stroke-width="1.05"/>'
+
+        /* Der Boden, auf dem beide stehen. */
+        . '<path d="M2 76.6 H118" stroke-width="0.8" opacity="0.45"/>'
+        . '</g>';
+
+    return $k;
+}
+
+/**
+ * Die Zeichnung einmal ins Dokument legen.
+ *
+ * Ein unsichtbares svg mit einem <defs>, auf das beide Stellen mit
+ * <use> zeigen. Beim zweiten Aufruf kommt nichts mehr — zwei gleiche
+ * IDs waeren ungueltig, und der zweite Verweis zeigte ins Leere.
+ *
+ * Nicht display:none: das nimmt in manchen Browsern auch die Verweise
+ * mit. Aus dem Fluss genommen und auf Groesse null gesetzt ist der
+ * eingefuehrte Weg.
+ */
+function sz_toblach_defs(): string
+{
+    static $schon = false;
+    if ($schon) return '';
+    $schon = true;
+
+    return '<svg class="sz-toblach-quelle" aria-hidden="true" focusable="false" width="0" height="0">'
+         . '<defs><g id="sz-toblach-haeuser">' . sz_toblach_haeuser() . '</g></defs></svg>';
+}

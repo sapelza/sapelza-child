@@ -107,8 +107,37 @@ $sz_achse_d = trim($sz_achse_d);
                 <path class="sz-tour__achse" d="<?php echo esc_attr($sz_achse_d); ?>" />
                 <path class="sz-tour__befahren" d="<?php echo esc_attr($sz_achse_d); ?>" data-sz-befahren />
 
-                <?php /* Toblach — von hier fährt der Wagen los. */ ?>
+                <?php
+                /*
+                 * Toblach — von hier fährt der Wagen los.
+                 *
+                 * Ueber dem Punkt steht die Zeichnung: die Pfarrkirche und
+                 * daneben das Haus am Dorfplatz. Die Karte zeigte bisher
+                 * neun gleiche Punkte, einer davon rot — dass an dieser
+                 * Stelle das Haus steht, sah man ihr nicht an.
+                 *
+                 * Dieselbe Zeichnung wie in der Hero-Route, ueber <use>
+                 * aus einem <defs> geholt. Zweimal geschrieben liefen die
+                 * beiden beim naechsten "das Dach etwas flacher"
+                 * auseinander.
+                 *
+                 * Der Abstand nach oben ist grosszuegig: der Porter faehrt
+                 * auf der Achse und ist gut fuenfzig Bildpunkte hoch. Bei
+                 * knapperem Abstand fuehre er durch die Haeuser.
+                 */
+                echo sz_toblach_defs(); // phpcs:ignore WordPress.Security.EscapeOutput
+
+                $sz_bx   = $sz_x(0);
+                $sz_by   = $sz_y(0);
+                $sz_mass = 0.92;
+                $sz_luft = 34;
+                $sz_hoch = 77 * $sz_mass;
+                ?>
                 <g class="sz-tour__lager">
+                    <use href="#sz-toblach-haeuser" class="sz-tour__haus"
+                         transform="translate(<?php echo esc_attr((string) round($sz_bx - 62.8 * $sz_mass, 1)); ?> <?php echo esc_attr((string) round($sz_by - $sz_luft - $sz_hoch, 1)); ?>) scale(<?php echo esc_attr((string) $sz_mass); ?>)" />
+                    <path class="sz-tour__strich"
+                          d="M<?php echo esc_attr((string) $sz_bx); ?> <?php echo esc_attr((string) ($sz_by - 9)); ?> V<?php echo esc_attr((string) ($sz_by - $sz_luft)); ?>" />
                     <circle cx="<?php echo esc_attr((string) $sz_x(0)); ?>" cy="<?php echo esc_attr((string) $sz_y(0)); ?>" r="7" />
                     <text x="<?php echo esc_attr((string) $sz_x(0)); ?>" y="<?php echo esc_attr((string) ($sz_y(0) + 26)); ?>" text-anchor="middle">
                         <?php echo esc_html__('Toblach · Lager', 'sapelza-shop'); ?>
