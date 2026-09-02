@@ -120,3 +120,36 @@ add_action('wp_enqueue_scripts', function () {
      */
     wp_enqueue_script('sapelza-startseite', $pfad . '/js/startseite.js', [], $fassung, true);
 }, 30);
+
+/**
+ * Die veröffentlichten Rechtsseiten, als Titel => Adresse.
+ *
+ * Dieselbe Regel wie bei sz_theme_bereich(): die Liste lebt im Plugin,
+ * das Theme fragt sie nur über diese Hülle ab. Ist das Plugin aus,
+ * bleibt der Fuß trotzdem heil — dann kennt das Theme immerhin die
+ * Datenschutzseite, die WordPress selbst bestimmt.
+ *
+ * Entwürfe erscheinen nicht. Der Fuß zeigt nur, was Besucher wirklich
+ * lesen können.
+ *
+ * @return array<string, string>
+ */
+function sz_theme_rechtsseiten(): array
+{
+    $weg = [];
+
+    if (function_exists('sz_rechtsseiten') && function_exists('sz_rechtsseite_adresse')) {
+        foreach (sz_rechtsseiten() as $sz_s => $sz_d) {
+            $sz_a = sz_rechtsseite_adresse($sz_s);
+            if ($sz_a !== '') $weg[$sz_d['titel']] = $sz_a;
+        }
+        return $weg;
+    }
+
+    if (function_exists('get_privacy_policy_url')) {
+        $sz_a = get_privacy_policy_url();
+        if ($sz_a) $weg[__('Datenschutzerklärung', 'sapelza-shop')] = $sz_a;
+    }
+
+    return $weg;
+}

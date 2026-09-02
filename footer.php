@@ -94,6 +94,27 @@ $sz_konto = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('my
                 );
                 ?>
             </span>
+
+            <?php
+            /*
+             * Impressum und Datenschutz.
+             *
+             * Nur die Seiten, die es wirklich gibt und die veröffentlicht
+             * sind. Ein Link, der ins Leere führt, ist schlimmer als gar
+             * keiner — er sieht aus, als wäre die Pflicht erfüllt.
+             *
+             * Angelegt werden sie unter Einstellungen → Rechtsseiten;
+             * solange keine da ist, bleibt diese Zeile leer.
+             */
+            $sz_recht = function_exists('sz_theme_rechtsseiten') ? sz_theme_rechtsseiten() : [];
+            ?>
+            <?php if ($sz_recht) : ?>
+                <nav class="sz-fuss__recht mono" aria-label="<?php echo esc_attr__('Rechtliches', 'sapelza-shop'); ?>">
+                    <?php foreach ($sz_recht as $sz_titel => $sz_weg) : ?>
+                        <a href="<?php echo esc_url($sz_weg); ?>"><?php echo esc_html($sz_titel); ?></a>
+                    <?php endforeach; ?>
+                </nav>
+            <?php endif; ?>
         </div>
     </footer>
 
