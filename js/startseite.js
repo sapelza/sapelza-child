@@ -772,3 +772,87 @@
         los();
     }
 })();
+
+/*
+ * Der Knopf, der auf den Startbildschirm legt.
+ *
+ * Drei Faelle, und nur einer davon ist der bequeme:
+ *
+ * Chrome meldet ueber beforeinstallprompt, dass es wirklich
+ * installieren kann. Dann wird das Ereignis aufgehoben und beim Druck
+ * die echte Abfrage des Systems geoeffnet.
+ *
+ * Safari kennt das nicht. Apple verlangt Teilen → "Zum
+ * Home-Bildschirm", und das laesst sich von keiner Seite ausloesen.
+ * Dort klappt der Knopf die Anleitung auf — weniger elegant, aber der
+ * einzige Weg, der geht.
+ *
+ * Und laeuft die Seite schon als App, verschwindet der Knopf. Eine
+ * Aufforderung zu etwas bereits Erledigtem liest sich wie ein Fehler.
+ */
+( function () {
+    'use strict';
+
+    var bereich = document.querySelector( '[data-sz-app]' );
+    if ( ! bereich ) return;
+
+    var knopf   = bereich.querySelector( '[data-sz-app-knopf]' );
+    var wege    = bereich.querySelector( '[data-sz-app-wege]' );
+    var laeuft  = bereich.querySelector( '[data-sz-app-laeuft]' );
+    var apfel   = bereich.querySelector( '[data-sz-app-apfel]' );
+    var android = bereich.querySelector( '[data-sz-app-android]' );
+
+    if ( ! knopf || ! wege ) return;
+
+    /* Schon abgelegt? Dann ist hier nichts mehr zu tun. */
+    var alsApp = ( window.matchMedia && window.matchMedia( '(display-mode: standalone)' ).matches )
+              || window.navigator.standalone === true;
+
+    if ( alsApp ) {
+        knopf.hidden = true;
+        if ( laeuft ) laeuft.hidden = false;
+        return;
+    }
+
+    /*
+     * Auf einem Apple-Geraet steht der Apple-Weg zuerst. Das iPad meldet
+     * sich seit einigen Jahren als Mac — daran erkennt man es trotzdem,
+     * weil ein echter Mac keine Beruehrungspunkte hat.
+     */
+    var istApfel = /iphone|ipad|ipod/i.test( navigator.userAgent )
+                || ( navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 );
+
+    if ( ! istApfel && apfel && android && android.parentNode ) {
+        android.parentNode.insertBefore( android, apfel );
+    }
+
+    var angebot = null;
+
+    window.addEventListener( 'beforeinstallprompt', function ( e ) {
+        /* Ohne preventDefault zeigt Chrome seine eigene Leiste unten am
+           Rand — zwei Aufforderungen zur selben Sache. */
+        e.preventDefault();
+        angebot = e;
+        if ( knopf.dataset.wortInstallieren ) {
+            knopf.lastChild.textContent = ' ' + knopf.dataset.wortInstallieren;
+        }
+    } );
+
+    window.addEventListener( 'appinstalled', function () {
+        angebot = null;
+        knopf.hidden = true;
+        wege.hidden = true;
+        if ( laeuft ) laeuft.hidden = false;
+    } );
+
+    knopf.addEventListener( 'click', function () {
+        if ( angebot ) {
+            angebot.prompt();
+            angebot = null;
+            return;
+        }
+
+        wege.hidden = ! wege.hidden;
+        knopf.setAttribute( 'aria-expanded', String( ! wege.hidden ) );
+    } );
+} )();

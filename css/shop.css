@@ -3103,6 +3103,11 @@ ul.products li.product .sz-stern--zeile.ist-gemerkt { color: var(--sz-bordeaux);
 
 .sz-sortierung__grund[hidden] { display: none; }
 
+/* Auch hier: display schlaegt [hidden]. Die Liste haengt zwar nur im
+   Koerper, solange sie offen ist — aber wer das einmal aendert, sucht
+   den Fehler sonst lange. */
+.sz-sortierung__liste[hidden] { display: none; }
+
 .sz-sortierung__liste {
     position: fixed;
     z-index: 70;
