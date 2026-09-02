@@ -154,6 +154,54 @@
         });
     }
 
+    /*
+     * Die Zahl am Warenkorb nachziehen.
+     *
+     * Der Kopf setzt sie beim Seitenaufbau. Legt danach etwas per
+     * Hintergrundabfrage in den Korb — aus "Meine Artikel" oder aus der
+     * Schnellerfassung —, weiss der Kopf nichts davon, und der Korb sah
+     * leer aus, bis man die Seite wechselte.
+     *
+     * Das Plugin ruft diese Funktion, wenn es sie findet. Die Auszeichnung
+     * gehoert dem Theme; das Plugin soll ihre Klassennamen nicht kennen
+     * muessen — dieselbe Grenze wie bei sz_theme_bereich().
+     */
+    window.szWarenkorbZahl = function (anzahl) {
+        var korb = document.querySelector(".sz-warenkorb");
+        if (!korb) return;
+
+        var zahl = korb.querySelector(".sz-warenkorb__zahl");
+        anzahl = parseInt(anzahl, 10);
+        if (isNaN(anzahl) || anzahl < 0) return;
+
+        if (anzahl === 0) {
+            if (zahl) zahl.remove();
+            return;
+        }
+
+        /* Bei leerem Korb gibt es das Plaettchen gar nicht — dann muss es
+           angelegt werden, nicht nur beschriftet. */
+        if (!zahl) {
+            zahl = document.createElement("span");
+            zahl.className = "sz-warenkorb__zahl";
+            korb.appendChild(zahl);
+        }
+
+        zahl.textContent = String(anzahl);
+
+        /* Kurz aufblitzen, damit man sieht, dass etwas passiert ist —
+           sonst aendert sich am Bildschirm nichts als eine Ziffer weit
+           oben rechts. */
+        zahl.classList.remove("ist-neu");
+        void zahl.offsetWidth;
+        zahl.classList.add("ist-neu");
+
+        /* Falls ein Block-Minikorb mitlaeuft, soll er sich auch erneuern. */
+        if (window.jQuery) {
+            try { window.jQuery(document.body).trigger("wc_fragment_refresh"); } catch (e) {}
+        }
+    };
+
     function los() {
         schrumpfenAufsetzen();
         laufAufsetzen();

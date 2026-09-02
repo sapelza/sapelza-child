@@ -462,9 +462,27 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
        links, spraenge die Suche jedes Mal mit.
        --------------------------------------------------------------- */
 
+    /*
+     * Die beiden schweben mittig, nicht am linken Rand.
+     *
+     * Sie sind zwei getrennte Elemente in zwei getrennten Eltern — eine
+     * gemeinsame Huelle haette den Kopf am Schreibtisch umgebaut. Also
+     * rechnen sie sich aus der Mitte heraus: die Gruppenbreite steht als
+     * Wert fest, jeder nimmt sich seinen Platz darin.
+     *
+     * Der Menueknopf hat dafuer eine feste Breite. Ohne die spraenge die
+     * ganze Gruppe, sobald aus "Menue" ein "Schliessen" wird.
+     */
+    .sz-kopf {
+        --sz-schwebe-suche: 3.1rem;
+        --sz-schwebe-luft: 0.75rem;
+        --sz-schwebe-menue: 10rem;
+        --sz-schwebe-breite: calc(var(--sz-schwebe-suche) + var(--sz-schwebe-luft) + var(--sz-schwebe-menue));
+    }
+
     .sz-werkzeuge .sz-suche__auf {
         position: fixed;
-        left: 1rem;
+        left: calc(50% - var(--sz-schwebe-breite) / 2);
         bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
         z-index: 60;
         width: 3.1rem;
@@ -479,14 +497,15 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
     .sz-kopf__auf {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 0.6rem;
         position: fixed;
-        left: 4.85rem;
+        left: calc(50% - var(--sz-schwebe-breite) / 2 + var(--sz-schwebe-suche) + var(--sz-schwebe-luft));
         bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
         z-index: 60;
-        width: auto;
+        width: var(--sz-schwebe-menue);
         height: 3.1rem;
-        padding: 0 1.2rem;
+        padding: 0 1rem;
         border: 1px solid var(--sz-border-strong);
         border-radius: 999px;
         background: var(--sz-surface);
@@ -757,7 +776,10 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 @media (max-width: 979px) {
     .sz-lauf {
         right: auto;
-        left: 1.55rem;
+        /* Ueber der Gruppe, nicht mehr am Rand: die Knoepfe stehen jetzt
+           in der Mitte, und eine Bahn daneben saehe verloren aus. */
+        left: 50%;
+        transform: translateX(-50%);
         top: auto;
         bottom: calc(5.1rem + env(safe-area-inset-bottom, 0px));
         height: min(34vh, 13rem);
@@ -1023,4 +1045,25 @@ a.button,
 
 @media (max-width: 560px) {
     .sz-fuss__zeile { justify-content: flex-start; }
+}
+
+/* ===================================================================
+   Die Zahl am Warenkorb, wenn sie sich aendert
+   ===================================================================
+
+   Legt jemand aus "Meine Artikel" etwas in den Korb, bleibt er auf der
+   Seite — am Bildschirm aendert sich dann nichts als eine Ziffer weit
+   oben rechts. Ein kurzer Puls sagt: angekommen.
+*/
+
+@keyframes sz-korb-puls {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.45); }
+    100% { transform: scale(1); }
+}
+
+.sz-warenkorb__zahl.ist-neu { animation: sz-korb-puls 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+    .sz-warenkorb__zahl.ist-neu { animation: none; }
 }

@@ -3714,3 +3714,43 @@ ul.products li.product.sz-ohne-bild .sz-kachel__marke { margin-top: 0; }
     .sz-appkarte__zeile select { flex-basis: 100%; max-width: none; }
     .sz-appkarte__knopf { width: 100%; }
 }
+
+
+/* ===================================================================
+   Warenkorb und Kasse auf dem Telefon
+   ===================================================================
+
+   Sie standen zu weit links, und zwar messbar: der Block traegt auf
+   schmalen Schirmen margin-left und margin-right von -20px — er soll
+   sich aus der Polsterung des Rahmens herausziehen und ueber die ganze
+   Breite gehen.
+
+   Nur wird er dabei nicht breiter. Seine Breite bleibt die des
+   Elternteils, also 335px in einem 375px-Fenster. Das Ergebnis ist kein
+   Vollbild, sondern eine Verschiebung: links klebt er am Rand, rechts
+   bleiben vierzig Bildpunkte leer.
+
+   Am Schreibtisch stehen dieselben Raender auf 0 — dort war nie etwas
+   falsch, und dort aendert sich auch nichts.
+*/
+
+@media (max-width: 921px) {
+    .wp-block-woocommerce-cart,
+    .wp-block-woocommerce-checkout,
+    .wp-block-woocommerce-cart.alignwide,
+    .wp-block-woocommerce-checkout.alignwide {
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
+    }
+
+    /* Die zwei Karten — Summen im Korb, Bestelluebersicht in der Kasse —
+       duerfen auf dem Telefon weniger Polsterung haben; sonst bleibt fuer
+       die Zahlen selbst zu wenig uebrig. */
+    .wc-block-cart__sidebar,
+    .wc-block-checkout__sidebar,
+    .woocommerce-cart .cart_totals,
+    .woocommerce-checkout #order_review {
+        padding: 1.15rem;
+    }
+}
