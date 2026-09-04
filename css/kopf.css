@@ -455,34 +455,22 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
        --------------------------------------------------------------- */
 
     /* ---------------------------------------------------------------
-       Suchen und Menue stehen nebeneinander unten links.
+       Die Suche unten links, das Menue in der Mitte.
 
-       Die Suche zuerst, weil sie eine feste Breite hat: der Menueknopf
-       waechst beim Oeffnen von "Menue" auf "Schliessen", und stuende er
-       links, spraenge die Suche jedes Mal mit.
+       Vorher standen beide als Gruppe mittig nebeneinander. Der
+       Menueknopf brauchte dafuer eine feste Breite von 10rem, sonst
+       spraenge die ganze Gruppe, sobald aus "Menue" ein "Schliessen"
+       wird. Breit war er damit immer — auch fuer das kurze Wort, das
+       neunzig Prozent der Zeit dransteht.
+
+       Getrennt braucht er die feste Breite nicht mehr. Er sitzt auf der
+       Mitte und waechst beim Oeffnen nach beiden Seiten gleich weit;
+       verschieben kann er dabei nichts, weil nichts mehr daneben steht.
        --------------------------------------------------------------- */
-
-    /*
-     * Die beiden schweben mittig, nicht am linken Rand.
-     *
-     * Sie sind zwei getrennte Elemente in zwei getrennten Eltern — eine
-     * gemeinsame Huelle haette den Kopf am Schreibtisch umgebaut. Also
-     * rechnen sie sich aus der Mitte heraus: die Gruppenbreite steht als
-     * Wert fest, jeder nimmt sich seinen Platz darin.
-     *
-     * Der Menueknopf hat dafuer eine feste Breite. Ohne die spraenge die
-     * ganze Gruppe, sobald aus "Menue" ein "Schliessen" wird.
-     */
-    .sz-kopf {
-        --sz-schwebe-suche: 3.1rem;
-        --sz-schwebe-luft: 0.75rem;
-        --sz-schwebe-menue: 10rem;
-        --sz-schwebe-breite: calc(var(--sz-schwebe-suche) + var(--sz-schwebe-luft) + var(--sz-schwebe-menue));
-    }
 
     .sz-werkzeuge .sz-suche__auf {
         position: fixed;
-        left: calc(50% - var(--sz-schwebe-breite) / 2);
+        left: calc(1rem + env(safe-area-inset-left, 0px));
         bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
         z-index: 60;
         width: 3.1rem;
@@ -498,14 +486,17 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.6rem;
+        gap: 0.55rem;
         position: fixed;
-        left: calc(50% - var(--sz-schwebe-breite) / 2 + var(--sz-schwebe-suche) + var(--sz-schwebe-luft));
+        left: 50%;
+        transform: translateX(-50%);
         bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
         z-index: 60;
-        width: var(--sz-schwebe-menue);
+        /* Nur so breit wie Zeichen und Wort: keine feste Breite, kein
+           Mindestmass. Die Hoehe von 3.1rem haelt die Trefferflaeche. */
+        width: auto;
         height: 3.1rem;
-        padding: 0 1rem;
+        padding: 0 1.15rem;
         border: 1px solid var(--sz-border-strong);
         border-radius: 999px;
         background: var(--sz-surface);
@@ -761,11 +752,21 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 }
 
 /* -------------------------------------------------------------------
-   Auf dem Telefon: dieselbe Ecke wie der Menueknopf
+   Auf dem Telefon: am linken Rand, ueber die ganze Hoehe
 
-   Bisher war sie unter 900px einfach abgeschaltet — am rechten Rand
-   nahm sie nur Platz weg. Links ueber dem Menueknopf hat sie einen
-   Platz, an dem sie nichts verdeckt.
+   Zwei Fassungen davor. Unter 900px war sie zuerst ganz abgeschaltet,
+   dann stand sie als kurzes Stueck ueber der Knopfgruppe in der Mitte
+   — und lief damit mitten durch die Ware: Preise, Mengenschalter und
+   Kaestchen hatten den Porter quer darueber.
+
+   Am linken Rand hat sie eine eigene Spur. Der Inhalt beginnt dort erst
+   nach der Polsterung, die Bahn liegt davor im Freien und verdeckt
+   nichts. Ueber die ganze Hoehe wird sie ausserdem wieder das, was sie
+   sein soll: eine Anzeige, an der man den Stand ablesen kann, statt
+   eines Stummels, an dem sich nur etwas bewegt.
+
+   Unten endet sie ueber dem Suchknopf, der jetzt dort steht — der
+   Porter faehrt auf ihn zu.
 
    Und sie zeigt sich nur, solange wirklich gescrollt wird. Eine
    Anzeige, die dauernd dasteht, ist Zierrat; eine, die kommt, wenn man
@@ -776,21 +777,18 @@ html[data-sz="dark"] .sz-kopf .sz-modus { background: var(--sz-muted); }
 @media (max-width: 979px) {
     .sz-lauf {
         right: auto;
-        /* Ueber der Gruppe, nicht mehr am Rand: die Knoepfe stehen jetzt
-           in der Mitte, und eine Bahn daneben saehe verloren aus. */
-        left: 50%;
-        transform: translateX(-50%);
-        top: auto;
+        left: calc(1px + env(safe-area-inset-left, 0px));
+        top: calc(var(--sz-kopf-oben) + var(--sz-kopf-klein) + 1rem);
         bottom: calc(5.1rem + env(safe-area-inset-bottom, 0px));
-        height: min(34vh, 13rem);
-        width: 30px;
+        height: auto;
+        width: 26px;
         opacity: 0;
         transition: opacity 320ms ease;
     }
 
     .sz-lauf.ist-faehrt { opacity: 1; }
 
-    .sz-lauf__porter { width: 26px; }
+    .sz-lauf__porter { width: 22px; }
     .sz-lauf__route { opacity: 0.22; }
 }
 
