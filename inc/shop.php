@@ -19,8 +19,65 @@ if (!defined('ABSPATH')) exit;
 /* Drei Spalten, wie im Entwurf. */
 add_filter('loop_shop_columns', fn() => 3, 30);
 
-/* Vierundzwanzig Artikel je Seite: acht Zeilen zu dreien. */
-add_filter('loop_shop_per_page', fn() => 24, 30);
+/**
+ * Wie viele Artikel je Seite.
+ *
+ * Vierundzwanzig sind der Ausgangswert: acht Zeilen zu dreien. Wer
+ * mehr auf einmal sehen will, waehlt es in der Trefferzeile — und die
+ * Wahl bleibt dreissig Tage in einem Cookie, damit sie nicht in jeder
+ * Kategorie neu getroffen werden muss.
+ *
+ * Die Adresse schlaegt das Cookie: ein Link mit je_seite=48 zeigt 48,
+ * was auch immer gespeichert ist. So lassen sich Seiten weitergeben.
+ *
+ * Nur bekannte Werte gelten. Alles andere faellt auf 24 zurueck, still.
+ */
+function sz_je_seite_wahlen(): array
+{
+    return [
+        '24'   => __('24 je Seite', 'sapelza-shop'),
+        '48'   => __('48 je Seite', 'sapelza-shop'),
+        '96'   => __('96 je Seite', 'sapelza-shop'),
+        'alle' => __('Alle Artikel', 'sapelza-shop'),
+    ];
+}
+
+function sz_je_seite(): string
+{
+    $wahlen = array_map('strval', array_keys(sz_je_seite_wahlen()));
+
+    $roh = '';
+    if (isset($_GET['je_seite'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $roh = (string) wp_unslash($_GET['je_seite']); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    } elseif (isset($_COOKIE['sz_je_seite'])) {
+        $roh = (string) wp_unslash($_COOKIE['sz_je_seite']);
+    }
+
+    return in_array($roh, $wahlen, true) ? $roh : '24';
+}
+
+add_filter('loop_shop_per_page', function () {
+    $wahl = sz_je_seite();
+    return $wahl === 'alle' ? -1 : (int) $wahl;
+}, 30);
+
+/*
+ * Die Wahl merken. Auf init, weil danach schon Kopfzeilen unterwegs
+ * sein koennen — und nur, wenn die Adresse einen gueltigen Wert traegt.
+ */
+add_action('init', function () {
+    if (!isset($_GET['je_seite'])) return; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+    $wahl = sz_je_seite();
+    setcookie('sz_je_seite', $wahl, [
+        'expires'  => time() + 30 * DAY_IN_SECONDS,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    $_COOKIE['sz_je_seite'] = $wahl;
+});
 
 /**
  * Astras Seitenleiste hat auf den Katalogseiten nichts verloren —
@@ -380,8 +437,16 @@ add_action('woocommerce_before_shop_loop', function () {
         $gesamt = (int) $wp_query->found_posts;
         $pro    = (int) $wp_query->get('posts_per_page');
         $seite  = max(1, (int) $wp_query->get('paged'));
-        $ab     = ($seite - 1) * $pro + 1;
-        $bisher = min($gesamt, $seite * $pro);
+
+        /* "Alle Artikel" heisst posts_per_page -1: dann gibt es genau
+           eine Seite, und die zeigt vom ersten bis zum letzten. */
+        if ($pro < 1) {
+            $ab     = 1;
+            $bisher = $gesamt;
+        } else {
+            $ab     = ($seite - 1) * $pro + 1;
+            $bisher = min($gesamt, $seite * $pro);
+        }
 
         if ($gesamt > 0) : ?>
             <p class="sz-katalog__treffer mono">
@@ -395,8 +460,45 @@ add_action('woocommerce_before_shop_loop', function () {
             </p>
         <?php endif;
 
-        woocommerce_catalog_ordering();
         ?>
+        <div class="sz-katalog__werkzeuge">
+            <?php
+            woocommerce_catalog_ordering();
+
+            /*
+             * Wie viele je Seite — nur, wo es etwas zu waehlen gibt. Bei
+             * einer Kategorie mit elf Artikeln waere die Auswahl Laerm.
+             *
+             * Ein natives select, wie bei der Sortierung: das Skript
+             * kleidet es in dieselbe Liste, und ohne Skript bleibt es ein
+             * Feld mit Knopf. Das Ziel ist die erste Seite der Liste, denn
+             * mit einer anderen Zahl je Seite gibt es "Seite 3" womoeglich
+             * nicht mehr. Die uebrigen Suchbegriffe reisen als verborgene
+             * Felder mit — Sortierung, Suchwort, Preisgrenzen.
+             */
+            if ($gesamt > 24) :
+                $sz_wahl = sz_je_seite();
+                ?>
+                <form class="sz-jeseite" method="get"
+                      action="<?php echo esc_url(strtok(get_pagenum_link(1, false), '?')); ?>">
+                    <label class="screen-reader-text" for="sz-jeseite">
+                        <?php echo esc_html__('Artikel je Seite', 'sapelza-shop'); ?>
+                    </label>
+                    <select id="sz-jeseite" name="je_seite" data-sz-liste
+                            data-sz-titel="<?php echo esc_attr__('Artikel je Seite', 'sapelza-shop'); ?>">
+                        <?php foreach (sz_je_seite_wahlen() as $sz_wert => $sz_wort) : ?>
+                            <option value="<?php echo esc_attr((string) $sz_wert); ?>" <?php selected($sz_wahl, (string) $sz_wert); ?>>
+                                <?php echo esc_html($sz_wort); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php wc_query_string_form_fields(null, ['je_seite', 'submit', 'paged', 'product-page']); ?>
+                    <noscript>
+                        <button type="submit"><?php echo esc_html__('Anzeigen', 'sapelza-shop'); ?></button>
+                    </noscript>
+                </form>
+            <?php endif; ?>
+        </div>
     </div>
     <?php
 }, 5);

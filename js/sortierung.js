@@ -85,7 +85,9 @@
            sonst nicht klar, worueber man da entscheidet. */
         var titel = document.createElement( 'p' );
         titel.className = 'sz-sortierung__titel';
-        titel.textContent = 'Sortieren nach';
+        /* Die Ueberschrift kommt vom Feld, wenn es eine mitbringt — die
+           Zahl je Seite traegt eine andere als die Sortierung. */
+        titel.textContent = feld.dataset.szTitel || 'Sortieren nach';
         liste.appendChild( titel );
 
         var eintraege = [];
@@ -218,8 +220,15 @@
         zeigen();
     }
 
+    /*
+     * Dasselbe Kleid fuer jedes Feld, das es haben will: die Sortierung
+     * von WooCommerce und alles, was data-sz-liste traegt — etwa die
+     * Zahl je Seite. Ein Aussehen, ein Verhalten, ein Skript.
+     */
     function alle() {
-        var felder = document.querySelectorAll( 'form.woocommerce-ordering select.orderby, form.woocommerce-ordering select[name="orderby"]' );
+        var felder = document.querySelectorAll(
+            'form.woocommerce-ordering select.orderby, form.woocommerce-ordering select[name="orderby"], select[data-sz-liste]'
+        );
         Array.prototype.forEach.call( felder, aufsetzen );
     }
 

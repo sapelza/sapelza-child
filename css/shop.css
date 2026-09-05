@@ -2576,6 +2576,21 @@ ul.products li.product .price small {
     color: var(--sz-ink-soft);
 }
 
+/* Sortierung und Zahl je Seite: eine Gruppe rechts, die auf schmalen
+   Schirmen umbricht statt zu quetschen. */
+.sz-katalog__werkzeuge {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sz-katalog__werkzeuge > form { margin: 0; }
+
+/* Ohne Skript steht das Feld nackt da; dann wenigstens mit einem
+   Knopf daneben, der es abschickt. */
+.sz-jeseite noscript button { margin-left: 0.4rem; }
+
 /* ===================================================================
    Nicht vorraetige Artikel
    ===================================================================
